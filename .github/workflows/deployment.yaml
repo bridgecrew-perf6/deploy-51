@@ -31,16 +31,18 @@ jobs:
 #   backend:
 #     runs-on: ubuntu-20.04
 #     steps:
-#       - name: Install SSH Key
-#         uses: shimataro/ssh-key-action@v2
-#         with:
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
-#       - name: Add Known Hosts
-#         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-#       - name: Set up remote branch
-#         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && git branch --set-upstream-to=origin/main"
-#       - name: Pull from github
-#         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && git pull && git reset --hard origin/main"
-#       - name: Deploy to development server
-#         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "~/way_up_frontend/deploy.sh"
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+      - name: Add Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      # - name: Set up remote branch
+      #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && git branch --set-upstream-to=origin/main"
+      # - name: Pull from github
+      #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && git pull && git reset --hard origin/main"
+      # - name: Deploy to development server
+      #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "~/way_up_frontend/deploy.sh"
+      - name: Deploy to development server
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && docker compose up"
