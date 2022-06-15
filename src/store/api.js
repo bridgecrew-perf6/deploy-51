@@ -65,7 +65,7 @@ export const AuthApi = {
   **/
   async login(request) {
     try {
-      const { data } = await HTTP_GRAF.post('/auth/users/login/', request)
+      const { data } = await HTTP_GRAF.post('/users/login/', request)
       return [null, data]
     } catch (error) {
       return [error, null]
@@ -77,7 +77,7 @@ export const AuthApi = {
   **/
   async refresh(request) {
     try {
-      const { data } = await HTTP_GRAF.post('/auth/users/refresh/', { refresh: request })
+      const { data } = await HTTP_GRAF.post('/users/refresh/', { refresh: request })
       return [null, data]
     } catch (error) {
       return [error, null]
@@ -89,7 +89,7 @@ export const AuthApi = {
   **/
   async verify(request) {
     try {
-      const { data } = await HTTP_GRAF.post('/auth/users/verify/', request)
+      const { data } = await HTTP_GRAF.post('/users/verify/', request)
       return [null, data]
     } catch (error) {
       return [error, null]
