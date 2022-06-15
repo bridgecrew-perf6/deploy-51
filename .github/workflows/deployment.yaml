@@ -44,5 +44,11 @@ jobs:
       #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && git pull && git reset --hard origin/main"
       # - name: Deploy to development server
       #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "~/way_up_frontend/deploy.sh"
-      - name: Deploy to development server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && docker compose down -v && docker compose up -d"
+      # - name: Deploy to development server
+      #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && docker compose down -v && docker compose up -d"
+    - uses: alex-ac/github-action-ssh-docker-compose@master
+      name: Docker-Compose Remote Deployment
+      with:
+        ssh_host: ${{ secrets.SSH_HOST }}
+        ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+        ssh_user: ${{ secrets.SSH_USER }}
