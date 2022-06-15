@@ -6,121 +6,105 @@
           <div class="match-score__all-btn-content">
             <div class="match-score__all-btn-logo">
               <svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="9.22212" cy="4.61067" r="4.61067" fill="white"/>
-                <circle cx="19.5966" cy="5.76269" r="3.458" fill="white"/>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M17.9292 20.7478C17.9296 20.7478 17.93 20.7479 17.9304 20.7479C17.9299 18.4427 16.2012 15.5615 14.4724 13.8327C14.4514 13.8117 14.4305 13.791 14.4095 13.7704C14.4094 13.7705 14.4092 13.7707 14.4091 13.7709C14.4298 13.7913 14.4505 13.8118 14.4712 13.8326C16.2001 15.5614 17.9289 18.4426 17.9292 20.7478ZM20.2357 20.7478C24.5309 20.7372 26.0008 20.6046 26.0008 18.9042C26.0008 17.06 24.704 14.7547 23.4073 13.3716C22.1105 11.9884 20.8138 11.5273 19.0849 11.5273C17.9566 11.5273 17.018 11.7175 16.1379 12.2381C17.1537 13.2616 18.1408 14.586 18.8872 15.9959C19.6263 17.392 20.2355 19.072 20.2357 20.7478Z"
-                      fill="white"/>
+                <circle cx="9.22212" cy="4.61067" r="4.61067" fill="white" />
+                <circle cx="19.5966" cy="5.76269" r="3.458" fill="white" />
                 <path
-                    d="M14.9847 13.8327C13.2557 12.1037 11.5267 11.5273 9.22147 11.5273C6.91626 11.5273 5.20485 12.0856 3.458 13.8327C1.71116 15.5798 0 18.4434 0 20.7487C0 23.054 2.30559 23.0547 9.22147 23.0544H9.22188C16.1374 23.0541 18.4427 23.054 18.4427 20.7487C18.4427 18.4434 16.7137 15.5617 14.9847 13.8327Z"
-                    fill="white"/>
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M17.9292 20.7478C17.9296 20.7478 17.93 20.7479 17.9304 20.7479C17.9299 18.4427 16.2012 15.5615 14.4724 13.8327C14.4514 13.8117 14.4305 13.791 14.4095 13.7704C14.4094 13.7705 14.4092 13.7707 14.4091 13.7709C14.4298 13.7913 14.4505 13.8118 14.4712 13.8326C16.2001 15.5614 17.9289 18.4426 17.9292 20.7478ZM20.2357 20.7478C24.5309 20.7372 26.0008 20.6046 26.0008 18.9042C26.0008 17.06 24.704 14.7547 23.4073 13.3716C22.1105 11.9884 20.8138 11.5273 19.0849 11.5273C17.9566 11.5273 17.018 11.7175 16.1379 12.2381C17.1537 13.2616 18.1408 14.586 18.8872 15.9959C19.6263 17.392 20.2355 19.072 20.2357 20.7478Z"
+                  fill="white"
+                />
+                <path
+                  d="M14.9847 13.8327C13.2557 12.1037 11.5267 11.5273 9.22147 11.5273C6.91626 11.5273 5.20485 12.0856 3.458 13.8327C1.71116 15.5798 0 18.4434 0 20.7487C0 23.054 2.30559 23.0547 9.22147 23.0544H9.22188C16.1374 23.0541 18.4427 23.054 18.4427 20.7487C18.4427 18.4434 16.7137 15.5617 14.9847 13.8327Z"
+                  fill="white"
+                />
               </svg>
             </div>
             <p class="match-score__all-btn-title">Вся команда</p>
           </div>
           <div class="match-score__all-btn-arrow">
             <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="14" cy="14.5586" r="14" transform="rotate(90 14 14.5586)" fill="#B9CBE5"/>
-              <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M14.6163 9.59779C15.1229 9.10022 15.9442 9.10022 16.4508 9.59779L20.7314 13.8022C20.9907 14.0569 21.1173 14.3927 21.1111 14.7265C21.1163 15.0591 20.9897 15.3933 20.7313 15.6471L16.4507 19.8515C15.9441 20.349 15.1228 20.349 14.6162 19.8515C14.1096 19.3539 14.1096 18.5472 14.6162 18.0496L18.0015 14.7246L14.6163 11.3997C14.1097 10.9021 14.1097 10.0954 14.6163 9.59779Z"
-                    fill="white"/>
-              <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M7.28229 9.59779C7.78889 9.10022 8.61023 9.10022 9.11683 9.59779L13.3974 13.8022C13.6567 14.0569 13.7833 14.3927 13.7771 14.7265C13.7823 15.0591 13.6557 15.3933 13.3973 15.6471L9.11674 19.8515C8.61015 20.349 7.7888 20.349 7.2822 19.8515C6.77561 19.3539 6.77561 18.5472 7.2822 18.0496L10.6675 14.7246L7.28229 11.3997C6.7757 10.9021 6.7757 10.0954 7.28229 9.59779Z"
-                    fill="white"/>
+              <circle cx="14" cy="14.5586" r="14" transform="rotate(90 14 14.5586)" fill="#B9CBE5" />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M14.6163 9.59779C15.1229 9.10022 15.9442 9.10022 16.4508 9.59779L20.7314 13.8022C20.9907 14.0569 21.1173 14.3927 21.1111 14.7265C21.1163 15.0591 20.9897 15.3933 20.7313 15.6471L16.4507 19.8515C15.9441 20.349 15.1228 20.349 14.6162 19.8515C14.1096 19.3539 14.1096 18.5472 14.6162 18.0496L18.0015 14.7246L14.6163 11.3997C14.1097 10.9021 14.1097 10.0954 14.6163 9.59779Z"
+                fill="white"
+              />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M7.28229 9.59779C7.78889 9.10022 8.61023 9.10022 9.11683 9.59779L13.3974 13.8022C13.6567 14.0569 13.7833 14.3927 13.7771 14.7265C13.7823 15.0591 13.6557 15.3933 13.3973 15.6471L9.11674 19.8515C8.61015 20.349 7.7888 20.349 7.2822 19.8515C6.77561 19.3539 6.77561 18.5472 7.2822 18.0496L10.6675 14.7246L7.28229 11.3997C6.7757 10.9021 6.7757 10.0954 7.28229 9.59779Z"
+                fill="white"
+              />
             </svg>
           </div>
         </div>
-        <menu-filtering
-            class="match-score__filter"
-            @filter="sortAlphabetCurrent = $event">
+        <menu-filtering class="match-score__filter" @filter="sortAlphabetCurrent = $event">
           <template #left>
             <div style="display: flex; align-items: center">
-              <base-checkbox
-                  white
-                  style="margin-right: 20px"
-                  @input="changeAllChecked"/>
-              <filter-select
-                  :sortSportsmans="sortSportsmans"
-                  @selectedSortSportsmas="selectedSortSportsmas = $event"/>
+              <base-checkbox white style="margin-right: 20px" @input="changeAllChecked" />
+              <filter-select :sortSportsmans="sortSportsmans" @selectedSortSportsmas="selectedSortSportsmas = $event" />
             </div>
           </template>
         </menu-filtering>
-        <persons
-            :items="filter"
-            type="sportsman"
-            checkbox
-            :allChecked="allChecked"
-            @togglePlayer="togglePlayer"
-        />
+        <persons :items="filter" type="sportsman" checkbox :allChecked="allChecked" @togglePlayer="togglePlayer" />
       </div>
-      <div class="match-score__menu" :class="{'match-score__menu_fixed': fixdeMenu}" ref="menu">
+      <div class="match-score__menu" :class="{ 'match-score__menu_fixed': fixdeMenu }" ref="menu">
         <div class="match-score__menu-title">Отметить как</div>
         <v-radio-group v-model="markAs" class="match-score__radio-group">
           <div class="match-score__radio">
-
             <div class="match-score__radio-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="10" cy="10" r="10" fill="#64C048"/>
+                <circle cx="10" cy="10" r="10" fill="#64C048" />
                 <path
-                    d="M15.5359 7.21516C15.4727 7.60745 15.2516 7.90167 15.0305 8.19589C13.4196 10.4516 11.8087 12.7073 10.1978 14.9629C9.85032 15.4533 9.37653 15.7148 8.77638 15.7148C8.30259 15.7148 7.89196 15.5187 7.5761 15.1264C6.59692 13.9822 5.58615 12.8707 4.60697 11.7265C3.97524 10.9419 4.32269 9.79776 5.2387 9.53623C5.74408 9.40546 6.18629 9.53623 6.53375 9.96121C6.97596 10.4843 7.44975 11.0073 7.89196 11.5304C8.11307 11.7919 8.33417 12.0534 8.55528 12.315C8.68163 12.4784 8.77639 12.4784 8.90273 12.2823C10.3241 10.2881 11.7455 8.29397 13.1669 6.29981C13.7039 5.54791 14.7146 5.51522 15.2516 6.23443C15.378 6.39788 15.4411 6.59403 15.5043 6.79018C15.5043 6.82287 15.5043 6.82287 15.5359 6.85556C15.5359 6.98632 15.5359 7.0844 15.5359 7.21516Z"
-                    fill="white"/>
+                  d="M15.5359 7.21516C15.4727 7.60745 15.2516 7.90167 15.0305 8.19589C13.4196 10.4516 11.8087 12.7073 10.1978 14.9629C9.85032 15.4533 9.37653 15.7148 8.77638 15.7148C8.30259 15.7148 7.89196 15.5187 7.5761 15.1264C6.59692 13.9822 5.58615 12.8707 4.60697 11.7265C3.97524 10.9419 4.32269 9.79776 5.2387 9.53623C5.74408 9.40546 6.18629 9.53623 6.53375 9.96121C6.97596 10.4843 7.44975 11.0073 7.89196 11.5304C8.11307 11.7919 8.33417 12.0534 8.55528 12.315C8.68163 12.4784 8.77639 12.4784 8.90273 12.2823C10.3241 10.2881 11.7455 8.29397 13.1669 6.29981C13.7039 5.54791 14.7146 5.51522 15.2516 6.23443C15.378 6.39788 15.4411 6.59403 15.5043 6.79018C15.5043 6.82287 15.5043 6.82287 15.5359 6.85556C15.5359 6.98632 15.5359 7.0844 15.5359 7.21516Z"
+                  fill="white"
+                />
               </svg>
             </div>
 
-            <base-radio-button
-                :value="1"
-                label="Пристувующие спортсмены"
-                darkColor
-                class="match-score__radio-btn"/>
+            <wu-radio :value="1" label="Пристувующие спортсмены" darkColor class="match-score__radio-btn" />
           </div>
           <div class="match-score__radio">
-
             <div class="match-score__radio-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="10" cy="10" r="10" fill="#FFA217"/>
-                <path d="M10.3898 10.6836C11.2913 10.1212 12.169 9.57964 13.0433 9.02065C13.8014 8.53852 14.7645 8.92632 14.9694 9.81372C15.0889 10.3273 14.8567 10.9037 14.4059 11.1867C12.8759 12.1475 11.3426 13.1083 9.81261 14.069C9.38231 14.338 8.93835 14.3625 8.50463 14.111C8.06409 13.8629 7.8626 13.4541 7.85918 12.9441C7.85918 10.6417 7.85918 8.34288 7.85918 6.04403C7.85918 5.42565 7.85577 4.81076 7.85918 4.19238C7.8626 3.49713 8.29631 2.96959 8.93835 2.87176C9.69991 2.75647 10.3727 3.3504 10.3761 4.14696C10.3829 5.23699 10.3761 6.32353 10.3761 7.41356C10.3761 8.47214 10.3761 9.53422 10.3761 10.5928C10.3795 10.6138 10.3829 10.6347 10.3898 10.6836Z" fill="white"/>
+                <circle cx="10" cy="10" r="10" fill="#FFA217" />
+                <path
+                  d="M10.3898 10.6836C11.2913 10.1212 12.169 9.57964 13.0433 9.02065C13.8014 8.53852 14.7645 8.92632 14.9694 9.81372C15.0889 10.3273 14.8567 10.9037 14.4059 11.1867C12.8759 12.1475 11.3426 13.1083 9.81261 14.069C9.38231 14.338 8.93835 14.3625 8.50463 14.111C8.06409 13.8629 7.8626 13.4541 7.85918 12.9441C7.85918 10.6417 7.85918 8.34288 7.85918 6.04403C7.85918 5.42565 7.85577 4.81076 7.85918 4.19238C7.8626 3.49713 8.29631 2.96959 8.93835 2.87176C9.69991 2.75647 10.3727 3.3504 10.3761 4.14696C10.3829 5.23699 10.3761 6.32353 10.3761 7.41356C10.3761 8.47214 10.3761 9.53422 10.3761 10.5928C10.3795 10.6138 10.3829 10.6347 10.3898 10.6836Z"
+                  fill="white"
+                />
               </svg>
             </div>
 
-            <base-radio-button
-                :value="2"
-                label="Опаздывающие спортсмены"
-                darkColor
-                class="match-score__radio-btn"/>
+            <wu-radio :value="2" label="Опаздывающие спортсмены" darkColor class="match-score__radio-btn" />
           </div>
           <div class="match-score__radio">
-
             <div class="match-score__radio-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="10" cy="10" r="10" fill="#FF4B6B"/>
-                <rect x="4.28589" y="8.57227" width="11.4286" height="2.85714" rx="1.42857" fill="white"/>
+                <circle cx="10" cy="10" r="10" fill="#FF4B6B" />
+                <rect x="4.28589" y="8.57227" width="11.4286" height="2.85714" rx="1.42857" fill="white" />
               </svg>
             </div>
 
-            <base-radio-button
-                :value="3"
-                label="Отсутствующие спортсмены"
-                darkColor
-                class="match-score__radio-btn"/>
+            <wu-radio :value="3" label="Отсутствующие спортсмены" darkColor class="match-score__radio-btn" />
           </div>
         </v-radio-group>
         <button class="match-score__menu-btn">Отметить</button>
       </div>
     </left-menu>
     <div class="container match-score__container">
-      <Header hideSearch/>
-      <bottom-header
-          class="create-event__bottom-header"
-          title="Анализ матча">
+      <Header hideSearch />
+      <bottom-header class="create-event__bottom-header" title="Анализ матча">
         <template #icon>
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="34" height="34" rx="6" fill="#B9CBE5"/>
-            <rect width="31.7333" height="31.7333" rx="6" fill="#95B0DA"/>
+            <rect width="34" height="34" rx="6" fill="#B9CBE5" />
+            <rect width="31.7333" height="31.7333" rx="6" fill="#95B0DA" />
           </svg>
         </template>
         <template #btns>
           <div class="create-event__header-btns">
-            <base-button class="create-event__header-btn" label="Сохранить"/>
+            <base-button class="create-event__header-btn" label="Сохранить" />
           </div>
         </template>
       </bottom-header>
@@ -128,45 +112,45 @@
         <p>Дать подробную оценку</p>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
-              d="M0 5.77543C0.354291 5.27522 0.816134 5.18544 1.3792 5.33935C1.71451 5.42913 2.06248 5.46761 2.40412 5.51891C2.75208 5.57021 2.80269 5.48685 2.91025 5.1662C3.08106 4.66599 3.28352 4.1786 3.5176 3.70405C3.60617 3.52448 3.79597 3.38981 3.96046 3.26155C4.27047 3.02427 4.25782 2.77417 3.90352 2.61384C3.43535 2.40222 2.96086 2.197 2.46738 1.97896C2.95453 1.24147 3.60617 0.766914 4.39067 0.459093C5.51681 0.0230119 6.69356 -0.0603564 7.87664 0.0358378C8.72441 0.10638 9.55952 0.266704 10.401 0.38855C10.4516 0.394963 10.5022 0.427028 10.5528 0.433441C10.8944 0.491157 10.9704 0.677133 10.8944 1.01702C10.6414 2.09439 10.4199 3.17818 10.1985 4.26197C10.1479 4.50566 10.034 4.58262 9.78728 4.57621C8.9838 4.55697 8.18665 4.57621 7.38317 4.56979C6.4405 4.56338 5.74457 4.95457 5.34599 5.84597C4.8715 6.86563 4.397 7.87888 3.93516 8.89212C3.77067 9.25766 3.88454 9.44364 4.2768 9.45646C4.71966 9.46287 5.1562 9.45646 5.63702 9.45646C5.4662 10.1491 5.31436 10.8096 5.13089 11.4637C5.0866 11.624 4.92844 11.7459 4.86517 11.8293C5.10558 12.4513 5.33967 13.0541 5.56743 13.6505C5.70661 14.0161 5.92804 14.3367 6.29499 14.4457C6.71887 14.5676 7.18071 14.6958 7.61725 14.6574C8.64849 14.5612 9.21789 13.9006 9.30013 12.8425C9.31911 12.5988 9.30013 12.3551 9.30013 12.0729C9.14197 12.0729 8.99013 12.0665 8.83196 12.0729C8.52196 12.0986 8.37645 11.9639 8.33849 11.6433C8.25624 10.8673 8.15501 10.0978 8.05379 9.3282C7.99052 8.85364 7.92726 8.80875 7.44011 8.80875C6.54173 8.80875 5.64967 8.80875 4.72599 8.80875C4.74497 8.7318 4.74497 8.67408 4.77027 8.62278C5.16252 7.76344 5.5611 6.90411 5.95968 6.04477C6.22539 5.48043 6.68724 5.23033 7.28194 5.23033C9.69871 5.23033 12.1092 5.23674 14.5259 5.24315C15.3231 5.24315 15.8735 5.62793 15.981 6.32694C16.0317 6.63476 15.9684 6.96182 15.9368 7.27606C15.8925 7.65442 15.8102 8.03279 15.7659 8.41115C15.7343 8.70615 15.5951 8.80875 15.3041 8.80234C14.0261 8.79593 12.7545 8.79593 11.4765 8.79593C10.9957 8.79593 10.9261 8.86006 10.9261 9.34744C10.9261 10.0721 10.9261 10.8032 10.9261 11.5278C10.9261 11.9832 10.8438 12.0665 10.3946 12.0665C10.2681 12.0665 10.1416 12.0665 10.0087 12.0665C9.9581 12.4641 9.93912 12.8489 9.8632 13.2209C9.5785 14.7023 8.53461 15.4718 7.06051 15.3243C5.87743 15.2025 5.12456 14.651 4.82088 13.4325C4.71966 13.0285 4.4919 12.6629 4.30843 12.2333C4.087 12.3936 3.93516 12.5026 3.78965 12.618C3.6125 12.7527 3.44801 12.7527 3.27719 12.5988C2.46106 11.8741 1.63859 11.1559 0.835114 10.4184C0.727561 10.3222 0.676948 10.1298 0.645315 9.97591C0.613682 9.78994 0.632662 9.59113 0.638989 9.39875C0.651642 9.02679 0.695928 8.66126 0.272045 8.44322C0.145512 8.37909 0.0885727 8.16746 0 8.02637C0 7.27606 0 6.52574 0 5.77543Z"
-              fill="#464EA3"/>
+            d="M0 5.77543C0.354291 5.27522 0.816134 5.18544 1.3792 5.33935C1.71451 5.42913 2.06248 5.46761 2.40412 5.51891C2.75208 5.57021 2.80269 5.48685 2.91025 5.1662C3.08106 4.66599 3.28352 4.1786 3.5176 3.70405C3.60617 3.52448 3.79597 3.38981 3.96046 3.26155C4.27047 3.02427 4.25782 2.77417 3.90352 2.61384C3.43535 2.40222 2.96086 2.197 2.46738 1.97896C2.95453 1.24147 3.60617 0.766914 4.39067 0.459093C5.51681 0.0230119 6.69356 -0.0603564 7.87664 0.0358378C8.72441 0.10638 9.55952 0.266704 10.401 0.38855C10.4516 0.394963 10.5022 0.427028 10.5528 0.433441C10.8944 0.491157 10.9704 0.677133 10.8944 1.01702C10.6414 2.09439 10.4199 3.17818 10.1985 4.26197C10.1479 4.50566 10.034 4.58262 9.78728 4.57621C8.9838 4.55697 8.18665 4.57621 7.38317 4.56979C6.4405 4.56338 5.74457 4.95457 5.34599 5.84597C4.8715 6.86563 4.397 7.87888 3.93516 8.89212C3.77067 9.25766 3.88454 9.44364 4.2768 9.45646C4.71966 9.46287 5.1562 9.45646 5.63702 9.45646C5.4662 10.1491 5.31436 10.8096 5.13089 11.4637C5.0866 11.624 4.92844 11.7459 4.86517 11.8293C5.10558 12.4513 5.33967 13.0541 5.56743 13.6505C5.70661 14.0161 5.92804 14.3367 6.29499 14.4457C6.71887 14.5676 7.18071 14.6958 7.61725 14.6574C8.64849 14.5612 9.21789 13.9006 9.30013 12.8425C9.31911 12.5988 9.30013 12.3551 9.30013 12.0729C9.14197 12.0729 8.99013 12.0665 8.83196 12.0729C8.52196 12.0986 8.37645 11.9639 8.33849 11.6433C8.25624 10.8673 8.15501 10.0978 8.05379 9.3282C7.99052 8.85364 7.92726 8.80875 7.44011 8.80875C6.54173 8.80875 5.64967 8.80875 4.72599 8.80875C4.74497 8.7318 4.74497 8.67408 4.77027 8.62278C5.16252 7.76344 5.5611 6.90411 5.95968 6.04477C6.22539 5.48043 6.68724 5.23033 7.28194 5.23033C9.69871 5.23033 12.1092 5.23674 14.5259 5.24315C15.3231 5.24315 15.8735 5.62793 15.981 6.32694C16.0317 6.63476 15.9684 6.96182 15.9368 7.27606C15.8925 7.65442 15.8102 8.03279 15.7659 8.41115C15.7343 8.70615 15.5951 8.80875 15.3041 8.80234C14.0261 8.79593 12.7545 8.79593 11.4765 8.79593C10.9957 8.79593 10.9261 8.86006 10.9261 9.34744C10.9261 10.0721 10.9261 10.8032 10.9261 11.5278C10.9261 11.9832 10.8438 12.0665 10.3946 12.0665C10.2681 12.0665 10.1416 12.0665 10.0087 12.0665C9.9581 12.4641 9.93912 12.8489 9.8632 13.2209C9.5785 14.7023 8.53461 15.4718 7.06051 15.3243C5.87743 15.2025 5.12456 14.651 4.82088 13.4325C4.71966 13.0285 4.4919 12.6629 4.30843 12.2333C4.087 12.3936 3.93516 12.5026 3.78965 12.618C3.6125 12.7527 3.44801 12.7527 3.27719 12.5988C2.46106 11.8741 1.63859 11.1559 0.835114 10.4184C0.727561 10.3222 0.676948 10.1298 0.645315 9.97591C0.613682 9.78994 0.632662 9.59113 0.638989 9.39875C0.651642 9.02679 0.695928 8.66126 0.272045 8.44322C0.145512 8.37909 0.0885727 8.16746 0 8.02637C0 7.27606 0 6.52574 0 5.77543Z"
+            fill="#464EA3"
+          />
           <path
-              d="M10.8425 4.54967C11.1082 3.48512 11.3676 2.4334 11.6396 1.34961C12.5127 1.7408 13.468 2.04862 14.2272 2.72839C14.3601 2.85024 14.4676 3.03621 14.5119 3.20936C14.6195 3.63903 14.6891 4.08152 14.7776 4.54967C13.4237 4.54967 12.1268 4.54967 10.8425 4.54967Z"
-              fill="#464EA3"/>
+            d="M10.8425 4.54967C11.1082 3.48512 11.3676 2.4334 11.6396 1.34961C12.5127 1.7408 13.468 2.04862 14.2272 2.72839C14.3601 2.85024 14.4676 3.03621 14.5119 3.20936C14.6195 3.63903 14.6891 4.08152 14.7776 4.54967C13.4237 4.54967 12.1268 4.54967 10.8425 4.54967Z"
+            fill="#464EA3"
+          />
           <path
-              d="M0.688599 4.5812C0.789825 3.70904 1.11248 3.01645 1.83372 2.5483C1.89066 2.50982 1.99821 2.50341 2.0678 2.52906C2.4474 2.68297 2.82067 2.84971 3.14333 2.99721C2.83965 3.60002 2.54862 4.17719 2.21964 4.83131C1.77678 4.76077 1.25799 4.6774 0.688599 4.5812Z"
-              fill="#464EA3"/>
+            d="M0.688599 4.5812C0.789825 3.70904 1.11248 3.01645 1.83372 2.5483C1.89066 2.50982 1.99821 2.50341 2.0678 2.52906C2.4474 2.68297 2.82067 2.84971 3.14333 2.99721C2.83965 3.60002 2.54862 4.17719 2.21964 4.83131C1.77678 4.76077 1.25799 4.6774 0.688599 4.5812Z"
+            fill="#464EA3"
+          />
         </svg>
         <p>Иванов Кирилл, 8 лет, защитник</p>
       </div>
-      <match-broadcast class="match-score__match-broadcast"/>
-      <rate-players
-          :items="group.sportsmans"
-          class="match-score__rate-players"
-      />
-      <shots-and-goals class="match-score__shots-and-goals"/>
+      <match-broadcast class="match-score__match-broadcast" />
+      <rate-players :items="group.sportsmans" class="match-score__rate-players" />
+      <shots-and-goals class="match-score__shots-and-goals" />
 
       <div class="match-score__group">
-        <recommendations-block class="match-score__group-elem"/>
-        <homework-block class="match-score__group-elem"/>
+        <recommendations-block class="match-score__group-elem" />
+        <homework-block class="match-score__group-elem" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import LeftMenu from '@/components/LeftMenu.vue';
-import MenuFiltering from '@/components/MenuFiltering.vue';
-import Persons from '@/components/Persons.vue';
-import Header from '@/components/Header.vue';
-import BottomHeader from '@/components/BottomHeader.vue';
-import FilterSelect from "@/components/library/FilterSelect";
+import LeftMenu from '@/components/LeftMenu.vue'
+import MenuFiltering from '@/components/MenuFiltering.vue'
+import Persons from '@/components/Persons.vue'
+import Header from '@/components/Header.vue'
+import BottomHeader from '@/components/BottomHeader.vue'
+import FilterSelect from '@/components/library/FilterSelect'
 
-import MatchBroadcast from "@/components/Broadcast/MatchBroadcast";
-import RatePlayers from "@/components/MatchScore/RatePlayers";
-import ShotsAndGoals from "@/components/MatchScore/ShotsAndGoals";
-import RecommendationsBlock from "@/components/RecommendationsBlock";
-import HomeworkBlock from "@/components/HomeworkBlock";
+import MatchBroadcast from '@/components/Broadcast/MatchBroadcast'
+import RatePlayers from '@/components/MatchScore/RatePlayers'
+import ShotsAndGoals from '@/components/MatchScore/ShotsAndGoals'
+import RecommendationsBlock from '@/components/RecommendationsBlock'
+import HomeworkBlock from '@/components/HomeworkBlock'
 
 export default {
   name: 'MatchScore',
@@ -181,7 +165,7 @@ export default {
     RatePlayers,
     ShotsAndGoals,
     RecommendationsBlock,
-    HomeworkBlock
+    HomeworkBlock,
   },
   data() {
     return {
@@ -192,7 +176,7 @@ export default {
         {
           full_name: 'Ярасимов Юрий',
           avatar:
-              'https://s.yimg.com/ny/api/res/1.2/pzyiXW2xAxhKY1q.qzjR2w--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQ3MQ--/https://s.yimg.com/os/creatr-uploaded-images/2021-08/08aa7ac0-01c8-11ec-b6ef-342b9cde3039',
+            'https://s.yimg.com/ny/api/res/1.2/pzyiXW2xAxhKY1q.qzjR2w--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQ3MQ--/https://s.yimg.com/os/creatr-uploaded-images/2021-08/08aa7ac0-01c8-11ec-b6ef-342b9cde3039',
           position_type: '',
           position: 'Директор',
         },
@@ -413,47 +397,47 @@ export default {
       ],
       selectedSortSportsmas: 'all',
       playersSelected: [],
-      markAs: 1
+      markAs: 1,
     }
   },
   computed: {
     filter() {
       if (this.selectedSortSportsmas === 'non-goalies')
         return this.group.sportsmans
-            .filter(x => x.position_type === 'forward' || x.position_type === 'defender')
-            .concat()
-            .sort((a, b) =>
-                this.sortAlphabetCurrent == 0
-                    ? a.full_name.localeCompare(b.full_name)
-                    : b.full_name.localeCompare(a.full_name)
-            )
+          .filter(x => x.position_type === 'forward' || x.position_type === 'defender')
+          .concat()
+          .sort((a, b) =>
+            this.sortAlphabetCurrent == 0
+              ? a.full_name.localeCompare(b.full_name)
+              : b.full_name.localeCompare(a.full_name)
+          )
       else if (this.selectedSortSportsmas === 'goalies')
         return this.group.sportsmans
-            .filter(x => x.position_type === 'goalie')
-            .concat()
-            .sort((a, b) =>
-                this.sortAlphabetCurrent == 0
-                    ? a.full_name.localeCompare(b.full_name)
-                    : b.full_name.localeCompare(a.full_name)
-            )
+          .filter(x => x.position_type === 'goalie')
+          .concat()
+          .sort((a, b) =>
+            this.sortAlphabetCurrent == 0
+              ? a.full_name.localeCompare(b.full_name)
+              : b.full_name.localeCompare(a.full_name)
+          )
       else
         return this.group.sportsmans
-            .concat()
-            .sort((a, b) =>
-                this.sortAlphabetCurrent == 0
-                    ? a.full_name.localeCompare(b.full_name)
-                    : b.full_name.localeCompare(a.full_name)
-            )
+          .concat()
+          .sort((a, b) =>
+            this.sortAlphabetCurrent == 0
+              ? a.full_name.localeCompare(b.full_name)
+              : b.full_name.localeCompare(a.full_name)
+          )
     },
   },
   created() {
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('scroll', this.handleScroll)
   },
   methods: {
     handleScroll(e) {
       let menu = this.$refs.menu.getBoundingClientRect()
       let menuLeft = this.$refs.leftMenu.getBoundingClientRect()
-      if(menu.top < menuLeft.height) {
+      if (menu.top < menuLeft.height) {
         // this.fixdeMenu = true
       }
       // console.log(menu.top)
@@ -471,7 +455,7 @@ export default {
       this.playersSelected = []
       if (status) this.playersSelected.push(...this.group.sportsmans)
     },
-  }
+  },
 }
 </script>
 
@@ -500,7 +484,7 @@ export default {
     margin-top: 50px;
     border-radius: 28px 28px 0px 0px;
     background-color: #fff;
-    border: 2px solid #DCE5F2;
+    border: 2px solid #dce5f2;
     box-shadow: 0px 6px 8px rgba(137, 155, 201, 0.15);
 
     &_fixed {
@@ -541,7 +525,6 @@ export default {
     margin-top: 4px;
     margin-right: 5px;
     svg {
-
     }
   }
 
@@ -551,7 +534,7 @@ export default {
     margin-left: 50%;
     transform: translate(-50%);
     border-radius: 32px;
-    background-color: #2ABAF3;
+    background-color: #2abaf3;
     color: #fff;
     font-size: 14px;
     font-weight: 500;
@@ -570,7 +553,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #ECF6FF;
+    background-color: #ecf6ff;
     cursor: pointer;
     user-select: none;
   }
@@ -594,7 +577,7 @@ export default {
     align-items: center;
     justify-content: center;
     background-color: $blue02;
-    border: 2px solid #B9CBE5;
+    border: 2px solid #b9cbe5;
   }
 
   &__filter {

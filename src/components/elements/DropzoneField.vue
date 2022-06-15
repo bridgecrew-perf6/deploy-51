@@ -49,7 +49,10 @@ export default {
       reader.readAsDataURL(file);
 
       reader.onloadend = () => setTimeout(() => {
-        this.$emit('addUrl', reader.result)
+        this.$emit('addUrl', {
+          url: reader.result,
+          file: file
+        })
       }, 4000)
     },
   }

@@ -1,10 +1,19 @@
 <template>
   <div class="calendar-wrap">
     <div class="calendar calendar-year">
-      <vc-calendar :attributes='sortEvents' transition="slide-v" :rows="3" :columns="4" is-expanded is-range title-position="left" :masks="masksCalendar"  :from-date="fromDate" ref="calendar">
-        <template slot='header-title' slot-scope='props'>
-             {{props.monthLabel}}, {{props.shortYearLabel}} 
-          </template>
+      <vc-calendar
+        :attributes="sortEvents"
+        transition="slide-v"
+        :rows="3"
+        :columns="4"
+        is-expanded
+        is-range
+        title-position="left"
+        :masks="masksCalendar"
+        :from-date="fromDate"
+        ref="calendar"
+      >
+        <template slot="header-title" slot-scope="props"> {{ props.monthLabel }}, {{ props.shortYearLabel }} </template>
       </vc-calendar>
     </div>
   </div>
@@ -28,29 +37,19 @@ export default {
   data: function () {
     return {
       masksCalendar: {
-        weekdays: 'WW'
+        weekdays: 'WW',
       },
     }
   },
-  methods: {
-    getDay: function (n) {
-      return moment(this.startWeek.toDate()).add(n - 1, 'd')
-    },
-    getDayEvents(n) {
-      let date = this.getDay(n)
-      return this.events.filter(item => {
-        return date.isSame(item.start_time, 'day')
-      })
-    },
-  },
   computed: {
-    fromDate: function() {
+    ...mapGetters('events', ['getEventsTypeCategory']),
+    fromDate: function () {
       return moment(this.initDay).startOf('year').toDate()
     },
     sortEvents() {
-      let attributes = [];
+      let attributes = []
 
-      this.events.forEach(event => {
+      /* this.events.forEach(event => {
         let eventType = this.getEventsTypeCategory.find(cat => cat.eventTypes.some(subcat => subcat.id === event.eventType.id));
 
         let attr = {
@@ -64,27 +63,24 @@ export default {
         }
 
         attributes.push(attr)
-      });
+      }); */
 
-      return attributes;
+      return attributes
     },
-    ...mapGetters('events', ['getEventsTypeCategory']),
     eventType: function () {
       return this.getEventsTypeCategory.find(cat =>
         cat.eventTypes.some(subcat => subcat.id === this.event.eventType.id)
       )
     },
   },
-  mounted() {
-  }
+  mounted() {},
 }
 </script>
 
 <style lang="scss" scoped>
 .calendar-year {
-    margin-bottom: 20px;
-    .vc-container {
-    
+  margin-bottom: 20px;
+  .vc-container {
     &::v-deep {
       padding: 21px 21px 6px;
       box-shadow: 0px 6px 8px rgba(137, 155, 201, 0.15);
@@ -103,7 +99,7 @@ export default {
       .vc-title {
         font-weight: 500;
         font-size: 16px;
-        line-height: 22px;  
+        line-height: 22px;
         color: $blue02;
         text-transform: capitalize;
       }
@@ -138,21 +134,18 @@ export default {
         &.weekday-position-6,
         &.weekday-position-7 {
           color: $terrible;
-       }
-       &.is-not-in-month {
-         .vc-day-layer {
-           display: none;
-         }
-         span {
-           opacity: 1;
-           color: $blue06 !important;
-         }
-       }
-       
+        }
+        &.is-not-in-month {
+          .vc-day-layer {
+            display: none;
+          }
+          span {
+            opacity: 1;
+            color: $blue06 !important;
+          }
+        }
       }
     }
-
-  } 
-  
+  }
 }
 </style>

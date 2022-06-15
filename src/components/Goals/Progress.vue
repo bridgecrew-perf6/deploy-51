@@ -2,23 +2,107 @@
   <div class="progress">
     <div class="progress__header">
       <div class="progress__title">Прогресс</div>
-      <wu-select-period @change="changePeriod"/>
+     <!--<wu-select-period @change="changePeriod"/>-->
     </div>
     <div class="progress__block">
       <div class="progress__chart">
         <div class="progress__chart-days">
-          <div class="progress__chart-day" v-for="(period, index) in periods" :key="index">
-            <p class="progress__chart-day-title">{{ period.label }}</p>
-            <div class="progress__chart-day-stat" v-if="period.achievement"
-                 :style="{color: colors(period.achievement)}">
+          <div class="progress__chart-day">
+            <p class="progress__chart-day-title">Понедельник</p>
+            <div class="progress__chart-day-stat"
+                 :style="{color: colors(increasement.monday)}">
               <div class="progress__chart-day-arrow">
                 <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                       d="M9.34507 4.29104L5.73675 0.70157C5.34665 0.313511 4.71634 0.313511 4.32624 0.701571L0.717927 4.29104C0.0854199 4.92025 0.531015 6 1.42318 6L8.63982 6C9.53198 6 9.97758 4.92025 9.34507 4.29104Z"
-                      :fill="colors(period.achievement)"/>
+                      :fill="colors(increasement.monday)"/>
                 </svg>
               </div>
-              <div class="progress__chart-day-num">{{ period.achievement }} <span>%</span></div>
+              <div class="progress__chart-day-num">{{increasement.monday}} <span>%</span></div>
+            </div>
+          </div>
+          <div class="progress__chart-day">
+            <p class="progress__chart-day-title">Вторник</p>
+            <div class="progress__chart-day-stat"
+                 :style="{color: colors(increasement.tuesday)}">
+              <div class="progress__chart-day-arrow">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                      d="M9.34507 4.29104L5.73675 0.70157C5.34665 0.313511 4.71634 0.313511 4.32624 0.701571L0.717927 4.29104C0.0854199 4.92025 0.531015 6 1.42318 6L8.63982 6C9.53198 6 9.97758 4.92025 9.34507 4.29104Z"
+                      :fill="colors(increasement.tuesday)"/>
+                </svg>
+              </div>
+              <div class="progress__chart-day-num">{{increasement.tuesday}} <span>%</span></div>
+            </div>
+          </div>
+          <div class="progress__chart-day">
+            <p class="progress__chart-day-title">Среда</p>
+            <div class="progress__chart-day-stat"
+                 :style="{color: colors(increasement.wednesday)}">
+              <div class="progress__chart-day-arrow">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                      d="M9.34507 4.29104L5.73675 0.70157C5.34665 0.313511 4.71634 0.313511 4.32624 0.701571L0.717927 4.29104C0.0854199 4.92025 0.531015 6 1.42318 6L8.63982 6C9.53198 6 9.97758 4.92025 9.34507 4.29104Z"
+                      :fill="colors(increasement.wednesday)"/>
+                </svg>
+              </div>
+              <div class="progress__chart-day-num">{{increasement.wednesday}} <span>%</span></div>
+            </div>
+          </div>
+          <div class="progress__chart-day">
+            <p class="progress__chart-day-title">Четверг</p>
+            <div class="progress__chart-day-stat"
+                 :style="{color: colors(increasement.thursday)}">
+              <div class="progress__chart-day-arrow">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                      d="M9.34507 4.29104L5.73675 0.70157C5.34665 0.313511 4.71634 0.313511 4.32624 0.701571L0.717927 4.29104C0.0854199 4.92025 0.531015 6 1.42318 6L8.63982 6C9.53198 6 9.97758 4.92025 9.34507 4.29104Z"
+                      :fill="colors(increasement.thursday)"/>
+                </svg>
+              </div>
+              <div class="progress__chart-day-num">{{increasement.thursday}} <span>%</span></div>
+            </div>
+          </div>
+          <div class="progress__chart-day">
+            <p class="progress__chart-day-title">Пятница</p>
+            <div class="progress__chart-day-stat"
+                 :style="{color: colors(increasement.friday)}">
+              <div class="progress__chart-day-arrow">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                      d="M9.34507 4.29104L5.73675 0.70157C5.34665 0.313511 4.71634 0.313511 4.32624 0.701571L0.717927 4.29104C0.0854199 4.92025 0.531015 6 1.42318 6L8.63982 6C9.53198 6 9.97758 4.92025 9.34507 4.29104Z"
+                      :fill="colors(increasement.friday)"/>
+                </svg>
+              </div>
+              <div class="progress__chart-day-num">{{increasement.friday}} <span>%</span></div>
+            </div>
+          </div>
+          <div class="progress__chart-day">
+            <p class="progress__chart-day-title">Суббота</p>
+            <div class="progress__chart-day-stat"
+                 :style="{color: colors(increasement.saturday)}">
+              <div class="progress__chart-day-arrow">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                      d="M9.34507 4.29104L5.73675 0.70157C5.34665 0.313511 4.71634 0.313511 4.32624 0.701571L0.717927 4.29104C0.0854199 4.92025 0.531015 6 1.42318 6L8.63982 6C9.53198 6 9.97758 4.92025 9.34507 4.29104Z"
+                      :fill="colors(increasement.saturday)"/>
+                </svg>
+              </div>
+              <div class="progress__chart-day-num">{{increasement.saturday}} <span>%</span></div>
+            </div>
+          </div>
+          <div class="progress__chart-day">
+            <p class="progress__chart-day-title">Воскресение</p>
+            <div class="progress__chart-day-stat"
+                 :style="{color: colors(increasement.sunday)}">
+              <div class="progress__chart-day-arrow">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                      d="M9.34507 4.29104L5.73675 0.70157C5.34665 0.313511 4.71634 0.313511 4.32624 0.701571L0.717927 4.29104C0.0854199 4.92025 0.531015 6 1.42318 6L8.63982 6C9.53198 6 9.97758 4.92025 9.34507 4.29104Z"
+                      :fill="colors(increasement.sunday)"/>
+                </svg>
+              </div>
+              <div class="progress__chart-day-num">{{increasement.sunday}} <span>%</span></div>
             </div>
           </div>
         </div>
@@ -27,9 +111,12 @@
         </div>
       </div>
       <div class="progress__stats">
-        <div v-for="(stats, index) in statistic" :key="index" class="progress__stat">
-          <stats-component :statsData="stats"/>
-        </div>
+        <stats-block title="ОФП" :percent="statistics.physical" />
+        <stats-block title="Теория" :percent="statistics.theoretic" />
+        <stats-block title="Тактика" :percent="statistics.tactical" />
+        <stats-block title="Техника" :percent="statistics.technical" />
+        <stats-block title="Игра" :percent="statistics.game" />
+        <stats-block title="Психология" :percent="statistics.psychological" />
       </div>
     </div>
   </div>
@@ -39,59 +126,28 @@
 import StatsComponent from "@/components/Progress/StatsComponent";
 import {mapActions, mapGetters} from 'vuex'
 import {Chart, registerables} from 'chart.js'
+import StatsBlock from './StatsBlock'
 
 Chart.register(...registerables)
 
 export default {
   name: 'Progress',
   components: {
-    StatsComponent
+    StatsComponent,
+    StatsBlock
+  },
+  props: {
+    statistics: Object,
+    increasement: Object,
+    chartStatistics: Object
   },
   data() {
     return {
-      statistic: [
-        {
-          title: 'ОФП',
-          percent: 42,
-          color: '#FFA217',
-          id: 1,
-        },
-        {
-          title: 'Теория',
-          percent: 18,
-          color: '#FF4E78',
-          id: 0,
-        },
-        {
-          title: 'Тактика',
-          percent: 96,
-          color: '#2ABAF3',
-          id: 4,
-        },
-        {
-          title: 'Техника',
-          percent: 74,
-          color: '#79C54C',
-          id: 3,
-        },
-        {
-          title: 'Игра',
-          percent: 64,
-          color: '#64C048',
-          id: 2,
-        },
-        {
-          title: 'Психология',
-          percent: 53,
-          color: '#64C048',
-          id: 2,
-        },
-      ],
       chart: null,
       periods: [
         {
           label: 'Понедельник',
-          count: 8,
+          count: 10,
           achievement: 17
         },
         {
@@ -136,6 +192,7 @@ export default {
     }
   },
   mounted() {
+    this.createPeriods()
     this.initChart()
   },
   methods: {
@@ -144,6 +201,17 @@ export default {
       if (num < 7) return '#FFA217'
       if (num <= 10) return '#64C048'
       if (num > 10) return '#2ABAF3'
+    },
+    createPeriods() {
+      this.periods[0].count = this.chartStatistics.monday
+      this.periods[1].count = this.chartStatistics.tuesday
+      this.periods[2].count = this.chartStatistics.wednesday
+      this.periods[3].count = this.chartStatistics.tuesday
+      this.periods[4].count = this.chartStatistics.friday
+      this.periods[5].count = this.chartStatistics.saturday
+      this.periods[6].count = this.chartStatistics.sunday
+
+      console.log(this.chartStatistics)
     },
     initChart() {
       let canvas = document.getElementById('sparkline')

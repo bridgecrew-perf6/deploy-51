@@ -14,10 +14,67 @@ const initialState = () => ({
   event: {},
   eventList: [],
   exersiceList: [],
-  exersiceFirstList: [],
-  exersiceSecondList: [],
-  exersiceThirdList: [],
   utils: [],
+  trainingPlaceTypes: [],
+  eventTypes: [
+    { id: 'match', label: 'Матч', color: '#EE1A40'},
+    { id: 'training', label: 'Тренировка', color: '#2ABAF3'},
+    { id: 'standard', label: 'Норматив', color: '#FF4E78'},
+    //{ id: 'team_event', label: '', color: ''},
+    //{ id: 'sports_school_event', label: '', color: ''},
+    //{ id: 'personal_event', label: '', color: ''},
+  ],
+  lessonTypes: [
+    { id: 'practical_lesson', name: 'Практическое занятие'},
+    { id: 'restorative_lesson', name: 'Восстановительное занятие'},
+    { id: 'theoretical_lesson', name: 'Теоритическое занятие'},
+    
+  ],
+  matchTypes: [
+    { id: 'anteriority', name: 'Первенство'},
+    { id: 'championship', name: 'Чемпионат'},
+    { id: 'olympics', name: 'Спартакиада'},
+    { id: 'tournament', name: 'Турнир'},
+    { id: 'mass_competitions', name: 'Массовые состязания'},
+    { id: 'away_match', name: 'Выездной матч'},
+    { id: 'home_match', name: 'Домашний матч'},
+    { id: 'friendly_match', name: 'Товарищеский матч'},
+  ],
+  intensityList: [
+    { id: 1, name: "Малая", load: 1, image: require('@/assets/images/svg/workload/low.svg') },
+    { id: 2, name: "Средняя", load: 2, image: require('@/assets/images/svg/workload/medium.svg') },
+    { id: 3, name: "Большая", load: 3, image: require('@/assets/images/svg/workload/hight.svg') },
+    { id: 4, name: "Субмаксимальная", load: 4, image: require('@/assets/images/svg/workload/submaximum.svg') },
+    { id: 5, name: "Максимальная", load: 5, image: require('@/assets/images/svg/workload/maximum.svg') },
+  ],
+  trainingStage: [
+    { id: 'preparation', name: 'Подготовительная', romanNum: 'I' },
+    { id: 'main', name: 'Основная', romanNum: 'II' },
+    { id: 'testing', name: 'Тестирование', romanNum: 'II' }, 
+    { id: 'final', name: 'Заключительная', romanNum: 'III' },
+  ],
+  trainingType: [
+    { id: 'physical', name: 'Физическая' },
+    { id: 'technical', name: 'Техническая' },
+    { id: 'game', name: 'Игровая' },
+    { id: 'tactical', name: 'Тактическая' },
+    { id: 'theoretic', name: 'Теоретическая' },
+    { id: 'psychological', name: 'Психологическая' },
+  ],
+  trainingObjectType: [
+    { id: 'group', name: 'Групповая' },
+    { id: 'individual', name: 'Индивидуальная' },
+  ],
+  trainingObjective: [
+    { id: 'learning', name: 'Обучение' },
+    { id: 'development', name: 'Развитие' },
+    { id: 'strengthening', name: 'Закрепление' },
+    { id: 'improvement', name: 'Совершенствование' },
+  ],
+  standardTaskType: [
+    { id: 'primary_assessment', name: "Первичное оценивание"},
+    { id: 'development_control', name: "Контроль развития" },
+  ]
 })
 
 /*
@@ -62,6 +119,9 @@ const mutations = {
       state[key] = newState[key]
     })
   },
+  SET_TRAINING_PLACE_TYPES(state, payload) {
+    state.trainingPlaceTypes = payload
+  }
 }
 /*
 |--------------------------------------------------------------------------
@@ -70,26 +130,7 @@ const mutations = {
 */
 const getters = {
   events(state) {
-    let events = []
-    state.eventList.map(item => {
-      let diffMin = moment(item.date + ' ' + item.timeTo).diff(moment(item.date + ' ' + item.timeFrom), 'minutes')
-      item.diffMin = diffMin
-      item.start_time = item.date + ' ' + item.timeFrom
-      item.duration = parseFloat((diffMin / 60).toFixed(1))
-
-      /* let dataEvent = {
-        id: item.id,
-        start_time: item.date + " " + item.timeFrom,
-        duration: parseFloat((diffMin / 60).toFixed(1)),
-        name: item.title,
-        type_of_preparation: item.typeOfPreparation,
-        rating: "5 / 10",
-        attenders: item.attenders[0],
-        diffmin: diffMin,
-      }; */
-      events.push(item)
-    })
-    return events
+    return state.eventList
   },
   groupSchedule: (state, getters) => date => {
     let groupSchedule = []
@@ -111,21 +152,39 @@ const getters = {
   getUtils(state) {
     return state.utils;
   },
-  getExercises(state) {
-    return state.exersiceList;
-  },
-  getFirstExercises(state) {
-    return state.exersiceFirstList;
-  },
-  getSecondExercises(state) {
-    return state.exersiceSecondList;
-  },
-  getThirdExercises(state) {
-    return state.exersiceThirdList;
-  },
   getEventsTypeCategory(state) {
     return state.utils.eventTypes.filter(type => type.eventType === null)
   },
+  getEventTypes(state) {
+    return state.eventTypes;
+  },
+  getLessonTypes(state) {
+    return state.lessonTypes;
+  },
+  getMatchTypes(state) {
+    return state.matchTypes;
+  },
+  getIntensityList(state) {
+    return state.intensityList;
+  },
+  getTrainingStage(state) {
+    return state.trainingStage;
+  },
+  getTrainingType(state) { 
+    return state.trainingType
+  },
+  getTrainingObjectType(state) {
+    return state.trainingObjectType
+  },
+  getTrainingObjective(state) {
+    return state.trainingObjective
+  },
+  getTrainingPlaceTypes(state) {
+    return state.trainingPlaceTypes
+  },
+  getStandardTaskType(state) {
+    return state.standardTaskType
+  }
 }
 
 /*
@@ -172,46 +231,6 @@ const actions = {
     })
   },
 
-  async loadExercises({ commit }, filter) {
-    await exercises.getExercises(filter || {})
-      .then(response => {
-        commit(SET_EXERCISE_LIST, response)
-      })
-      .catch(err => {
-        throw err.response
-      })
-  },
-
-  async loadFirstExercises({ commit }, filter) {
-    await exercises.getExercises(filter || {})
-      .then(response => {
-        commit(SET_FIRST_EXERCISE_LIST, response)
-      })
-      .catch(err => {
-        throw err.response
-      })
-  },
-
-  async loadSecondExercises({ commit }, filter) {
-    await exercises.getExercises(filter || {})
-      .then(response => {
-        commit(SET_SECOND_EXERCISE_LIST, response)
-      })
-      .catch(err => {
-        throw err.response
-      })
-  },
-
-  async loadThirdExercises({ commit }, filter) {
-    await exercises.getExercises(filter || {})
-      .then(response => {
-        commit(SET_THIRD_EXERCISE_LIST, response)
-      })
-      .catch(err => {
-        throw err.response
-      })
-  },
-
   async loadUtils({ commit }) {
     await events.getUtils()
       .then(response => {
@@ -228,6 +247,16 @@ const actions = {
       throw err.response
     })
   },
+
+  loadTrainingPlaceTypes({ commit }) {
+    events.getTrainingPlaceTypes()
+      .then(response => {
+        commit('SET_TRAINING_PLACE_TYPES', response)
+      })
+      .catch(err => {
+        throw err
+      })
+  }
 }
 
 export default {

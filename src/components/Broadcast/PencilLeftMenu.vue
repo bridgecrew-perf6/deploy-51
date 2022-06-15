@@ -91,6 +91,7 @@ export default {
     border-radius: 12px;
     display: flex;
     justify-content: space-between;
+    background-color: #fff;
     border: 1px solid #DEDBF5;
     overflow: hidden;
 

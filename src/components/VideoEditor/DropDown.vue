@@ -89,6 +89,7 @@ export default {
     height: 28px;
     padding-bottom: 3px;
     border-radius: 100%;
+    background-color: #fff;
     border: 1px solid #F0EFF8;
     transition: .3s;
 

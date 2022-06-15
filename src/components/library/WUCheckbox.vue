@@ -11,6 +11,7 @@
       'v-checkbox--reverse': reverse,
     }"
     hide-details
+    :disabled="disabled"
   >
   </v-checkbox>
 </template>
@@ -35,12 +36,16 @@ export default {
       type: Boolean,
     },
     value: {
-      type: Boolean,
+      type: [Boolean, String, Array],
     },
     errors: {
       type: Array,
     },
     readonly: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
@@ -152,6 +157,13 @@ export default {
       }
       .v-input--selection-controls__input {
         margin-right: 0;
+      }
+    }
+  }
+  &.v-input--is-disabled {
+    &::v-deep {
+      .mdi-checkbox-marked {
+        background-color: #dce5f2;
       }
     }
   }

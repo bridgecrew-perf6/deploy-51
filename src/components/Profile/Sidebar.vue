@@ -21,7 +21,7 @@
       </li> -->
     </ul>
 
-    <button class="profile-sidebar__logout">
+    <button class="profile-sidebar__logout" @click="logout">
       <img class="profile-sidebar__icon" src="@/assets/images/svg/profile/logout.svg" alt="Выйти из профиля" />
       Выйти из профиля
     </button>
@@ -29,7 +29,14 @@
 </template>
 
 <script>
-export default {}
+export default {
+  methods: {
+    logout() {
+      this.$store.dispatch('auth/logout')
+      this.$router.push('/login')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

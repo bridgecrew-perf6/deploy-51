@@ -12,7 +12,7 @@
           <span class="exercise__aside-value">Универсально</span>
         </div>
         <div class="exercise__aside-row">
-          <span class="exercise__aside-info">Возрастная группа</span>
+          <span class="exercise__aside-info">Возраст</span>
           <div class="exercise__aside-dots"></div>
           <span class="exercise__aside-value">7-16 лет</span>
         </div>
@@ -24,33 +24,6 @@
             <template v-if="index < exercise.organizationForm.length - 1"> • </template>
           </span>
         </p>
-      </div>
-
-      <h3 class="exercise__aside-title">
-        <img class="exercise__aside-icon" src="@/assets/images/svg/exercise/calendar.svg" alt="Календарь" />
-        Календарный период
-      </h3>
-      <div class="exercise__aside-block">
-        <div class="exercise__aside-row">
-          <span class="exercise__aside-info">Период</span>
-          <div class="exercise__aside-dots"></div>
-          <span class="exercise__aside-value">Универсально</span>
-        </div>
-        <div class="exercise__aside-row">
-          <span class="exercise__aside-info">Этап</span>
-          <div class="exercise__aside-dots"></div>
-          <span class="exercise__aside-value">Универсально</span>
-        </div>
-        <div class="exercise__aside-row">
-          <span class="exercise__aside-info">Мезоцикл</span>
-          <div class="exercise__aside-dots"></div>
-          <span class="exercise__aside-value">Универсально</span>
-        </div>
-        <div class="exercise__aside-row">
-          <span class="exercise__aside-info">Микроцикл</span>
-          <div class="exercise__aside-dots"></div>
-          <span class="exercise__aside-value">Универсально</span>
-        </div>
       </div>
 
       <h3 class="exercise__aside-title">
@@ -88,6 +61,21 @@
         </div>
       </div>
 
+      <div class="exercise-archive">
+        <div class="exercise-archive__alert">
+          <span class="exercise-archive__text">Это упражнение находится в архиве</span>
+
+          <div class="exercise-archive__help">
+            <svg width="12" height="12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 6.016A5.993 5.993 0 0 1 5.992 12 5.992 5.992 0 0 1 0 5.967 5.992 5.992 0 0 1 6.025 0 5.99 5.99 0 0 1 12 6.016ZM6.597 7.783c-.018-.708.254-1.283.77-1.75.19-.17.39-.343.526-.553.187-.288.39-.598.458-.925.24-1.17-.723-2.463-1.97-2.707-1.13-.222-2.318.487-2.658 1.583-.083.267-.064.51.187.68.335.226.776.086.95-.305.23-.516.606-.816 1.183-.801.505.012.87.27 1.062.734.222.536.064.994-.337 1.389-.242.239-.484.477-.714.728-.5.543-.71 1.182-.63 1.927h1.173ZM6.003 9c-.57 0-.6.029-.6.584 0 .591.027.62.563.621.607.001.63-.021.63-.583.001-.598-.02-.622-.593-.622Z"
+                fill="#fff"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+
       <div class="exercise-about">
         <div class="exercise-about__inner">
           <img src="@/assets/images/svg/exercise/book.svg" alt="Подробнее" class="exercise-about__img" />
@@ -121,11 +109,7 @@
           <h2 class="exercise-section__title">Задачи и навыки</h2>
           <v-card class="exercise-section__card">
             <v-row class="exercise-section__header">
-              <v-col cols="5">
-                <p class="exercise-section__target-title">Цель упражнения</p>
-                <p class="exercise-section__target-value">Увеличение физических показателей</p>
-              </v-col>
-              <v-col cols="7">
+              <v-col cols="12">
                 <p class="exercise-section__task-title">Задача упражнения</p>
                 <p class="exercise-section__task-value">Подготовка к основной части упражнения</p>
               </v-col>
@@ -144,6 +128,7 @@
                     readonly
                     value="true"
                     :label="mainSkill.name"
+                    disabled
                   ></wu-checkbox>
                 </div>
               </v-col>
@@ -160,6 +145,7 @@
                     readonly
                     value="true"
                     :label="extraSkill.name"
+                    disabled
                   ></wu-checkbox>
                 </div>
               </v-col>
@@ -175,7 +161,7 @@
         </v-col>
 
         <v-col class="exercise__col" cols="6">
-          <h2 class="exercise-section__title">Методология</h2>
+          <h2 class="exercise-section__title">Методические указания</h2>
           <v-card class="exercise-section__card">
             <ul class="exercise-section__methodology">
               <li class="exercise-section__methodology-item">
@@ -194,90 +180,6 @@
           </v-card>
         </v-col>
 
-        <v-col class="exercise__col" cols="12">
-          <h2 class="exercise-section__title">Интенсивность и дозировка</h2>
-          <v-card class="exercise-section__card">
-            <v-row>
-              <v-col cols="3">
-                <div class="exercise-section__intensity">
-                  <span class="exercise-section__intensity-text">Интенсивность</span>
-
-                  <div class="exercise-section__intensity-value">
-                    <img v-if="exercise.loadIntensity.load === 1" src="@/assets/images/svg/workload/low.svg" />
-                    <img v-if="exercise.loadIntensity.load === 2" src="@/assets/images/svg/workload/medium.svg" />
-                    <img v-if="exercise.loadIntensity.load === 3" src="@/assets/images/svg/workload/hight.svg" />
-                    <img v-if="exercise.loadIntensity.load === 4" src="@/assets/images/svg/workload/submaximum.svg" />
-                    <img v-if="exercise.loadIntensity.load === 5" src="@/assets/images/svg/workload/maximum.svg" />
-                    {{ exercise.loadIntensity.name }}
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="3" offset="1">
-                <div class="exercise-section__dosage-wrapper">
-                  <p class="exercise-section__dosage-text">
-                    <img
-                      class="exercise-section__dosage-icon"
-                      src="@/assets/images/svg/profile/my-groups.svg"
-                      alt="Участники"
-                    />
-                    Кол-во участников
-                  </p>
-
-                  <wu-input class="exercise-section__dosage-input" value="1" readonly></wu-input>
-                </div>
-              </v-col>
-              <v-col cols="4" offset="1">
-                <div class="exercise-section__dosage-wrapper">
-                  <p class="exercise-section__dosage-text">
-                    <img
-                      class="exercise-section__dosage-icon"
-                      src="@/assets/images/svg/exercise/timer.svg"
-                      alt="Время"
-                    />
-                    Время выполнения
-                  </p>
-
-                  <wu-input
-                    class="exercise-section__dosage-input exercise-section__dosage-input--time"
-                    :value="timeFormatter"
-                    readonly
-                  ></wu-input>
-                </div>
-              </v-col>
-              <v-col cols="6">
-                <div class="exercise-section__dosage-wrapper">
-                  <p class="exercise-section__dosage-text">
-                    <img
-                      class="exercise-section__dosage-icon"
-                      src="@/assets/images/svg/exercise/sets.svg"
-                      alt="Подходы"
-                    />
-                    Количество подходов
-                  </p>
-
-                  <wu-input class="exercise-section__dosage-input" value="2" readonly></wu-input>
-                </div>
-                <wu-slider class="exercise-section__dosage-slider" readonly value="2"></wu-slider>
-              </v-col>
-              <v-col cols="6">
-                <div class="exercise-section__dosage-wrapper">
-                  <p class="exercise-section__dosage-text">
-                    <img
-                      class="exercise-section__dosage-icon"
-                      src="@/assets/images/svg/exercise/repeats.svg"
-                      alt="Повторы"
-                    />
-                    Количество повторов
-                  </p>
-
-                  <wu-input class="exercise-section__dosage-input" value="14" readonly></wu-input>
-                </div>
-                <wu-slider class="exercise-section__dosage-slider" readonly value="14"></wu-slider>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-
         <v-col class="exercise__col" cols="6">
           <h2 class="exercise-section__title">Место проведения</h2>
           <v-card class="exercise-section__card">
@@ -292,6 +194,7 @@
                 :label="place.name"
                 readonly
                 value="true"
+                disabled
               ></wu-checkbox>
             </div>
           </v-card>
@@ -387,7 +290,7 @@ export default {
 
   &__row {
     margin-top: -20px;
-    margin-bottom: -20px;
+    margin-bottom: 40px;
   }
 
   &__col {
@@ -485,6 +388,29 @@ export default {
   }
 }
 
+.exercise-archive {
+  margin-bottom: 23px;
+  &__alert {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px;
+    background-color: $terrible;
+    box-shadow: 0px 4px 10px rgba($terrible, 0.5);
+    border-radius: 3px;
+    line-height: 12px;
+  }
+
+  &__text {
+    font-weight: 400;
+    font-size: 12px;
+    color: #ffffff;
+  }
+
+  &__help {
+    margin-left: 10px;
+  }
+}
+
 .wu-tag {
   padding: 2px 9px;
   margin-right: 14px;
@@ -529,7 +455,6 @@ export default {
     border-bottom: 1px solid #dce5f2;
   }
 
-  &__target-title,
   &__task-title {
     margin-bottom: 6px;
     padding-left: 21px;
@@ -539,13 +464,6 @@ export default {
     color: $blue02;
   }
 
-  &__target-title {
-    background-image: url('~@/assets/images/svg/exercise/target.svg');
-    background-repeat: no-repeat;
-    background-position: left center;
-  }
-
-  &__target-value,
   &__task-value {
     padding-left: 21px;
     font-size: 14px;
@@ -584,65 +502,6 @@ export default {
   }
 
   /* End Targets and tasks  */
-
-  /* Intensity & Dosage */
-  &__intensity {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  &__intensity-text,
-  &__intensity-value {
-    font-size: 14px;
-    line-height: 19px;
-    color: $blue02;
-  }
-
-  &__intensity-text {
-    margin-right: 15px;
-  }
-
-  &__intensity-value {
-    img {
-      margin-right: 5px;
-    }
-  }
-
-  &__dosage-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-
-  &__dosage-text {
-    padding-left: 10px;
-    font-size: 14px;
-    line-height: 19px;
-    color: $blue02;
-  }
-
-  &__dosage-icon {
-    margin-right: 10px;
-  }
-
-  &__dosage-input {
-    max-width: 50px;
-    &::v-deep {
-      .v-text-field__slot {
-        input {
-          text-align: center;
-        }
-      }
-    }
-    &--time {
-      max-width: 75px;
-    }
-  }
-
-  &__dosage-slider {
-  }
-  /* End Intensity & Dosage */
 
   /* Methodology */
   &__methodology-item {

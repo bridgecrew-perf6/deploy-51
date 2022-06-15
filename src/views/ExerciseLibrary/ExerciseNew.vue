@@ -19,9 +19,7 @@
 
       <p class="exercise-aside__stepper-title">Вы указали:</p>
       <v-stepper class="exercise-aside__stepper" v-model="step" vertical>
-        <v-stepper-step class="exercise-aside__stepper-step" :complete="step > 1" step="1">
-          Спорт и период
-        </v-stepper-step>
+        <v-stepper-step class="exercise-aside__stepper-step" :complete="step > 1" step="1"> Спорт </v-stepper-step>
         <v-stepper-content class="exercise-aside__stepper-content" step="1">
           <p class="exercise-aside__list-name">Спорт</p>
           <ul class="exercise-aside__list">
@@ -39,13 +37,8 @@
         </v-stepper-step>
         <v-stepper-content class="exercise-aside__stepper-content" step="3"> </v-stepper-content>
 
-        <v-stepper-step class="exercise-aside__stepper-step" :complete="step > 4" step="4">
-          Интенсивность и дозировка
-        </v-stepper-step>
+        <v-stepper-step class="exercise-aside__stepper-step" step="4"> Место проведения и инвентарь </v-stepper-step>
         <v-stepper-content class="exercise-aside__stepper-content" step="4"> </v-stepper-content>
-
-        <v-stepper-step class="exercise-aside__stepper-step" step="5"> Место проведения и инвентарь </v-stepper-step>
-        <v-stepper-content class="exercise-aside__stepper-content" step="5"> </v-stepper-content>
       </v-stepper>
     </left-menu>
 
@@ -58,15 +51,14 @@
           <h2 class="h1 exercise__page-title">Новое упражнение</h2>
         </div>
 
-        <wu-button v-if="step == 5" label="Сохранить упражнение"></wu-button>
+        <wu-button v-if="step == 4" label="Сохранить упражнение"></wu-button>
       </div>
 
       <v-card class="exercise">
         <div class="exercise__main-content">
           <div class="exercise__head">
-            <!-- <wu-input class="exercise__name" placeholder="Введите название ..."></wu-input> -->
             <v-text-field class="exercise__name" flat hide-details placeholder="Введите название ..."></v-text-field>
-            <wu-select class="exercise__preparation-type"></wu-select>
+            <wu-select v-if="step == 2" multiple class="exercise__preparation-type"></wu-select>
           </div>
 
           <div class="exercise__subhead">
@@ -96,42 +88,23 @@
 
               <v-divider class="exercise__stepper-divider"></v-divider>
 
-              <v-stepper-step class="exercise__stepper-step" :complete="step > 4" step="4"></v-stepper-step>
-
-              <v-divider class="exercise__stepper-divider"></v-divider>
-
-              <v-stepper-step class="exercise__stepper-step" step="5"></v-stepper-step>
+              <v-stepper-step class="exercise__stepper-step" step="4"></v-stepper-step>
             </v-stepper-header>
 
             <v-stepper-items>
               <v-stepper-content class="exercise__stepper-content" step="1">
-                <h3 class="exercise__content-title">Спорт и период</h3>
+                <h3 class="exercise__content-title">Спорт</h3>
 
-                <v-row class="exercise__sport-and-period sport-and-period">
-                  <v-col class="sport-and-period__col" cols="6">
-                    <div class="sport-and-period__card">
-                      <wu-select class="sport-and-period__select" outlined label="Вид спорта"></wu-select>
-                      <wu-select class="sport-and-period__select" outlined label="Возрастная группа"></wu-select>
-                      <wu-select class="sport-and-period__select" outlined label="Амплуа"></wu-select>
-
-                      <p class="sport-and-period__checkbox-label">Вид организации</p>
-                      <wu-checkbox
-                        class="sport-and-period__checkbox"
-                        small
-                        white
-                        textDark
-                        label="индивидуальное"
-                      ></wu-checkbox>
-                    </div>
+                <v-row class="exercise__sport-type sport-type">
+                  <v-col class="sport-type__col" cols="6">
+                    <wu-select class="sport-type__select" outlined label="Вид спорта"></wu-select>
+                    <wu-select class="sport-type__select" outlined label="Возраст"></wu-select>
                   </v-col>
-                  <v-col class="sport-and-period__col" cols="6">
-                    <div class="sport-and-period__card">
-                      <p class="sport-and-period__col-title">Календарный период</p>
-                      <wu-select class="sport-and-period__select" outlined label="Период"></wu-select>
-                      <wu-select class="sport-and-period__select" outlined label="Этап"></wu-select>
-                      <wu-select class="sport-and-period__select" outlined label="Мезоцикл"></wu-select>
-                      <wu-select class="sport-and-period__select" outlined label="Микроцикл"></wu-select>
-                    </div>
+                  <v-col class="sport-type__col" cols="6">
+                    <wu-select class="sport-type__select" outlined label="Амплуа"></wu-select>
+
+                    <p class="sport-type__checkbox-label">Вид организации</p>
+                    <wu-checkbox class="sport-type__checkbox" small white textDark label="индивидуальное"></wu-checkbox>
                   </v-col>
                 </v-row>
               </v-stepper-content>
@@ -140,10 +113,6 @@
                 <h3 class="exercise__content-title">Задачи и навыки</h3>
 
                 <v-row class="targets-and-skills">
-                  <v-col cols="12">
-                    <wu-select class="targets-and-skills__select" outlined label="Цель упражнения"></wu-select>
-                  </v-col>
-
                   <v-col cols="12">
                     <wu-select class="targets-and-skills__select" outlined label="Задача упражнения"></wu-select>
                   </v-col>
@@ -164,9 +133,6 @@
                       outlined
                       label="Основные средства упражнения"
                     ></wu-select>
-                  </v-col>
-                  <v-col cols="3">
-                    <wu-select class="targets-and-skills__select" outlined label="Этап тренировки"></wu-select>
                   </v-col>
 
                   <v-col cols="6">
@@ -279,94 +245,39 @@
               </v-stepper-content>
 
               <v-stepper-content class="exercise__stepper-content" step="3">
-                <h3 class="exercise__content-title">Описание и методология</h3>
+                <h3 class="exercise__content-title">Описание и методические указания</h3>
                 <v-row class="description">
                   <v-col class="description__col" cols="6">
                     <p class="description__title">Описание</p>
                     <wu-editor />
                   </v-col>
                   <v-col class="description__col" cols="6">
-                    <p class="description__title">Методология</p>
-                    <wu-editor />
+                    <div class="description__head">
+                      <p class="description__title">Методические указания</p>
+
+                      <v-radio-group hide-details class="description__radio-group" v-model="descriptionType" row>
+                        <v-radio class="description__radio" value="coach">
+                          <template v-slot:label>
+                            <span class="description__radio-label"> Тренеру </span>
+                            <img src="@/assets/images/svg/exercise/error.svg" alt="Error" />
+                          </template>
+                        </v-radio>
+                        <v-radio class="description__radio" value="sportsman">
+                          <template v-slot:label>
+                            <span class="description__radio-label"> Спортсмену </span>
+                            <img src="@/assets/images/svg/exercise/error.svg" alt="Error" />
+                          </template>
+                        </v-radio>
+                      </v-radio-group>
+                    </div>
+
+                    <wu-editor v-show="descriptionType == 'coach'" />
+                    <wu-editor v-show="descriptionType != 'coach'" />
                   </v-col>
                 </v-row>
               </v-stepper-content>
 
               <v-stepper-content class="exercise__stepper-content" step="4">
-                <h3 class="exercise__content-title">Интенсивность и дозировка</h3>
-
-                <v-row>
-                  <v-col cols="4">
-                    <div class="intensity-and-dosage__intensity">
-                      <span class="intensity-and-dosage__intensity-text">Интенсивность</span>
-
-                      <wu-select outlined></wu-select>
-                    </div>
-                  </v-col>
-                  <v-col cols="3" offset="1">
-                    <div class="intensity-and-dosage__dosage-wrapper">
-                      <p class="intensity-and-dosage__dosage-text">
-                        <img
-                          class="intensity-and-dosage__dosage-icon"
-                          src="@/assets/images/svg/profile/my-groups.svg"
-                          alt="Участники"
-                        />
-                        Кол-во участников
-                      </p>
-
-                      <wu-input class="intensity-and-dosage__dosage-input" value="1" readonly></wu-input>
-                    </div>
-                  </v-col>
-                  <v-col cols="4">
-                    <div class="intensity-and-dosage__dosage-wrapper">
-                      <p class="intensity-and-dosage__dosage-text">
-                        <img
-                          class="intensity-and-dosage__dosage-icon"
-                          src="@/assets/images/svg/exercise/timer.svg"
-                          alt="Время"
-                        />
-                        Время выполнения
-                      </p>
-
-                      <wu-input
-                        class="intensity-and-dosage__dosage-input intensity-and-dosage__dosage-input--time"
-                      ></wu-input>
-                    </div>
-                  </v-col>
-                  <v-col cols="6">
-                    <div class="intensity-and-dosage__dosage-wrapper">
-                      <p class="intensity-and-dosage__dosage-text">
-                        <img
-                          class="intensity-and-dosage__dosage-icon"
-                          src="@/assets/images/svg/exercise/sets.svg"
-                          alt="Подходы"
-                        />
-                        Количество подходов
-                      </p>
-
-                      <wu-input class="intensity-and-dosage__dosage-input" value="2" readonly></wu-input>
-                    </div>
-                    <wu-slider class="intensity-and-dosage__dosage-slider" value="2"></wu-slider>
-                  </v-col>
-                  <v-col cols="6">
-                    <div class="intensity-and-dosage__dosage-wrapper">
-                      <p class="intensity-and-dosage__dosage-text">
-                        <img
-                          class="intensity-and-dosage__dosage-icon"
-                          src="@/assets/images/svg/exercise/repeats.svg"
-                          alt="Повторы"
-                        />
-                        Количество повторов
-                      </p>
-
-                      <wu-input class="intensity-and-dosage__dosage-input" value="14" readonly></wu-input>
-                    </div>
-                    <wu-slider class="intensity-and-dosage__dosage-slider" value="14"></wu-slider>
-                  </v-col>
-                </v-row>
-              </v-stepper-content>
-
-              <v-stepper-content class="exercise__stepper-content" step="5">
                 <h3 class="exercise__content-title">Место проведения и инвентарь</h3>
 
                 <v-row class="place-and-inventory">
@@ -375,8 +286,34 @@
 
                     <wu-checkbox small white textDark label="Футбольное поле"></wu-checkbox>
                   </v-col>
-                  <v-col cols="8">
+                  <v-col class="place-and-inventory__inventory-block" cols="8">
                     <p class="place-and-inventory__title">Инвентарь</p>
+
+                    <div class="place-and-inventory__selected-inventory">
+                      <wu-checkbox
+                        class="place-and-inventory__inventory-checkbox"
+                        small
+                        white
+                        textDark
+                        label="Футбольное поле"
+                      ></wu-checkbox>
+                      <wu-checkbox
+                        class="place-and-inventory__inventory-checkbox"
+                        small
+                        white
+                        textDark
+                        label="Футбольное поле"
+                      ></wu-checkbox>
+                    </div>
+
+                    <div class="place-and-inventory__inventory-search">
+                      <label class="inventory-search__label">Быстрый поиск</label>
+                      <v-text-field
+                        hide-details
+                        class="inventory-search__input"
+                        placeholder="Начните вводить название"
+                      ></v-text-field>
+                    </div>
 
                     <div class="place-and-inventory__inventory-list">
                       <wu-checkbox
@@ -417,7 +354,7 @@
             label="Вернуться назад"
           ></wu-button>
           <wu-button
-            v-if="step < 5"
+            v-if="step < 4"
             @click="nextStep()"
             class="exercise__next-step"
             dark
@@ -442,6 +379,7 @@ export default {
       step: 1,
       mainSkills: [],
       exSkills: [],
+      descriptionType: 'coach',
     }
   },
   directives: { mask },
@@ -452,7 +390,7 @@ export default {
   },
   computed: {
     valueProgress() {
-      return ((this.step - 1) * 100) / 5
+      return ((this.step - 1) * 100) / 4
     },
     textProgress() {
       switch (this.step) {
@@ -464,8 +402,6 @@ export default {
           return 'Отличный темп!'
         case 4:
           return 'Почти всё готово'
-        case 5:
-          return 'Последний рывок!'
 
         default:
           return ''
@@ -832,17 +768,28 @@ export default {
   }
 
   /* First step content */
-  .sport-and-period {
-    margin: 0 -12px;
-    &__col {
-      padding: 0 12px;
-    }
+  .sport-type {
+    margin: 0;
+    border: 1px solid #dce5f2 !important;
+    border-radius: 8px;
 
-    &__card {
-      height: 100%;
-      padding: 14px;
-      border: 0.5px solid #dce5f2;
-      border-radius: 8px;
+    &__col {
+      min-height: 410px;
+
+      padding: 20px 14px;
+      &:first-child {
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          right: 0px;
+          width: 1px;
+          height: calc(100% - 28px);
+          background-color: #dce5f2;
+          transform: translateY(-50%);
+        }
+      }
     }
 
     &__checkbox-label {
@@ -927,88 +874,131 @@ export default {
   }
   /* End Second step content */
 
-  /* Fourth step content */
-  .intensity-and-dosage {
-    &__intensity {
-      display: flex;
-      align-items: flex-end;
-    }
-
-    &__intensity-text,
-    &__intensity-value {
-      font-size: 14px;
-      line-height: 19px;
-      color: $blue02;
-    }
-
-    &__intensity-text {
-      margin-right: 15px;
-    }
-
-    &__intensity-value {
-      img {
-        margin-right: 5px;
-      }
-    }
-
-    &__dosage-wrapper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    &__dosage-text {
-      padding-left: 10px;
-      font-size: 14px;
-      line-height: 19px;
-      color: $blue02;
-    }
-
-    &__dosage-icon {
-      margin-right: 10px;
-    }
-
-    &__dosage-input {
-      max-width: 50px;
-      &::v-deep {
-        .v-text-field__slot {
-          input {
-            text-align: center;
-          }
-        }
-      }
-      &--time {
-        max-width: 75px;
-      }
-    }
-
-    &__dosage-slider {
-    }
-  }
-  /* End fourth step content */
-
   /* Third step content */
   .description {
     &__title {
-      margin-bottom: 9px;
+      margin-bottom: 10px;
       font-weight: 500;
       font-size: 16px;
       line-height: 22px;
       color: $blue02;
     }
+
+    &__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__radio-group {
+      margin-top: 0px;
+      padding-top: 0px;
+    }
+
+    &__radio {
+      &::v-deep {
+        margin-right: 12px;
+        &:last-child {
+          margin-right: 0px;
+        }
+        .v-input--selection-controls__input {
+          width: 0px;
+          height: 0px;
+          display: none;
+        }
+        &.v-item--active {
+          .v-label {
+            color: $blue02;
+            img {
+              opacity: 1;
+            }
+          }
+        }
+        .v-label {
+          color: #b9cbe5;
+          img {
+            opacity: 0.5;
+          }
+        }
+      }
+    }
+
+    &__radio-label {
+      display: inline-block;
+      margin-right: 9px;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 22px;
+    }
   }
   /* End third step content */
 
-  /* Fifth step content */
+  /* Fourth step content */
   .place-and-inventory {
+    margin: 0px;
     &__title {
-      margin-bottom: 18px;
+      margin-bottom: 13px;
       font-weight: 400;
       font-size: 16px;
       line-height: 32px;
 
       color: $blue02;
+    }
+
+    &__inventory-block {
+      padding: 6px 25px 25px;
+      border: 1px solid #dce5f2;
+      border-radius: 8px;
+    }
+
+    &__selected-inventory {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      padding: 20px 40px;
+      background-color: #fbfbfe;
+      border-radius: 12px;
+    }
+
+    &__inventory-search {
+      margin-bottom: 15px;
+    }
+
+    .inventory-search {
+      &__label {
+        display: inline-block;
+        margin-bottom: 4px;
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 14px;
+        color: $blue02;
+      }
+
+      &__input {
+        &::v-deep {
+          margin-top: 0px;
+          padding-top: 0px;
+          .v-input__slot {
+            &::before,
+            &::after {
+              display: none;
+            }
+          }
+          .v-text-field__slot input {
+            padding: 0 13px;
+            border: 1px solid #dce5f2;
+            border-radius: 4px;
+
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 32px;
+            color: $blue02;
+            &::placeholder {
+              color: $blue05;
+            }
+          }
+        }
+      }
     }
 
     &__inventory-list {
@@ -1021,6 +1011,6 @@ export default {
       flex: 0 0 50%;
     }
   }
-  /* End Fifth step content */
+  /* End fourth step content */
 }
 </style>

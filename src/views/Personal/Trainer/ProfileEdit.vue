@@ -39,21 +39,49 @@
           <div class="profile__information">
             <v-row>
               <v-col cols="4" class="profile__information-wrapper">
-                <wu-input v-model="trainer.user.lastName" class="profile__information-input" label="Фамилия"></wu-input>
+                <wu-input
+                  v-model="trainer.user.lastName"
+                  class="profile__information-input"
+                  :class="{
+                    'profile__information-input_error':
+                      $v.trainer.user.lastName.$dirty && !$v.trainer.user.lastName.required,
+                  }"
+                  label="Фамилия"
+                  @change="changeUserData"
+                ></wu-input>
               </v-col>
               <v-col cols="4" class="profile__information-wrapper">
-                <wu-input v-model="trainer.user.firstName" class="profile__information-input" label="Имя"></wu-input>
+                <wu-input
+                  v-model="trainer.user.firstName"
+                  class="profile__information-input"
+                  :class="{
+                    'profile__information-input_error':
+                      $v.trainer.user.firstName.$dirty && !$v.trainer.user.firstName.required,
+                  }"
+                  label="Имя"
+                  @change="changeUserData"
+                ></wu-input>
               </v-col>
               <v-col cols="4" class="profile__information-wrapper">
                 <wu-input
                   v-model="trainer.user.patronymic"
                   class="profile__information-input"
+                  :class="{
+                    'profile__information-input_error':
+                      $v.trainer.user.patronymic.$dirty && !$v.trainer.user.patronymic.required,
+                  }"
                   label="Отчество"
+                  @change="changeUserData"
                 ></wu-input>
               </v-col>
               <v-col cols="4" class="profile__information-wrapper">
                 <wu-input
                   class="profile__information-input profile__information-input--bday"
+                  :class="{
+                    'profile__information-input_error':
+                      $v.trainer.user.birthDate.$dirty &&
+                      (!$v.trainer.user.birthDate.required || !$v.trainer.user.birthDate.minLength),
+                  }"
                   label="Дата рождения"
                   v-model="bday"
                   v-mask="'##.##.####'"
@@ -65,32 +93,35 @@
                   class="profile__information-input"
                   label="Специлизация"
                   outlined
-                  :items="sportTypes"
+                  :items="getSportTypes"
                   itemValue="id"
                   itemText="title"
                   v-model="trainer.sportType"
+                  @input="changeCoachData"
                 ></wu-select>
               </v-col>
               <v-col cols="4" class="profile__information-wrapper">
                 <wu-select
                   class="profile__information-input"
                   label="Спортивное звание"
-                  :items="sportTitles"
+                  :items="getSportRanks"
                   itemValue="id"
                   itemText="title"
                   outlined
-                  v-model="trainer.sportTitle"
+                  v-model="trainer.user.sportRank"
+                  @input="changeUserData"
                 ></wu-select>
               </v-col>
               <v-col offset="4" cols="4" class="profile__information-wrapper">
                 <wu-select
                   class="profile__information-input"
                   label="Категория"
-                  :items="coachCategories"
+                  :items="getCoachCategories"
                   itemValue="id"
                   itemText="title"
                   outlined
                   v-model="trainer.coachingCategories"
+                  @input="changeCoachData"
                 ></wu-select>
               </v-col>
             </v-row>
@@ -106,187 +137,59 @@
                 v-mask="'+# (###) ###-##-##'"
                 class="contacts__phone-input"
                 label="Телефон"
+                @change="changeUserData"
+                readonly
               ></wu-input>
 
-              <edit-social-media :link="trainer.user.whatsapp" class="contacts__sm-input" name="whatsapp" />
+              <edit-social-media
+                @click="changeUserData"
+                v-model="trainer.user.whatsapp"
+                :link="trainer.user.whatsapp"
+                class="contacts__sm-input"
+                name="whatsapp"
+              />
 
-              <edit-social-media :link="trainer.user.telegram" class="contacts__sm-input" name="telegram" />
+              <edit-social-media
+                @click="changeUserData"
+                v-model="trainer.user.telegram"
+                :link="trainer.user.telegram"
+                class="contacts__sm-input"
+                name="telegram"
+              />
             </div>
 
             <div class="contacts__email">
-              <wu-input v-model="trainer.user.email" class="contacts__email-input" label="Почта"></wu-input>
+              <wu-input
+                v-model="trainer.user.email"
+                class="contacts__email-input"
+                :class="{
+                  'profile__information-input_error':
+                    $v.trainer.user.email.$dirty && (!$v.trainer.user.email.email || !$v.trainer.user.email.required),
+                }"
+                label="Почта"
+                @change="changeUserData"
+              ></wu-input>
             </div>
 
             <div class="contacts__sm">
-              <edit-social-media :link="trainer.user.vk" class="contacts__sm-input" name="vk" />
+              <edit-social-media
+                @click="changeUserData"
+                :link="trainer.user.vk"
+                v-model="trainer.user.vk"
+                class="contacts__sm-input"
+                name="vk"
+              />
             </div>
           </div>
         </section>
 
-        <section class="profile__education section education">
-          <h3 class="section-title">Образование и опыт</h3>
+        <trainer-edit-educations />
 
-          <draggable class="education__list" :list="edu" handle=".education__handle">
-            <div class="education__item" v-for="ed in edu" :key="ed.id">
-              <svg
-                class="education__handle"
-                width="10"
-                height="17"
-                viewBox="0 0 10 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8.135 4.443c1.03 0 1.865-.815 1.865-1.821S9.165.801 8.135.801 6.27 1.616 6.27 2.622s.835 1.821 1.865 1.821ZM8.135 10.618c1.03 0 1.865-.815 1.865-1.821s-.835-1.821-1.865-1.821-1.865.815-1.865 1.82c0 1.007.835 1.822 1.865 1.822ZM8.135 16.802c1.03 0 1.865-.816 1.865-1.822 0-1.005-.835-1.82-1.865-1.82s-1.865.815-1.865 1.82c0 1.006.835 1.822 1.865 1.822ZM1.865 4.443c1.03 0 1.866-.815 1.866-1.821S2.896.801 1.865.801C.835.8 0 1.616 0 2.622s.835 1.821 1.865 1.821ZM1.865 10.618c1.03 0 1.866-.815 1.866-1.821s-.835-1.821-1.866-1.821C.835 6.976 0 7.79 0 8.796c0 1.007.835 1.822 1.865 1.822ZM1.865 16.802c1.03 0 1.866-.816 1.866-1.822 0-1.005-.835-1.82-1.866-1.82-1.03 0-1.865.815-1.865 1.82 0 1.006.835 1.822 1.865 1.822Z"
-                  fill="#B9CBE5"
-                />
-              </svg>
-              <div class="education__item-content">
-                <div class="education__item-row">
-                  <wu-input
-                    v-if="ed.type == 'edu'"
-                    v-model="ed.name"
-                    class="education__input education__input--title"
-                    label="Наименование места работы / учебы"
-                  ></wu-input>
-                  <wu-input
-                    v-else
-                    v-model="ed.workName"
-                    class="education__input education__input--title"
-                    label="Наименование места работы / учебы"
-                  ></wu-input>
-                  <wu-select
-                    class="education__select education__select--type"
-                    itemValue="id"
-                    itemText="label"
-                    :items="select.educationsType"
-                    label="Работа/обучение"
-                    outlined
-                    v-model="ed.type"
-                  ></wu-select>
-                  <wu-input
-                    v-model="ed.startDate"
-                    class="education__input education__input--date-start"
-                    label="Дата начала"
-                  ></wu-input>
-                  <wu-input
-                    v-model="ed.endDate"
-                    class="education__input education__input--date-end"
-                    label="Дата окончания"
-                  ></wu-input>
-                </div>
+        <trainer-edit-works />
 
-                <template v-if="ed.type == 'edu'">
-                  <div class="education__item-row">
-                    <wu-input
-                      v-model="ed.faculty"
-                      class="education__input education__input--studies"
-                      label="Факультет"
-                    ></wu-input>
-                    <wu-select
-                      class="education__select education__select--studies"
-                      label="Образование"
-                      :items="educationTypes"
-                      itemValue="id"
-                      itemText="title"
-                      v-model="ed.educationType"
-                      outlined
-                    ></wu-select>
-                  </div>
-                  <div class="education__item-row">
-                    <wu-input
-                      v-model="ed.speciality"
-                      class="education__input education__input--studies"
-                      label="Специальность"
-                    ></wu-input>
-                    <wu-select
-                      :items="educationFormats"
-                      itemValue="id"
-                      itemText="title"
-                      v-model="ed.educationFormat"
-                      class="education__select education__select--studies"
-                      label="Форма образования"
-                      outlined
-                    ></wu-select>
-                  </div>
-                </template>
+        <trainer-edit-awards />
 
-                <template v-else-if="ed.type === 'work'">
-                  <div class="education__item-row">
-                    <wu-input
-                      v-model="ed.jobTitle"
-                      class="education__input education__input--job"
-                      label="Должность"
-                    ></wu-input>
-                  </div>
-                </template>
-              </div>
-              <button class="education__remove" @click="removeEd(ed)">
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="m7.453 6.309 4.523 4.523a.803.803 0 0 1-1.133 1.133L6.33 7.455l-4.529 4.529a.803.803 0 0 1-1.134 0l-.005-.006a.803.803 0 0 1 0-1.134l4.511-4.511-4.529-4.53a.803.803 0 0 1 0-1.133L.651.663a.803.803 0 0 1 1.134 0l4.511 4.512 4.53-4.529a.803.803 0 0 1 1.133 0l.012.012a.803.803 0 0 1 0 1.133L7.453 6.31Z"
-                    fill="#B9CBE5"
-                  />
-                </svg>
-              </button>
-            </div>
-          </draggable>
-
-          <button class="education__add-btn" @click="pushEd">+ Добавить место работы / учебы</button>
-        </section>
-
-        <section class="profile__awards section awards">
-          <h3 class="section-title">Достижения</h3>
-
-          <draggable class="awards__list" :list="trainerAwards" handle=".awards__handle">
-            <div class="awards__item" v-for="award in trainerAwards" :key="award.id">
-              <svg
-                class="awards__handle"
-                width="10"
-                height="17"
-                viewBox="0 0 10 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8.135 4.443c1.03 0 1.865-.815 1.865-1.821S9.165.801 8.135.801 6.27 1.616 6.27 2.622s.835 1.821 1.865 1.821ZM8.135 10.618c1.03 0 1.865-.815 1.865-1.821s-.835-1.821-1.865-1.821-1.865.815-1.865 1.82c0 1.007.835 1.822 1.865 1.822ZM8.135 16.802c1.03 0 1.865-.816 1.865-1.822 0-1.005-.835-1.82-1.865-1.82s-1.865.815-1.865 1.82c0 1.006.835 1.822 1.865 1.822ZM1.865 4.443c1.03 0 1.866-.815 1.866-1.821S2.896.801 1.865.801C.835.8 0 1.616 0 2.622s.835 1.821 1.865 1.821ZM1.865 10.618c1.03 0 1.866-.815 1.866-1.821s-.835-1.821-1.866-1.821C.835 6.976 0 7.79 0 8.796c0 1.007.835 1.822 1.865 1.822ZM1.865 16.802c1.03 0 1.866-.816 1.866-1.822 0-1.005-.835-1.82-1.866-1.82-1.03 0-1.865.815-1.865 1.82 0 1.006.835 1.822 1.865 1.822Z"
-                  fill="#B9CBE5"
-                />
-              </svg>
-
-              <wu-input v-model="award.name" class="awards__input" label="Введите название достижения"></wu-input>
-
-              <wu-select
-                :items="awardTypes"
-                v-model="award.type"
-                itemValue="id"
-                itemText="title"
-                class="awards__select"
-                outlined
-                label="Тип  достижения"
-              ></wu-select>
-
-              <wu-input
-                v-model="award.year"
-                class="awards__input awards__input--year"
-                label="Год  достижения"
-              ></wu-input>
-
-              <button class="awards__remove" @click="removeAward(award)">
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="m7.453 6.309 4.523 4.523a.803.803 0 0 1-1.133 1.133L6.33 7.455l-4.529 4.529a.803.803 0 0 1-1.134 0l-.005-.006a.803.803 0 0 1 0-1.134l4.511-4.511-4.529-4.53a.803.803 0 0 1 0-1.133L.651.663a.803.803 0 0 1 1.134 0l4.511 4.512 4.53-4.529a.803.803 0 0 1 1.133 0l.012.012a.803.803 0 0 1 0 1.133L7.453 6.31Z"
-                    fill="#B9CBE5"
-                  />
-                </svg>
-              </button>
-            </div>
-          </draggable>
-
-          <button class="awards__add-btn" @click="pushAward()">+ Добавить достижение</button>
-        </section>
-
-        <base-button @click="saveProfile()" class="profile__save-btn" label="Сохранить" />
+        <!-- <base-button @click="saveProfile()" class="profile__save-btn" label="Сохранить" /> -->
       </v-card>
     </div>
   </div>
@@ -294,16 +197,20 @@
 
 <script>
 import { mask } from 'vue-the-mask'
-import draggable from 'vuedraggable'
+import { required, email, minLength } from 'vuelidate/lib/validators'
+
 import moment from 'moment'
-import _ from 'lodash'
 
 import LeftMenu from '@/components/LeftMenu.vue'
 import Header from '@/components/Header.vue'
 import Sidebar from '@/components/Profile/Sidebar.vue'
 import EditSocialMedia from '@/components/Profile/EditSocialMedia.vue'
 
-import { mapGetters, mapActions } from 'vuex'
+import TrainerEditEducations from '@/components/Profile/TrainerEditEducations.vue'
+import TrainerEditWorks from '@/components/Profile/TrainerEditWorks.vue'
+import TrainerEditAwards from '@/components/Profile/TrainerEditAwards.vue'
+
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'ProfileEdit',
@@ -312,8 +219,10 @@ export default {
     LeftMenu,
     Header,
     Sidebar,
-    draggable,
     EditSocialMedia,
+    TrainerEditEducations,
+    TrainerEditWorks,
+    TrainerEditAwards,
   },
   data: () => ({
     avatar: null,
@@ -322,61 +231,8 @@ export default {
     trainerWork: [],
     trainerAwards: [],
     trainerEducations: [],
+    text: '',
 
-    educations: [],
-
-    select: {
-      educationsType: [
-        { id: 'edu', label: 'Место обучения' },
-        { id: 'work', label: 'Место работы' },
-      ],
-    },
-    sportTypes: [
-      { id: 'FB', title: 'Футбол' },
-      { id: 'HC', title: 'Хоккей' },
-      { id: 'BB', title: 'Баскетбол' },
-      { id: 'VB', title: 'Волейбол' },
-      { id: 'TN', title: 'Теннис' },
-    ],
-    coachCategories: [
-      { id: '1Q', title: 'Тренер первой квалификационной категории' },
-      { id: '2Q', title: 'Тренер второй квалификационной категории' },
-      { id: 'HQ', title: 'Тренер высшей квалификационной категории' },
-      { id: 'HC', title: 'Заслуженный тренер России' },
-    ],
-    sportTitles: [
-      { id: '3JR', title: 'III юношеский разряд' },
-      { id: '2JR', title: 'II юношеский разряд' },
-      { id: '2JR', title: 'I юношеский разряд' },
-      { id: '3AR', title: 'III разряд' },
-      { id: '2AR', title: 'II разряд' },
-      { id: '2AR', title: 'I разряд' },
-      { id: 'CTM', title: 'Кандидат в Мастера спорта' },
-      { id: 'MOS', title: 'Мастер спорта' },
-      { id: 'IMS', title: 'Мастер спорта международного класса' },
-      { id: 'HMS', title: 'Заслуженный Мастер спорта' },
-    ],
-    awardTypes: [
-      { id: 'RW', title: 'Награда' },
-      { id: 'DP', title: 'Диплом' },
-      { id: 'GR', title: 'Благодарность' },
-      { id: 'DL', title: 'Грамота' },
-    ],
-    educationTypes: [
-      { id: 'SVE', title: 'Средне-профессиональное образование' },
-      { id: 'HEB', title: 'Высшее образование (бакалавриат)' },
-      { id: 'HES', title: 'Высшее образование (специалитет)' },
-      { id: 'HEM', title: 'Высшее образование (магистратура)' },
-      { id: 'HSC', title: 'Профессиональное образование - Высшая школа тренеров' },
-      { id: 'PRD', title: 'Повышение квалификации' },
-      { id: 'PRT', title: 'Профессиональная переподготовка' },
-    ],
-    educationFormats: [
-      { id: 'FT', title: 'Очная форма' },
-      { id: 'EM', title: 'Заочная форма' },
-      { id: 'PF', title: 'Очно-заочная форма' },
-      { id: 'DF', title: 'Дистанционная форма' },
-    ],
     rules: {
       date: value => moment(value, 'YYYY-MM-DD').isValid() || 'Неверный формат',
 
@@ -387,7 +243,35 @@ export default {
       },
     },
   }),
+  validations: {
+    trainer: {
+      user: {
+        firstName: {
+          required,
+        },
+        lastName: {
+          required,
+        },
+        patronymic: {
+          required,
+        },
+        email: {
+          email,
+          required,
+        },
+        birthDate: {
+          required,
+          minLength: minLength(10),
+        },
+      },
+    },
+    bday: {
+      required,
+      minLength: minLength(10),
+    },
+  },
   computed: {
+    ...mapGetters('auth', ['getSportTypes', 'getCoachCategories', 'getSportRanks', 'profile']),
     bday: {
       get() {
         return moment(this.trainer.user.birthDate).format('DD.MM.YYYY')
@@ -404,7 +288,7 @@ export default {
       },
       set(val) {
         // eslint-disable-next-line
-        this.trainer.user.phone = val.replace(/([\(\)\-\ ])/g, '')
+        //this.trainer.user.phone = val.replace(/([\(\)\-\ ])/g, '')
       },
     },
     edu() {
@@ -412,9 +296,29 @@ export default {
     },
   },
   methods: {
+    ...mapMutations('auth', ['SET_PROFILE']),
+    changeUserData(val) {
+      let key = Object.keys(this.trainer.user).find(key => this.trainer.user[key] === val)
+
+      if (!this.$v.$invalid) {
+        this.updateUser({ [key]: val })
+      } else {
+        this.trainer.user[key] = this.profile.user[key]
+        this.notify({
+          title: 'Ошибка',
+          text: 'Обязательное поле или неверный формат',
+          bg: '#FF4B6B',
+          autoClose: 4000,
+        })
+      }
+    },
+    changeCoachData(val) {
+      let key = Object.keys(this.trainer).find(key => this.trainer[key] === val)
+      this.updateCoach({ [key]: val })
+    },
     changeAvatar(avatar) {
-      this.$coach
-        .updateAvatar(avatar)
+      this.$users
+        .updateUser(this.trainer.user.id, { avatar: avatar })
         .then(response => {
           this.trainer.user.avatar = response.avatar
         })
@@ -422,161 +326,38 @@ export default {
           console.log(error)
         })
     },
-    pushAward() {
-      this.trainerAwards.push({
-        id: this.trainerAwards.length + 1,
-        name: '',
-        year: '',
-        type: '',
-        coach: this.trainerID,
-        status: 'new',
-      })
-    },
-    removeAward(award) {
-      if (award.status !== 'new') {
-        this.$coach
-          .deleteAward(award.id)
-          .then(response => {
-            let idx = this.trainerAwards.findIndex(item => item.id === award.id)
-            if (idx !== -1) this.trainerAwards.splice(idx, 1)
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      } else {
-        let idx = this.trainerAwards.findIndex(item => item.id === award.id)
-        if (idx !== -1) this.trainerAwards.splice(idx, 1)
-      }
-    },
-    createAward() {
-      let newList = this.trainerAwards.filter(work => work.status === 'new')
-      newList.forEach(item => {
-        this.$coach
-          .createAward(item)
-          .then(response => {})
-          .catch(error => {
-            console.log(error)
-          })
-      })
-    },
-    pushEd() {
-      this.trainerWork.push({
-        id: this.edu.length + 1,
-        type: 'work',
-        status: 'new',
-        coach: this.trainerID,
-      })
-    },
-    createEd() {
-      let newList = this.trainerWork.filter(work => work.status === 'new')
-      newList.forEach(item => {
-        if (item.type === 'work') {
-          this.$coach
-            .createWork(item)
-            .then(response => {
-              console.log(response)
-            })
-            .catch(error => {
-              console.log(error)
-            })
-        } else {
-          this.$coach
-            .creatEdu(item)
-            .then(response => {
-              console.log(response)
-            })
-            .catch(error => {
-              console.log(error)
-            })
-        }
-      })
-    },
-    removeEd(ed) {
-      if (ed.type === 'work' && ed.status != 'new') {
-        this.$coach
-          .deleteWork(ed.id)
-          .then(response => {
-            let idx = this.trainerWork.findIndex(item => item.id === ed.id)
-            this.trainerWork.splice(idx, 1)
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      } else if (ed.type === 'edu' && ed.status != 'new') {
-        this.$coach
-          .deleteEdu(ed.id)
-          .then(response => {
-            let idx = this.trainerEducations.findIndex(item => item.id === ed.id)
-            this.trainerEducations.splice(idx, 1)
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      } else if (ed.status == 'new') {
-        let idx = this.trainerWork.findIndex(item => item.id === ed.id && item.workName == ed.workName)
-        this.trainerWork.splice(idx, 1)
-      }
-    },
-
     getProfile() {
       if (this.trainerID) {
         this.$coach
           .getCoach(this.trainerID)
           .then(response => {
             this.trainer = response
-
-            this.getWork()
-            this.getAwards()
-            this.getEducations()
           })
           .catch(error => {
             console.log(error)
           })
       }
     },
-    getWork() {
-      if (this.trainerID) {
-        this.$coach
-          .getCoachWork(this.trainerID)
-          .then(response => {
-            response.forEach(work => {
-              work.type = 'work'
-            })
-            this.trainerWork = response
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
+    updateUser(payload) {
+      this.$users.updateUser(this.trainer.user.id, payload).then(response => {
+        this.SET_PROFILE({ user: response })
+        this.notify({
+          title: 'Успешно',
+          text: `Данные успешно обновлены`,
+          bg: '#64C048',
+          autoClose: 4000,
+        })
+      })
     },
-    getAwards() {
-      if (this.trainerID) {
-        this.$coach
-          .getCoachRewards(this.trainerID)
-          .then(response => {
-            this.trainerAwards = response
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
-    },
-    getEducations() {
-      if (this.trainerID) {
-        this.$coach
-          .getCoachEducations(this.trainerID)
-          .then(response => {
-            response.forEach(edu => {
-              edu.type = 'edu'
-            })
-            this.trainerEducations = response
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
+    updateCoach(payload) {
+      this.$coach.updateCoach(this.trainer.id, payload).then(response => {})
     },
     saveProfile() {
+      if (this.$v.$invalid) {
+        this.$v.$touch()
+        return
+      }
+
       let payload = {
         user: {
           //phone: this.trainer.user.phone,
@@ -597,6 +378,7 @@ export default {
         .updateCoach(this.trainer.id, payload)
         .then(response => {
           console.log(response)
+          this.$router.push('/account/')
         })
         .catch(error => {
           console.log(error)
@@ -606,6 +388,7 @@ export default {
       this.createAward()
     },
   },
+
   mounted() {
     this.getProfile()
   },
@@ -717,20 +500,19 @@ export default {
     &--bday {
       max-width: 110px;
     }
-  }
 
-  &__save-btn {
-    display: block;
-    margin-left: auto;
+    &_error {
+      &::v-deep {
+        input {
+          border: 1px solid #ff4949 !important;
+        }
+      }
+    }
   }
-}
-
-.contacts,
-.education {
-  padding: 32px 21px;
 }
 
 .contacts {
+  padding: 32px 21px;
   &__inner {
     display: flex;
     align-items: flex-end;
@@ -749,132 +531,6 @@ export default {
 
   &__email {
     flex: 0 0 245px;
-  }
-}
-
-.education {
-  &__list {
-    margin-bottom: 30px;
-  }
-
-  &__item {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    &:last-child {
-      margin-bottom: 0px;
-    }
-  }
-
-  &__item-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  &__item-row {
-    width: 100%;
-    flex: 0 0 100%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  &__handle {
-    margin-top: 25px;
-    margin-right: 15px;
-  }
-
-  &__input {
-    &--title {
-      flex-grow: 1;
-      margin-right: 21px;
-    }
-    &--date-start,
-    &--date-end {
-      max-width: 95px;
-    }
-    &--date-start {
-      margin-right: 21px;
-    }
-    &--studies {
-      flex-grow: 1;
-      margin-right: 21px;
-    }
-    &--job {
-      flex-grow: 1;
-    }
-  }
-
-  &__select {
-    &--type {
-      max-width: 185px;
-      margin-right: 21px;
-    }
-    &--studies {
-      max-width: 245px;
-    }
-  }
-
-  &__remove {
-    margin-top: 25px;
-    margin-left: 10px;
-  }
-
-  &__add-btn {
-    margin-left: 30px;
-    font-size: 16px;
-    line-height: 22px;
-    color: $blue02;
-  }
-}
-
-.awards {
-  padding: 32px 21px 0;
-  border: none;
-  &__list {
-    margin-bottom: 30px;
-  }
-  &__item {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    &:last-child {
-      margin-bottom: 0px;
-    }
-  }
-
-  &__handle {
-    cursor: pointer;
-    margin-right: 12px;
-    margin-bottom: 10px;
-  }
-
-  &__input {
-    flex-shrink: 0;
-    flex-grow: 1;
-    &--year {
-      max-width: 100px;
-      margin-right: 10px;
-    }
-  }
-
-  &__select {
-    max-width: 160px;
-    margin: 0 21px;
-  }
-  &__remove {
-    margin-bottom: 5px;
-  }
-  &__add-btn {
-    margin-left: 30px;
-    font-size: 16px;
-    line-height: 22px;
-    color: $blue02;
   }
 }
 </style>

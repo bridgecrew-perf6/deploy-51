@@ -14,6 +14,9 @@
 
 <script>
 export default {
+  props: {
+    period: String
+  },
   data() {
     return {
       per: 'month',
@@ -30,6 +33,16 @@ export default {
       ],
     }
   },
+  watch: {
+    period() {
+      this.per = this.period
+    }
+  },
+  mounted() {
+    if(this.period) {
+      this.per = this.period
+    }
+  }
 }
 </script>
 

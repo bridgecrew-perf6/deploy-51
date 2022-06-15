@@ -1,11 +1,11 @@
 <template>
   <div class="menu">
     <div class="assistant">
-      <p class="assistant-text">
-        Всё идёт по плану,
-        <span class="assistant-text-username">Виталий Александрович!</span>
-        Я приглядываю...
-      </p>
+      <div class="assistant-text">
+        Всё идёт по плану<span v-if="fullName">,</span>
+        <span v-if="fullName" class="assistant-text-username">{{ fullName }}!</span>
+        <p>Я приглядываю...</p>
+      </div>
 
       <img src="@/assets/images/assistant-good.png" alt="Всё идёт по плану" class="assistant-eye" />
     </div>
@@ -14,6 +14,22 @@
     </div>
   </div>
 </template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters('auth', ['fullName']),
+  },
+  methods: {
+    ...mapActions('auth', ['loadProfile']),
+  },
+  mounted() {
+    this.loadProfile(localStorage.getItem('trainerID'))
+  },
+}
+</script>
 
 <style scoped lang="sass">
 .menu
@@ -40,6 +56,7 @@
     color: #fff
 
 .assistant-text-username
+    display: block
     font-size: 16px
     font-weight: 700
 

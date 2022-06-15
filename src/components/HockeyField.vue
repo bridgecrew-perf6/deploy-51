@@ -122,11 +122,6 @@ export default {
       modalPlayer: false
     }
   },
-  watch: {
-    sportsmans() {
-      console.log(this.sportsmans)
-    }
-  }
 }
 </script>
 

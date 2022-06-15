@@ -65,7 +65,6 @@
 </template>
 
 <script>
-import ScheduleHeader from '@/components/ScheduleHeader'
 import LevelBlock from '@/components/LevelBlock'
 import UserSidebar from '@/components/UserSidebar'
 import SnackBar from '@/components/elements/SnackBar'
@@ -105,7 +104,6 @@ import WidgetCalendar from '@/components/widgets/WidgetCalendar'
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: 'AccountSportsman',
   components: {
     AccordionHomework,
     MarksBlock,
@@ -128,7 +126,6 @@ export default {
     SnackBar,
     UserSidebar,
     LevelBlock,
-    ScheduleHeader,
     draggable,
     vueCustomScrollbar,
     WidgetChatMessage,

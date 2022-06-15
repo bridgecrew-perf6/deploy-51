@@ -6,32 +6,18 @@
       <div class="route-block__content">
         <h3 class="list__title title-blue-20">Туда</h3>
         <div class="route-block__routes-wrapper">
-          <time-line :num="2" class="route-block__timeline" />
+          <time-line :num="from.length - 1" class="route-block__timeline" v-if="from.length" />
           <div class="route-block__routes">
-            <div class="route-block__route">
-              <div class="route-block__route-time">12:30</div>
+            <div class="route-block__route" v-for="route in from" :key="route.id">
+              <div class="route-block__route-time">
+                {{ getTime(route.time) }}
+              </div>
               <div class="route-block__route-descr">
-                <p>Встреча с детьми:</p>
+                <p>{{ route.description }}:</p>
                 <p>
-                  г. Иркутск• Автовокзал
-                  Встречаемся у памятника Ленину
+                  {{ route.comment }}
                 </p>
-                <span>1 ч 24 мин в пути</span>
-              </div>
-            </div>
-            <div class="route-block__route">
-              <div class="route-block__route-time">13:00</div>
-              <div class="route-block__route-descr">
-                <p>Отправление:</p>
-                <p>Автобус №354</p>
-                <span>1 ч 24 мин в пути</span>
-              </div>
-            </div>
-            <div class="route-block__route">
-              <div class="route-block__route-time">14:30</div>
-              <div class="route-block__route-descr">
-                <p>Прибытие: </p>
-                <p>г. Вологда • Автовокзал</p>
+                <span>{{ route.duration }} в пути</span>
               </div>
             </div>
           </div>
@@ -40,32 +26,18 @@
       <div class="route-block__content">
         <h3 class="list__title title-blue-20">Обратно</h3>
         <div class="route-block__routes-wrapper">
-          <time-line :num="2" class="route-block__timeline" />
+          <time-line :num="to.length - 1" class="route-block__timeline" v-if="to.length" />
           <div class="route-block__routes">
-            <div class="route-block__route">
-              <div class="route-block__route-time">12:30</div>
+            <div class="route-block__route" v-for="route in to" :key="route.id">
+              <div class="route-block__route-time">
+                {{ getTime(route.time) }}
+              </div>
               <div class="route-block__route-descr">
-                <p>Встреча с детьми:</p>
+                <p>{{ route.description }}:</p>
                 <p>
-                  г. Иркутск• Автовокзал
-                  Встречаемся у памятника Ленину
+                  {{ route.comment }}
                 </p>
-                <span>1 ч 24 мин в пути</span>
-              </div>
-            </div>
-            <div class="route-block__route">
-              <div class="route-block__route-time">13:00</div>
-              <div class="route-block__route-descr">
-                <p>Отправление:</p>
-                <p>Автобус №354</p>
-                <span>1 ч 24 мин в пути</span>
-              </div>
-            </div>
-            <div class="route-block__route">
-              <div class="route-block__route-time">14:30</div>
-              <div class="route-block__route-descr">
-                <p>Прибытие: </p>
-                <p>г. Вологда • Автовокзал</p>
+                <span>{{ route.duration }} в пути</span>
               </div>
             </div>
           </div>
@@ -79,8 +51,36 @@
 import TimeLine from '@/components/TimeLineStandart.vue'
 export default {
   components: {
-    TimeLine
-  }
+    TimeLine,
+  },
+  props: {
+    routes: Array,
+  },
+  data() {
+    return {
+      from: [],
+      to: [],
+    }
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    init() {
+      this.routes.forEach(item => {
+        if (item.direction === 'from') this.from.push(item)
+        if (item.direction === 'to') this.to.push(item)
+      })
+    },
+    getTime(d) {
+      const date = new Date(d)
+
+      const hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+      const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+
+      return `${hours}:${minutes}`
+    },
+  },
 }
 </script>
 
@@ -128,7 +128,8 @@ export default {
   }
 
   &__route-time {
-    color: #574F92;
+    width: 95px;
+    color: #574f92;
     font-size: 36px;
     font-weight: 400;
   }
@@ -142,7 +143,7 @@ export default {
 
     p {
       font-size: 14px;
-      color: #36427D;
+      color: #36427d;
     }
 
     span {

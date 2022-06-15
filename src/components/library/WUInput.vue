@@ -10,6 +10,8 @@
       :placeholder="placeholder"
       :readonly="readonly"
       :rules="rules"
+      @blur="handleOnBlur($event)"
+      @change="handleOnChange($event)"
     >
     </v-text-field>
   </div>
@@ -57,6 +59,14 @@ export default {
       set(val) {
         this.$emit('input', val)
       },
+    },
+  },
+  methods: {
+    handleOnBlur: function () {
+      this.$emit('blur', this.value)
+    },
+    handleOnChange: function () {
+      this.$emit('change', this.value)
     },
   },
 }

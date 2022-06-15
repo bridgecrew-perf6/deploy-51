@@ -70,7 +70,7 @@
 
               <li class="profile__info-item">
                 <img src="@/assets/images/svg/profile/award.svg" alt="" class="profile__info-icon" />
-                {{ sportTitle }}
+                {{ sportRank }}
               </li>
               <li class="profile__info-item">
                 <img src="@/assets/images/svg/profile/star.svg" alt="" class="profile__info-icon" />
@@ -235,6 +235,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import moment from 'moment'
 
 import LeftMenu from '@/components/LeftMenu.vue'
@@ -244,7 +246,6 @@ import Sidebar from '@/components/Profile/Sidebar.vue'
 
 export default {
   name: 'Profile',
-  props: ['profile'],
   data() {
     return {
       trainerID: localStorage.getItem('trainerID'),
@@ -252,32 +253,6 @@ export default {
       trainerWork: [],
       trainerAwards: [],
       trainerEducations: [],
-      sportTypes: [
-        { id: 'FB', title: 'Футбол' },
-        { id: 'HC', title: 'Хоккей' },
-        { id: 'BB', title: 'Баскетбол' },
-        { id: 'VB', title: 'Волейбол' },
-        { id: 'TN', title: 'Теннис' },
-      ],
-      coachCategories: [
-        { id: '2Q', title: 'Тренер второй квалификационной категории' },
-        { id: '1Q', title: 'Тренер первой квалификационной категории' },
-        { id: 'HQ', title: 'Тренер высшей квалификационной категории' },
-        { id: 'HC', title: 'Заслуженный тренер России' },
-      ],
-      sportTitles: [
-        { id: '3JR', title: 'III юношеский разряд' },
-        { id: '2JR', title: 'II юношеский разряд' },
-        { id: '2JR', title: 'I юношеский разряд' },
-        { id: '3AR', title: 'III разряд' },
-        { id: '2AR', title: 'II разряд' },
-        { id: '2AR', title: 'I разряд' },
-        { id: 'CTM', title: 'Кандидат в Мастера спорта' },
-        { id: 'MOS', title: 'Мастер спорта' },
-        { id: 'IMS', title: 'Мастер спорта международного класса' },
-        { id: 'HMS', title: 'Заслуженный Мастер спорта' },
-      ],
-      awardsTypes: [{ id: 'DP', title: 'Диплом' }],
     }
   },
   components: {
@@ -286,6 +261,14 @@ export default {
     Sidebar,
   },
   computed: {
+    ...mapGetters('auth', [
+      'getSportTypes',
+      'getCoachCategories',
+      'getSportRanks',
+      'getAwardTypes',
+      'getEducationTypes',
+      'getEducationFormats',
+    ]),
     fullName() {
       return `${this.trainer.user.lastName} ${this.trainer.user.firstName} ${this.trainer.user.patronymic}`
     },
@@ -293,13 +276,15 @@ export default {
       return moment(this.trainer.user.birthDate).locale('ru').format('DD MMMM YYYY')
     },
     sportType() {
-      return this.sportTypes.find(type => type.id === this.trainer.sportType).title
+      return this.getSportTypes.find(type => type.id === this.trainer.sportType)?.title || 'Не указан'
     },
     coachCategory() {
-      return this.coachCategories.find(category => category.id === this.trainer.coachingCategories).title
+      return (
+        this.getCoachCategories.find(category => category.id === this.trainer.coachingCategories)?.title || 'Не указан'
+      )
     },
-    sportTitle() {
-      return this.sportTitles.find(title => title.id === this.trainer.sportTitle).title
+    sportRank() {
+      return this.getSportRanks.find(title => title.id === this.trainer.user.sportRank)?.title || ' Не указан'
     },
     phone() {
       return this.trainer.user.phone.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 ($2) $3 - $4 - $5')
@@ -343,7 +328,7 @@ export default {
     getAwards() {
       if (this.trainerID) {
         this.$coach
-          .getCoachRewards(this.trainerID)
+          .getCoachAwards(this.trainerID)
           .then(response => {
             this.trainerAwards = response
           })

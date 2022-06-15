@@ -197,6 +197,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: #fff;
     border: 1px solid #DEDBF5;
     transition: .3s;
     cursor: pointer;

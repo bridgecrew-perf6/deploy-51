@@ -47,7 +47,7 @@
                 hide-details
                 placeholder="__.__.____"
                 v-mask="'##.##.####'"
-                v-model="event.date"
+                v-model="date"
               >
               </v-text-field>
             </div>
@@ -63,7 +63,7 @@
                   placeholder="___:___"
                   return-masked-value
                   v-mask="'##:##'"
-                  v-model="event.timeFrom"
+                  v-model="timeStart"
                 >
                 </v-text-field
                 ><span class="workload__dash">-</span>
@@ -75,31 +75,63 @@
                   placeholder="___:___"
                   return-masked-value
                   v-mask="'##:##'"
-                  v-model="event.timeTo"
+                  v-model="timeEnd"
                 >
                 </v-text-field>
               </div>
             </div>
           </v-col>
-          <v-col :cols="short ? 4 : 8">
+          <v-col :cols="4">
             <span class="modal-create__label">Задача</span>
             <v-select
-              :items="[{ title: 'Повысить показатель ...' }]"
-              item-value="title"
-              item-text="title"
+              v-if="!standard"
+              :items="trainingObjective"
+              item-value="id"
+              item-text="name"
               flat
               single-line
               hide-details
               class="modal-create__select-event-subtype modal-create__select--border"
               :menu-props="menuSettingsBordered"
               label="Выберите задачу"
+              v-model="objectiveType"
+            >
+            </v-select>
+            <v-select
+              v-else
+              :items="standardTaskType"
+              item-value="id"
+              item-text="name"
+              flat
+              single-line
+              hide-details
+              class="modal-create__select-event-subtype modal-create__select--border"
+              :menu-props="menuSettingsBordered"
+              label="Выберите задачу"
+              v-model="taskType"
             >
             </v-select>
           </v-col>
-          <v-col cols="4" v-if="!short">
+          <v-col v-if="!standard" :cols="4">
+            <span class="modal-create__label">Подкатегория</span>
+            <v-select
+              :items="lessonTypes"
+              item-value="id"
+              item-text="name"
+              flat
+              single-line
+              hide-details
+              class="modal-create__select-event-subtype modal-create__select--border"
+              :menu-props="menuSettingsBordered"
+              label="Выберите подкатегорию"
+              v-model="event.title"
+            >
+            </v-select>
+          </v-col>
+          <v-col cols="4" v-if="!standard">
             <span class="modal-create__label">Тип занятия</span>
             <v-select
-              :items="utils.exerciseCategories"
+              :items="trainingObjectType"
               item-value="id"
               item-text="name"
               flat
@@ -108,29 +140,31 @@
               class="modal-create__select-event-subtype modal-create__select--border"
               :menu-props="menuSettingsBordered"
               label="Выберите тип занятия"
-              v-model="event.typeOfPreparation"
+              v-model="objectType"
+              :readonly="true"
             >
             </v-select>
           </v-col>
-          <v-col cols="4" v-if="!short">
+          <v-col cols="4" v-if="!standard">
             <span class="modal-create__label">Вид подготовки</span>
             <v-select
-              :items="[{ title: 'Тактика' }]"
-              item-value="title"
-              item-text="title"
+              :items="trainingTypes"
+              item-value="id"
+              item-text="name"
               flat
               single-line
               hide-details
               class="modal-create__select-event-subtype modal-create__select--border"
               :menu-props="menuSettingsBordered"
               label="Выберите вид подготовки"
+              v-model="trainingType"
             >
             </v-select>
           </v-col>
           <v-col cols="4">
             <span class="modal-create__label">Место проведения</span>
             <v-select
-              :items="utils.exercisePlaygrounds"
+              :items="trainingPlaceTypes"
               item-value="id"
               item-text="name"
               flat
@@ -139,7 +173,7 @@
               class="modal-create__select-event-subtype modal-create__select--border"
               :menu-props="menuSettingsBordered"
               label="Выберите тип зала"
-              v-model="event.exercisePlaygrounds"
+              v-model="placeType"
             >
             </v-select>
           </v-col>
@@ -155,6 +189,8 @@ import { mapActions, mapGetters } from 'vuex'
 import { mask } from 'vue-the-mask'
 import { Chart, registerables } from 'chart.js'
 
+import _ from 'lodash'
+
 Chart.register(...registerables)
 
 export default {
@@ -167,7 +203,8 @@ export default {
     event: {
       type: Object,
     },
-    short: { type: Boolean, default: false },
+    standard: { type: Boolean, default: false },
+    edit: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -210,15 +247,116 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('events', ['getUtils']),
-    utils() {
-      return this.getUtils
+    ...mapGetters('events', [
+      'getTrainingObjective',
+      'getTrainingType',
+      'getTrainingObjectType',
+      'getTrainingPlaceTypes',
+      'getStandardTaskType',
+      'getLessonTypes',
+    ]),
+    trainingObjective() {
+      return this.getTrainingObjective
+    },
+    trainingTypes() {
+      return this.getTrainingType
+    },
+    trainingObjectType() {
+      return this.getTrainingObjectType
+    },
+    trainingPlaceTypes() {
+      return this.getTrainingPlaceTypes
+    },
+    standardTaskType() {
+      return this.getStandardTaskType
     },
     valueSparkline() {
       return this.periods.map(period => period.count)
     },
     labelsSparkline() {
       return this.periods.map(period => period.label)
+    },
+    parseDateTime() {
+      return this.$moment(this.event.recurrences.match(/(\d{8}T\d{6}Z)/g)[0]) || ''
+    },
+    lessonTypes() {
+      return this.getLessonTypes
+    },
+    objectType() {
+      return this.event.training?.objectType || ''
+    },
+    objectiveType: {
+      get() {
+        return this.event.training?.objectiveType || ''
+      },
+      set(val) {
+        this.event.training.objectiveType = val
+      },
+    },
+    trainingType: {
+      get() {
+        return this.event.training?.trainingType || ''
+      },
+      set(val) {
+        this.event.training.trainingType = val
+      },
+    },
+    taskType: {
+      get() {
+        return this.event.standard?.taskType || ''
+      },
+      set(val) {
+        this.event.standard.taskType = val
+      },
+    },
+    placeType: {
+      get() {
+        if (this.standard) return this.event.standard?.placeType
+        else return this.event.training?.placeType
+      },
+      set(val) {
+        if (this.standard) this.event.standard.placeType = val
+        else this.event.training.placeType = val
+      },
+    },
+    date: {
+      get() {
+        if (this.edit) return this.parseDateTime.format('DD.MM.YYYY')
+        else return this.event.date
+      },
+      set: _.debounce(function (val) {
+        if (this.edit) this.$emit('changeDate', val)
+        else this.event.date = val
+      }, 1000),
+    },
+    timeStart: {
+      get() {
+        if (this.edit) return this.parseDateTime.format('HH:mm')
+        else return this.event.timeStart
+      },
+      set: _.debounce(function (val) {
+        if (this.edit) {
+          let duration = this.$moment(this.timeEnd, 'HH:mm').diff(this.$moment(val, 'HH:mm'), 'minutes')
+          this.$emit('changeTimeStart', val)
+          this.$emit('changeDuration', duration)
+        } else {
+          this.event.timeStart = val
+        }
+      }, 1000),
+    },
+    timeEnd: {
+      get() {
+        if (this.edit) return this.$moment(this.parseDateTime).add(this.event.duration, 'minutes').format('HH:mm')
+        else return this.event.timeEnd
+      },
+      set: _.debounce(function (val) {
+        if (this.edit) {
+          let duration = this.$moment(val, 'HH:mm').diff(this.$moment(this.timeStart, 'HH:mm'), 'minutes')
+          this.$emit('changeDuration', duration)
+        } else {
+          this.event.timeEnd = val
+        }
+      }, 1000),
     },
     inputVal: {
       get() {
@@ -231,8 +369,10 @@ export default {
   },
   mounted() {
     this.initChart()
+    this.loadTrainingPlaceTypes()
   },
   methods: {
+    ...mapActions('events', ['loadTrainingPlaceTypes']),
     initChart() {
       let canvas = document.getElementById('sparkline')
       let context = canvas.getContext('2d')
@@ -307,7 +447,7 @@ export default {
     background-color: $blue02
     box-shadow: 0px 6px 8px rgba(128, 133, 187, 0.15)
     border-radius: 28px
-    overflow: hidden
+    overflow: visible
 
 .workload__inner
     position: relative
@@ -332,6 +472,9 @@ export default {
         height: 80%
         background-color: $blue03
         transform: translateY(-50%)
+    &:last-child
+      &::after
+        display: none
 
 .workload__label
     font-size: 12px

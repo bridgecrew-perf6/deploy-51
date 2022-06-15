@@ -34,6 +34,7 @@
       <match-video
           class="video-editor__video"
           menu
+          editor
           :tabActive="tabActive"
           @selectTab="tabActive = $event"/>
     </div>

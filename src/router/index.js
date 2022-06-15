@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import SportsmanChildren from './route-account-sportsmen'
 import TrainerChildren from './route-account-trainer'
 import Vuex from 'vuex'
 import store from '@/store'
@@ -11,11 +10,17 @@ Vue.use(Vuex)
 
 const routes = [
     {
+        path: '*',
+        name: 'PageNotFound',
+        component: () => import('@/views/PageNotFound'),
+        meta: {layout: 'main'},
+    },
+    {
         path: '/',
         redirect: () => {
             const role = localStorage.getItem('role')
-            if (role == 'C') {
-                return '/schedule/month'
+            if (role == 'Coach') {
+                return '/dashboard'
             }
         },
     },
@@ -25,13 +30,16 @@ const routes = [
         component: () => import('@/components/Homework/Homework'),
         meta: {layout: 'main'},
     },
-
+    
     // Календарь
     {
         path: '/schedule',
         name: 'Schedule',
         meta: {layout: 'main'},
         component: () => import('../views/Schedule'),
+        redirect: () => {
+            return { name: 'CalendarMonth' }
+        },
         children: [
             {
                 path: 'year',
@@ -60,28 +68,6 @@ const routes = [
         ],
     },
 
-    // Индивидуальное занятие
-    {
-        path: '/event/:id/:sportsman',
-        name: 'Event',
-        meta: {layout: 'main', userSettings: true},
-        component: () => import('@/components/Calendar/CalendarPlan'),
-    },
-
-    {
-        path: '/event/:id',
-        redirect: '/schedule/week',
-    },
-
-    // Кабинет спортсмена
-    {
-        path: '/account-sportsman',
-        name: 'PersonalSportsman',
-        component: () => import('../views/AccountSportsman'),
-        redirect: '/account-sportsman/home',
-        children: SportsmanChildren,
-    },
-
     // Кабинет тренера
     {
         path: '/account',
@@ -97,33 +83,87 @@ const routes = [
         component: () => import('../views/Media'),
     },
 
-    // Создание тренировок
+    // Тренировки
     {
-        path: "/training/group/new",
-        name: "CreateGroupTraining",
-        meta: {layout: "main", requiresAuth: true},
-        component: () => import("../views/CreateGroupTraining"),
+        path: '/training',
+        name: 'Training',
+        meta: {layout: 'main'},
+        component: () => import('../views/Training'),
+        children: [
+            {
+                path: 'new',
+                component: () => import('@/components/Events/Training/TrainingCreateView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'TrainingCreateView',
+            },
+            {
+                path: ':id',
+                component: () => import('@/components/Events/Training/TrainingView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'TrainingView',
+            },
+            {
+                path: ':id/edit',
+                component: () => import('@/components/Events/Training/TrainingEditView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'TrainingEditView',
+            },
+            {
+                path: 'copy/:id',
+                component: () => import('@/components/Events/Training/TrainingCreateView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'TrainingCopyView',
+            },
+            
+        ],
     },
-    //Оценка тренировок
+    //Тестирование
     {
-        path: "/training/evaluate",
-        name: "GroupEvaluation",
+        path: '/standard',
+        name: 'Standard',
+        meta: {layout: 'main'},
+        component: () => import('../views/Standard'),
+        children: [
+            {
+                path: 'new',
+                component: () => import('@/components/Events/Standard/StandardCreateView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'StandardCreateView',
+            },
+            {
+                path: ':id',
+                component: () => import('@/components/Events/Standard/StandardView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'StandardView',
+            },
+            {
+                path: ':id/edit',
+                component: () => import('@/components/Events/Standard/StandardEditView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'StandardEditView',
+            },
+            {
+                path: 'copy/:id',
+                component: () => import('@/components/Events/Standard/StandardCreateView'),
+                meta: {layout: 'main', requiresAuth: true},
+                name: 'StandardCopyView',
+            },
+            
+        ],
+    },
+    
+    //Дашборд
+    {
+        path: "/dashboard",
+        name: "Dashboard",
         meta: {layout: "main", requiresAuth: true},
-        component: () => import("../views/GroupEvaluation"),
+        component: () => import("../views/Dashboard"),
     },
     {
-        path: "/training/sportsman/new",
-        name: "CreatePersonalTraining",
+        path: "/dashboard/player",
+        name: "DashboardPlayer",
         meta: {layout: "main", requiresAuth: true},
-        component: () => import("../views/CreatePersonalTraining"),
-    },
-
-    //Страница тренировок
-    {
-        path: "/training/:id",
-        name: "Training",
-        meta: {layout: "main", requiresAuth: true},
-        component: () => import("../views/Training"),
+        component: () => import("../views/DashboardPlayer"),
     },
 
     //Создание УТП
@@ -160,7 +200,7 @@ const routes = [
 
     // Страница матча
     {
-        path: '/match-event',
+        path: '/match-event/:id',
         name: 'MatchEvent',
         meta: {layout: 'main'},
         component: () => import('../views/MatchEvent'),
@@ -233,7 +273,7 @@ const routes = [
         meta: {layout: 'main'},
         component: () => import('../views/ExerciseLibrary/Exercise.vue'),
     },
-      
+
     // Цели
     {
         path: '/goals',
@@ -289,14 +329,6 @@ router.beforeEach((to, from, next) => {
             }
             $refreshToken()
         }
-    }
-
-    if (role == 'C' && isPrivateSportsman) {
-        next('/account-trainer')
-    }
-
-    if (role == 'Sp' && isPrivateTrainer) {
-        next('/account-sportsman')
     }
 
     if (authRequired && !loggedIn) {

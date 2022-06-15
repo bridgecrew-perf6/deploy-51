@@ -50,18 +50,10 @@
           </div>
           <div class="hours-col" v-for="(n, index) in 7" :style="isCurrentDay(index) ? timeStyle : ''" :key="index">
             <div class="hours-item" v-for="(m, index) in 12" :key="index"></div>
-            <template v-for="(event, index) in groupSchedule[n]">
-              <CalendarEvent :event="event" :base="heightHourCeil" :key="index"></CalendarEvent>
+            <template v-for="event in groupSchedule[n]">
+              <CalendarEvent :event="event" :base="heightHourCeil" :key="event.id"></CalendarEvent>
             </template>
           </div>
-          <ModalTrainerNewEvent
-            :inDate="createDate"
-            :inTimeStart="createTimeStart"
-            :inTimeEnd="createTimeEnd"
-            :visible="dialogEvent"
-            @close="dialogEvent = false"
-            v-if="dialogEvent"
-          ></ModalTrainerNewEvent>
         </div>
       </div>
     </div>
@@ -69,11 +61,7 @@
 </template>
 
 <script>
-import moment, { duration } from 'moment'
 import CalendarEvent from '@/components/Calendar/CalendarEvent'
-import CalendarDragEvent from '@/components/Calendar/CalendarDragEvent'
-import ModalTrainerNewEvent from '@/components/modals/ModalTrainerNewEvent'
-import { TRAINER_ROLE } from '@/config/api'
 
 export default {
   name: 'CalendarViewWeek',
@@ -85,28 +73,13 @@ export default {
       type: [Array, Object],
     },
   },
-  components: { ModalTrainerNewEvent, CalendarEvent, CalendarDragEvent },
+  components: { CalendarEvent },
   data: function () {
     return {
-      weekDays: moment.weekdaysShort(true),
+      weekDays: this.$moment.weekdaysShort(true),
       heightHourCeil: 64,
-      currentMoment: moment().toDate(),
+      currentMoment: this.$moment().toDate(),
       schedule: this.events,
-      dragEvent: null,
-      dragEventWidth: null,
-      dragDiff: 0,
-      dragEl: null,
-      offsetMinuteMin: 15, // Минимальное смещение в минутах при drag-and-drop
-      dialogEvent: false,
-      dialogEventSkills: false,
-
-      role: localStorage.getItem('role'),
-      trainerRole: TRAINER_ROLE,
-
-      // Время начала - окончания события для модалки
-      createTimeStart: '',
-      createTimeEnd: '',
-      createDate: null,
     }
   },
   watch: {
@@ -116,72 +89,67 @@ export default {
   },
   computed: {
     startWeek: function () {
-      return moment(this.initDay).startOf('week')
+      return this.$moment(this.initDay).startOf('week')
     },
     endWeek: function () {
-      return moment(this.initDay).endOf('week')
+      return this.$moment(this.initDay).endOf('week')
     },
     weekNumber: function () {
-      return moment(this.initDay).week()
+      return this.$moment(this.initDay).week()
     },
     yearNumber: function () {
-      return moment(this.initDay).year()
+      return this.$moment(this.initDay).year()
     },
     month: function () {
-      return moment(this.initDay).format('MMMM')
+      return this.$moment(this.initDay).format('MMMM')
     },
     thisDate: function () {
-      return moment().format('D MMMM')
+      return this.$moment().format('D MMMM')
     },
     thisDayOfWeek: function () {
-      return moment().format('dddd')
+      return this.$moment().format('dddd')
     },
     currentTime: function () {
-      return moment(this.currentMoment).format('H:mm')
+      return this.$moment(this.currentMoment).format('H:mm')
     },
     isDayInWeek() {
-      return moment().isBetween(this.startWeek, this.endWeek)
+      return this.$moment().isBetween(this.startWeek, this.endWeek)
     },
     baseLineStyle: function () {
-      let currentHour = moment(this.currentMoment).hour()
-      let currentMinute = moment(this.currentMoment).minute()
+      let currentHour = this.$moment().hour()
+      let currentMinute = this.$moment().minute()
       let heughtHour = (currentMinute / 60) * 64
       return {
-        top: `${(currentHour - 7) * this.heightHourCeil + heughtHour}px`,
+        top: `${(currentHour - 6) * this.heightHourCeil + heughtHour}px`,
         display: this.isDayInWeek ? 'block' : 'none',
       }
     },
-    convertMinOffset: function () {
-      // Преобразуем смещение в минутах в смещение в пикселях
-      return (this.heightHourCeil * this.offsetMinuteMin) / 60
-    },
-    dragDay: function () {
-      if (this.dragEvent) {
-        return moment(this.dragEvent.start_time).isoWeekday()
-      }
-      return null
-    },
     groupSchedule() {
       let groupSchedule = []
-      for (let i = 1; i <= 7; i++) {
+      for (let i = 0; i <= 6; i++) {
         groupSchedule[i] = []
       }
 
       this.schedule.map(item => {
-        if (moment(item.start_time).isBetween(this.startWeek.toDate(), this.endWeek.toDate(), undefined, '[]')) {
-          let day = moment(item.start_time).isoWeekday()
+        if (
+          this.$moment(item.occurrences[0]).isBetween(this.startWeek.toDate(), this.endWeek.toDate(), undefined, '[]')
+        ) {
+          let day = this.$moment(item.occurrences[0]).isoWeekday()
           groupSchedule[day].push(item)
         }
       })
 
+      let that = this
       groupSchedule.forEach(function (day) {
         if (day.length > 1) {
           day.sort(function (fisrt, second) {
-            let a = moment(fisrt.timeFrom, 'HH:mm:ss'),
-              b = moment(second.timeFrom, 'HH:mm:ss')
+            if (fisrt.item?.occurrences[0] && second.item?.occurrences[0]) {
+              let a = that.$moment(fisrt.item?.occurrences[0]).format('HH:mm:ss'),
+                b = that.$moment(second.item?.occurrences[0]).format('HH:mm:ss')
 
-            if (b.isAfter(a, 'hours')) return -1
-            else return 1
+              if (that.$moment(b).isAfter(a, 'hours')) return -1
+              else return 1
+            }
           })
         }
       })
@@ -197,35 +165,37 @@ export default {
       let heightCalendar = this.heightHourCeil * 18
 
       //Определяем текущее время
-      let currentHour = moment(this.currentMoment).hour()
-      let currentMinute = moment(this.currentMoment).minute()
+      let currentHour = this.$moment(this.currentMoment).hour()
+      let currentMinute = this.$moment(this.currentMoment).minute()
       let heightHour = (currentMinute / 60) * this.heightHourCeil
-      let currentTimePosition = (currentHour - 7) * this.heightHourCeil + heightHour
+      let currentTimePosition = (currentHour - 6) * this.heightHourCeil + heightHour
 
       gradient = `linear-gradient(180deg, ${grayColor} 0px, ${grayColor} ${currentTimePosition}px`
 
-      if (this.groupSchedule[moment().day()].length) {
-        this.groupSchedule[moment().day()].forEach((event, index, array) => {
-          let momentJs = moment(event.start_time)
-          let hour = momentJs.hour()
-          let minute = momentJs.minute()
+      if (this.groupSchedule[this.$moment().day()].length) {
+        this.groupSchedule[this.$moment().day()].forEach((event, index, array) => {
+          if (event.occurrences.length) {
+            let momentJs = this.$moment(event.occurrences[0])
+            let hour = momentJs.hour()
+            let minute = momentJs.minute()
 
-          let startPosition = (hour - 6 + minute / 60) * this.heightHourCeil
-          let endPosition = startPosition + this.heightHourCeil * event.duration
+            let startPosition = (hour - 6 + minute / 60) * this.heightHourCeil
+            let endPosition = startPosition + this.heightHourCeil * event.duration
 
-          if (endPosition < currentTimePosition) {
-            if (index !== array.length - 1) {
-              gradient += `, ${grayColor} ${currentTimePosition}px`
+            if (endPosition < currentTimePosition) {
+              if (index !== array.length - 1) {
+                gradient += `, ${grayColor} ${currentTimePosition}px`
+              } else {
+                gradient += `, ${greenColor} ${currentTimePosition}px, ${greenColor} ${heightCalendar}px)`
+              }
             } else {
-              gradient += `, ${greenColor} ${currentTimePosition}px, ${greenColor} ${heightCalendar}px)`
-            }
-          } else {
-            gradient += `, ${greenColor} ${currentTimePosition}px`
+              gradient += `, ${greenColor} ${currentTimePosition}px`
 
-            gradient += `, ${greenColor} ${startPosition}px, ${transparent} ${startPosition}px, ${transparent} ${endPosition}px`
+              gradient += `, ${greenColor} ${startPosition}px, ${transparent} ${startPosition}px, ${transparent} ${endPosition}px`
 
-            if (index === array.length - 1) {
-              gradient += `, ${greenColor} ${endPosition}px, ${greenColor} ${heightCalendar}px)`
+              if (index === array.length - 1) {
+                gradient += `, ${greenColor} ${endPosition}px, ${greenColor} ${heightCalendar}px)`
+              }
             }
           }
         })
@@ -239,23 +209,23 @@ export default {
   methods: {
     getDayNumber(n) {
       let start = this.startWeek.toDate()
-      return moment(start).add(n, 'd').format('D')
+      return this.$moment(start).add(n, 'd').format('D')
     },
     getDayOfWeek(n) {
       let start = this.startWeek.toDate()
-      return moment(start).add(n, 'd').format('dd')
+      return this.$moment(start).add(n, 'd').format('dd')
     },
 
     getDate(n) {
       let start = this.startWeek.toDate()
-      return moment(start)
+      return this.$moment(start)
         .add(n - 1, 'd')
         .format('DD-MM-YYYY')
     },
 
     isCurrentDay(n) {
-      if (moment(this.initDay).format('M') == moment().format('M')) {
-        return this.getDayNumber(n) == moment().format('D')
+      if (this.$moment(this.initDay).format('M') == this.$moment().format('M')) {
+        return this.getDayNumber(n) == this.$moment().format('D')
       }
       return false
     },
@@ -263,227 +233,14 @@ export default {
     setCurrentMoment() {
       setInterval(
         function () {
-          this.currentMoment = moment().toDate()
+          this.currentMoment = this.$moment().toDate()
         }.bind(this),
         60000
       )
     },
-
-    groupEvent() {
-      let groupSchedule = []
-      for (let i = 1; i <= 7; i++) {
-        groupSchedule[i] = []
-      }
-
-      this.schedule.map(item => {
-        let day = moment(item.start_time).isoWeekday()
-        if (day) {
-          groupSchedule[day].push(item)
-        }
-      })
-      return groupSchedule
-    },
-
-    handleDown(event) {
-      setTimeout(
-        function () {
-          for (let child in this.$children) {
-            if (this.$children[child].$el.contains(event.target)) {
-              let eventTarget = this.$children[child]
-              if (eventTarget.event) {
-                eventTarget.isDraggable = true
-                this.isDraggable = true
-                this.dragEventWidth = eventTarget.$el.parentElement.getBoundingClientRect().width
-                this.dragEl = eventTarget
-                this.dragEvent = {
-                  id: eventTarget.event.id,
-                  start_time: eventTarget.event.start_time,
-                  duration: eventTarget.event.duration,
-                  title: eventTarget.event.name,
-                  desc: eventTarget.event.type_of_preparation,
-                  rating: eventTarget.event.rating,
-                  attenders: eventTarget.event.attenders,
-                }
-              }
-            }
-          }
-        }.bind(this),
-        200
-      )
-    },
-
-    handleUp() {
-      if (this.dragEvent) {
-        this.$set(this.dragEl.$options.propsData.event, 'start_time', this.dragEvent.start_time)
-        // Редактируем занятие
-        this.$store.dispatch('events/updateEvent', {
-          id: this.dragEvent.id,
-          data: {
-            date: moment(this.dragEvent.start_time).format('YYYY-MM-DD'),
-            //.format("YYYY-MM-DDTHH:mm:ss") + ".000Z",
-            timeFrom: moment(this.dragEvent.start_time).format('HH:mm:ss'),
-            timeTo: moment(this.dragEvent.start_time).add(this.dragEvent.duration, 'hours').format('HH:mm:ss'),
-          },
-        })
-
-        this.groupEvent()
-        this.dragEl.isDraggable = false
-        this.dragEvent = null
-        this.dragEl = null
-      }
-
-      /*if (this.dragEvent) {
-        this.$set(this.dragEl.$options.propsData.event, 'start_time', this.dragEvent.start_time)
-        this.$store.dispatch('events/updateEvent', {
-          id: this.dragEvent.id,
-          data: {
-            dateFrom: moment.utc(this.dragEvent.start_time).format('YYYY-MM-DDTHH:mm:ss') + '.000Z',
-            dateTo:
-              moment
-                .utc(this.dragEvent.start_time)
-                .add(this.dragEvent.duration, 'hours')
-                .format('YYYY-MM-DDTHH:mm:ss') + '.000Z',
-          },
-        })
-
-        this.groupEvent()
-        this.dragEl.isDraggable = false
-        this.dragEvent = null
-        this.dragEl = null
-      }*/
-    },
-
-    handleMove(event) {
-      if (!this.dragEvent) return
-
-      let offsetY = event.clientY
-      let offsetX = event.pageX
-      let boundingEl = this.$refs.hours.getBoundingClientRect()
-      let startCol = (this.dragDay - 1) * this.dragEventWidth + 35 + boundingEl.left
-
-      if (this.dragDiff == 0) {
-        this.dragDiff = offsetY
-      }
-
-      let moveUp = this.dragDiff - offsetY > 0
-      let moveDown = this.dragDiff - offsetY < 0
-      // Переносим в предыдущий день
-      if (offsetX < startCol && this.dragDay >= 2) {
-        this.dragEvent.start_time = this.crossEvent(
-          moment(this.dragEvent.start_time).subtract(1, 'days').toDate(),
-          moveUp,
-          moveDown
-        )
-        return
-      }
-
-      // Переносим в следующий день
-      if (offsetX > startCol + this.dragEventWidth && this.dragDay <= 6) {
-        this.dragEvent.start_time = this.crossEvent(
-          moment(this.dragEvent.start_time).add(1, 'days').toDate(),
-          moveUp,
-          moveDown
-        )
-        return
-      }
-
-      // Переносим часы в рамках одного дня
-      if (Math.abs(this.dragDiff - offsetY) >= this.convertMinOffset) {
-        let topOffset = offsetY - this.$refs.hours.getBoundingClientRect().top
-        let topIndex = Math.trunc(topOffset / this.offsetMinuteMin) - 1
-        let startDay = moment(this.dragEvent.start_time).hours(7).minutes(0)
-        let newTime = startDay.add(this.offsetMinuteMin * topIndex, 'minutes').toDate()
-
-        if (moment(newTime).hour() < 7 || moment(newTime).hour() > 18) return
-
-        this.dragEvent.start_time = this.crossEvent(newTime, moveUp, moveDown)
-
-        //newTime = this.crossEvent(newTime, moveUp, moveDown);
-        // if(moment(newTime).hour() < 7 || moment(newTime).hour() > 18) return;
-        this.dragEvent.start_time = this.crossEvent(newTime, moveUp, moveDown)
-        this.dragDiff = 0
-      }
-    },
-
-    isCompare(event1, event2) {
-      return (
-        moment(event1.start_time).isBetween(
-          moment(event2.start_time).toDate(),
-          moment(event2.end_time),
-          undefined,
-          '[)'
-        ) ||
-        moment(event1.end_time).isBetween(moment(event2.start_time).toDate(), moment(event2.end_time)) ||
-        moment(event2.start_time).isBetween(
-          moment(event1.start_time).toDate(),
-          moment(event1.end_time),
-          undefined,
-          '[)'
-        ) ||
-        moment(event2.end_time).isBetween(moment(event1.start_time).toDate(), moment(event1.end_time))
-      )
-    },
-
-    crossEvent(newTime, moveUp, moveDown) {
-      let calcTime = newTime
-      for (let key in this.schedule) {
-        let event = this.schedule[key]
-
-        if (!moment(this.dragEl.event.start_time).isSame(event.start_time)) {
-          let ev1 = {
-            start_time: moment(calcTime),
-            end_time: moment(calcTime).add(this.dragEl.event.duration, 'hours'),
-          }
-          let ev2 = {
-            start_time: moment(event.start_time),
-            end_time: moment(event.start_time).add(event.duration, 'hours'),
-          }
-
-          // Считает пересечение интервалов
-          if (this.isCompare(ev1, ev2)) {
-            if (moveUp) {
-              calcTime = moment(event.start_time).subtract(this.dragEl.event.duration, 'hours').toDate()
-              if (moment(calcTime).hour() < 7) calcTime = moment(event.start_time).add(event.duration, 'hours').toDate()
-            }
-            if (moveDown) {
-              calcTime = moment(event.start_time).add(event.duration, 'hours').toDate()
-            }
-
-            break
-          }
-        }
-      }
-
-      if (!moment(calcTime).isSame(newTime)) {
-        calcTime = this.crossEvent(calcTime, moveUp, moveDown)
-      }
-
-      return calcTime
-    },
-
-    createEvent(date, time) {
-      this.createTimeStart = time < 10 ? '0' + time + ':00' : time + ':00'
-      this.createTimeEnd = time + 1 < 10 ? '0' + (time + 1) + ':00' : time + 1 + ':00'
-      this.createDate = date
-      this.dialogEvent = true
-    },
   },
   mounted() {
     this.setCurrentMoment()
-    document.documentElement.addEventListener('mousemove', this.handleMove, true)
-    document.documentElement.addEventListener('mousedown', this.handleDown, true)
-    document.documentElement.addEventListener('mouseup', this.handleUp, true)
-    document.documentElement.addEventListener('touchmove', this.handleMove, true)
-    document.documentElement.addEventListener('touchstart', this.handleDown, true)
-    document.documentElement.addEventListener('touchend', this.handleUp, true)
-  },
-  beforeUnmount() {
-    document.documentElement.removeEventListener('mousemove', this.handleMove, true)
-    document.documentElement.removeEventListener('mousedown', this.handleDown, true)
-    document.documentElement.removeEventListener('mouseup', this.handleUp, true)
-    document.documentElement.removeEventListener('touchmove', this.handleMove, true)
-    document.documentElement.removeEventListener('touchstart', this.handleDown, true)
-    document.documentElement.removeEventListener('touchend', this.handleUp, true)
   },
 }
 </script>
@@ -529,7 +286,7 @@ export default {
   transform: translateY(-50%);
   height: 1px;
   transition: all 0.4s;
-  z-index: 1;
+  z-index: 0;
 
   &:after {
     content: '';
@@ -549,6 +306,7 @@ export default {
     background: $blue02;
     border-radius: 100%;
     transform: translateX(-5px);
+    z-index: 9999;
   }
 }
 

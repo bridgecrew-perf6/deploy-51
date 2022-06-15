@@ -62,9 +62,9 @@ export default {
 <style scoped lang="scss">
 .v-btn {
   position: relative;
-  border: 0!important;
-  &:before{
-    content: "";
+  border: 0 !important;
+  &:before {
+    content: '';
     width: 100%;
     height: 100%;
     border-radius: 22px;
@@ -75,17 +75,17 @@ export default {
     background: transparent;
     border: 2px solid rgba(255, 255, 255, 0.5);
   }
-  &.no-border{
-    &:before{
+  &.no-border {
+    &:before {
       opacity: 0;
     }
   }
-  &.light-border{
-    &:before{
+  &.light-border {
+    &:before {
       border-width: 1px;
     }
   }
-  .v-btn__content{
+  .v-btn__content {
     position: relative;
     z-index: 2;
   }

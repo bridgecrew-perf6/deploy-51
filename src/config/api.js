@@ -4,7 +4,7 @@ export const API_URL = 'http://139.59.158.39:8000'
 export const API_URL_GRAF = 'http://139.59.158.39:8000/api'
 
 // Роли
-export const TRAINER_ROLE = 'C'
+export const TRAINER_ROLE = 'Coach'
 export const SPORTSMAN_ROLE = 'Sp'
 
 // Время жизни access токена

@@ -1,15 +1,27 @@
 <template>
   <v-item-group mandatory class="d-flex mb-15">
-    <v-item v-for="(n, index) in trainingPlan" :key="index" v-slot="{ active, toggle }">
+    <v-item v-for="(stage, index) in plan" :key="index" v-slot="{ active, toggle }">
       <v-card :ripple="false" class="d-flex training-plan__card" @click="toggle">
-        <div class="training-plan training-plan--second" :class="{ 'training-plan--active': active }">
-          <div class="training-plan__title-wrapper" v-if="!active">
-            <span class="training-plan__title-icon"></span>
-            <p class="training-plan__title">Часть II</p>
+        <div
+          class="training-plan"
+          :class="{ 'training-plan--active': active, [`training-plan--${stage.stage.id}`]: stage.stage.id }"
+        >
+          <div
+            class="training-plan__title-wrapper"
+            v-if="!active"
+            :class="{ 'training-plan__title-wrapper--testing': stage.stage.id == 'testing' }"
+          >
+            <span
+              class="training-plan__title-icon"
+              :class="{ 'training-plan__title-icon--testing': stage.stage.id == 'testing' }"
+            ></span>
+            <p class="training-plan__title">Часть {{ stage.stage.romanNum }}</p>
           </div>
           <div class="training-plan__content" v-if="active">
             <div class="training-plan__content-header">
-              <h2 class="training-plan__content-header-title">часть II - Основная</h2>
+              <h2 class="training-plan__content-header-title">
+                Часть {{ stage.stage.romanNum }} - {{ stage.stage.name }}
+              </h2>
             </div>
             <div class="training-plan__content-body">
               <div class="training-plan__exercises-wrapper">
@@ -22,61 +34,65 @@
                     <div
                       class="training-plan__exercise-wrapper"
                       :class="{
-                        'training-plan__exercise-wrapper--half': trainingPlan[index].length === 2,
-                        'training-plan__exercise-wrapper--full': trainingPlan[index].length === 1,
+                        'training-plan__exercise-wrapper--half': stage.exercises.length === 2,
+                        'training-plan__exercise-wrapper--full': stage.exercises.length === 1,
                       }"
-                      v-for="element in trainingPlan[index]"
+                      v-for="element in stage.exercises"
                       :key="element.id"
                     >
-                      <div
-                        class="training-plan__exercise-status"
-                        :class="{ 'training-plan__exercise-status--full': trainingPlan[index].length === 1 }"
-                      >
-                        <template v-if="status">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <circle cx="10" cy="10" r="10" fill="#2ABAF3" />
-                            <path
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
-                              d="M15.3633 7.29289C14.9728 6.90237 14.3396 6.90237 13.9491 7.29289L8.82658 12.4154L6.70606 10.2923C6.31578 9.90155 5.683 9.90155 5.29271 10.2923C4.90243 10.6831 4.90243 11.3166 5.29271 11.7074L8.11941 14.5375C8.5097 14.9283 9.14247 14.9283 9.53276 14.5375C9.56197 14.5083 9.58899 14.4777 9.61382 14.4459C9.64595 14.4208 9.6769 14.3935 9.70645 14.364L15.3633 8.70711C15.7538 8.31658 15.7538 7.68342 15.3633 7.29289Z"
-                              fill="white"
-                            />
-                          </svg>
-                        </template>
-                      </div>
                       <v-card
                         class="training-plan__exercise"
-                        :class="{ 'training-plan__exercise--full': trainingPlan[index].length === 1 }"
+                        :class="{
+                          'training-plan__exercise--full': stage.exercises.length === 1,
+                          'training-plan__exercise--testing': stage.stage.id === 'testing',
+                        }"
                       >
                         <div
                           class="training-plan__exercise-cover"
-                          :class="{ 'training-plan__exercise-cover--full': trainingPlan[index].length === 1 }"
-                          :style="`background-image: url(${element.img})`"
+                          :class="{ 'training-plan__exercise-cover--full': stage.exercises.length === 1 }"
+                          :style="`background-image: url(${element.exercise.image})`"
                         ></div>
 
                         <div
                           class="training-plan__exercise-content-wrapper"
-                          :class="{ 'training-plan__exercise-content-wrapper--full': trainingPlan[index].length === 1 }"
+                          :class="{ 'training-plan__exercise-content-wrapper--full': stage.exercises.length === 1 }"
                         >
-                          <v-card-title class="training-plan__exercise-title-wrapper" :aria-label="element.title">
-                            <p class="training-plan__exercise-title">{{ element.title }}</p>
+                          <v-card-title
+                            class="training-plan__exercise-title-wrapper"
+                            :aria-label="element.exercise.title"
+                          >
+                            <p class="training-plan__exercise-title">
+                              <svg
+                                v-if="stage.stage.id === 'testing'"
+                                class="training-plan__exercise-title-icon"
+                                width="18"
+                                height="20"
+                                viewBox="0 0 18 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M13.77 4.6c.398-.46.775-.906 1.162-1.342.423-.476.988-.546 1.402-.186.448.388.475.897.056 1.41-.394.478-.805.94-1.24 1.445 1.79 2.27 2.394 4.828 1.706 7.626-.509 2.068-1.698 3.712-3.453 4.933-3.523 2.45-8.288 1.875-11.225-1.35C-.623 14.06-.729 9.246 1.898 6.03c2.67-3.268 7.673-4.44 11.872-1.428ZM9.499 8.093V6.87l-.001-.107c-.031-.666-.378-1.05-.944-1.046-.567.003-.915.385-.928 1.057-.014.761-.02 1.523.002 2.283.012.424-.065.74-.414 1.058-.757.688-.735 1.891-.03 2.625a1.925 1.925 0 0 0 2.638.102c.765-.68.904-1.892.174-2.609-.456-.446-.533-.898-.498-1.452.013-.229.002-.46 0-.69ZM8.592.003c.618 0 1.237-.01 1.855.003.577.012.946.372.961.909.015.532-.337.971-.894.984-1.307.03-2.616.03-3.923 0-.558-.015-.898-.455-.878-.996.019-.538.383-.886.97-.897C7.32-.005 7.955.003 8.592.003Z"
+                                  fill="#FF4B6B"
+                                />
+                              </svg>
+                              {{ element.exercise.title }}
+                            </p>
                             <p class="training-plan__exercise-time">
-                              <span class="training-plan__exercise-time-minutes">{{ element.time }}</span
+                              <span class="training-plan__exercise-time-minutes">{{
+                                parseInt(element.exercise.duration || 0)
+                              }}</span
                               >мин
                             </p>
                           </v-card-title>
                           <div
                             class="training-plan__exercise-content"
-                            :class="{ 'training-plan__exercise-content--full': trainingPlan[index].length === 1 }"
+                            :class="{ 'training-plan__exercise-content--full': stage.exercises.length === 1 }"
                           >
                             <div class="d-flex justify-space-between mb-2">
-                              <p class="training-plan__exercise-content-description">{{ element.description }}</p>
+                              <p class="training-plan__exercise-content-description">
+                                {{ element.exercise.description }}
+                              </p>
                               <svg
                                 class="training-plan__exercise-content-favorite"
                                 width="16"
@@ -94,11 +110,11 @@
 
                             <div class="d-flex justify-space-between">
                               <span class="training-plan__exercise-content-intensity">
-                                <template v-if="element.intensity === 'low'">
+                                <template v-if="element.exercise.intensity === 'low'">
                                   <img src="@/assets/images/svg/workload/low.svg" />
                                   Низкая
                                 </template>
-                                <template v-else-if="element.intensity === 'middle'">
+                                <template v-else-if="element.exercise.intensity === 'middle'">
                                   <img src="@/assets/images/svg/workload/medium.svg" />
                                   Умеренная
                                 </template>
@@ -108,7 +124,7 @@
                                 </template>
                               </span>
                               <span class="training-plan__exercise-content-type">
-                                {{ element.type }}
+                                {{ element.exercise.type }}
                               </span>
                             </div>
                           </div>
@@ -127,10 +143,17 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import vueCustomScrollbar from 'vue-custom-scrollbar'
 import 'vue-custom-scrollbar/dist/vueScrollbar.css'
 
 export default {
+  props: {
+    trainingPlan: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       scrollSettings: {
@@ -140,16 +163,34 @@ export default {
         wheelPropagation: false,
       },
       status: true,
+      exercises: null,
     }
   },
   components: {
     vueCustomScrollbar,
   },
-  props: {
-    trainingPlan: {
-      type: Object,
-      required: true,
+  computed: {
+    ...mapGetters('events', ['getTrainingStage', 'getTrainingPlaceTypes']),
+    plan() {
+      let plan = []
+
+      this.getTrainingStage.forEach(stage => {
+        let exercises = this.trainingPlan.filter(
+          exercise => exercise.standardStage === stage.id || exercise.trainingStage === stage.id
+        )
+
+        if (exercises.length)
+          plan.push({
+            stage,
+            exercises,
+          })
+      })
+
+      return plan
     },
+  },
+  methods: {
+    ...mapActions('events', ['loadTrainingPlaceTypes']),
   },
 }
 </script>
@@ -192,7 +233,9 @@ export default {
     &:nth-child(1)
         &.v-item--active
             .training-plan
-                background: linear-gradient(180deg, $blue02 0%, $blue02 56px, $blue03 56px, $blue03 100%)
+              background: linear-gradient(180deg, $blue02 0%, $blue02 56px, $blue03 56px, $blue03 100%)
+            //.training-plan
+            //  background: linear-gradient(180deg, #CC3C56 0%, #CC3C56 56px, $terrible 56px, $terrible 100%)
 
     &:nth-child(1):not(.v-item--active),
     &:nth-child(2):not(.v-item--active)
@@ -232,15 +275,19 @@ export default {
     padding-left: 0px
 
 
-.training-plan--first
+.training-plan--preparation
   .training-plan__title-icon
     &::after
       background-image: url("data:image/svg+xml,%3Csvg width='9' height='20' viewBox='0 0 9 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)' fill='%2395B0DA'%3E%3Cpath d='M2.345 9.955c0-1.777-.007-3.554.004-5.33.006-.866.533-1.512 1.326-1.683.728-.156 1.503.208 1.81.897.114.257.172.56.173.842.012 3.554.013 7.107.006 10.66-.002 1.008-.692 1.724-1.633 1.737-.953.015-1.673-.713-1.68-1.744-.015-1.792-.006-3.586-.006-5.379ZM4.06 19.999c-.887 0-1.775.003-2.662-.001-.79-.004-1.239-.304-1.36-.898-.134-.66.284-1.28.957-1.294a238.88 238.88 0 0 1 5.955-.037c.638.004 1.082.529 1.066 1.144-.016.6-.48 1.06-1.147 1.074-.936.021-1.873.005-2.81.005a.019.019 0 0 1 .001.007ZM4.021.01c.935 0 1.87-.015 2.804.004.75.016 1.178.44 1.18 1.112.001.655-.456 1.096-1.2 1.1-1.87.01-3.74.01-5.609-.002C.478 2.22-.004 1.748 0 1.105.005.473.5.013 1.217.005 2.15-.004 3.086.004 4.02.004V.01Z'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h8.017v20H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E")
-.training-plan--second
+.training-plan--main
   .training-plan__title-icon
     &::after
       background-image: url("data:image/svg+xml,%3Csvg width='13' height='20' viewBox='0 0 13 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)' fill='%23B9CBE5'%3E%3Cpath d='M2.304 10.008c0-1.793-.007-3.584.004-5.377.004-.701.297-1.257.955-1.56.63-.29 1.23-.203 1.77.233.404.327.584.771.585 1.278.006 3.602.012 7.204 0 10.806-.005.981-.71 1.68-1.63 1.692-.946.012-1.668-.69-1.678-1.694-.02-1.792-.007-3.585-.006-5.378ZM10.051 10.024c0 1.743-.046 3.487.019 5.227.036.97-.917 1.868-1.677 1.84-.978-.04-1.651-.742-1.653-1.826-.006-3.52-.005-7.04 0-10.558.002-1.07.695-1.8 1.677-1.796.953.005 1.63.738 1.632 1.786.006 1.776.002 3.551.002 5.327ZM6.183 19.998c-1.63 0-3.26.005-4.89-.002-.76-.003-1.244-.4-1.29-1.032-.049-.656.415-1.177 1.108-1.196.758-.021 1.518-.008 2.276-.008 1.937 0 3.874-.004 5.811.001.74.002 1.482.02 2.223.039.432.011.833.395.919.86.09.492-.194 1.066-.653 1.227a2.192 2.192 0 0 1-.71.105c-1.598.01-3.196.006-4.794.006ZM6.228.002c1.631 0 3.262-.004 4.893.002.743.002 1.216.423 1.237 1.076.021.667-.432 1.134-1.162 1.146-1.033.017-2.067.006-3.1.006L1.605 2.23c-.193 0-.389 0-.58-.024C.368 2.122-.016 1.693.001 1.08.017.465.474.015 1.143.008 2.532-.006 3.92.003 5.308.003l.92-.001Z'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h12.358v20H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E")
-.training-plan--third
+.training-plan--testing
+  .training-plan__title-icon
+    &::after
+      background-image: url("data:image/svg+xml,%3Csvg width='18' height='20' viewBox='0 0 18 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)' fill='%23fff'%3E%3Cpath d='M13.77 4.6c.398-.46.775-.906 1.162-1.342.423-.476.988-.546 1.402-.186.448.388.475.897.056 1.41-.394.478-.805.94-1.24 1.445 1.79 2.27 2.394 4.828 1.706 7.626-.509 2.068-1.698 3.712-3.453 4.933-3.523 2.45-8.288 1.875-11.225-1.35C-.623 14.06-.729 9.246 1.898 6.03c2.67-3.268 7.673-4.44 11.872-1.428ZM9.499 8.093V6.87l-.001-.107c-.031-.666-.378-1.05-.944-1.046-.567.003-.915.385-.928 1.057-.014.761-.02 1.523.002 2.283.012.424-.065.74-.414 1.058-.757.688-.735 1.891-.03 2.625a1.925 1.925 0 0 0 2.638.102c.765-.68.904-1.892.174-2.609-.456-.446-.533-.898-.498-1.452.013-.229.002-.46 0-.69ZM8.592.003c.619 0 1.237-.01 1.856.003.577.012.946.372.96.909.015.532-.336.971-.893.984-1.307.03-2.617.03-3.924 0-.558-.015-.898-.455-.878-.996.02-.538.384-.886.97-.897.636-.011 1.273-.003 1.91-.003Z'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h17.134v20H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+.training-plan--final
   .training-plan__title-icon
     &::after
       background-image: url("data:image/svg+xml,%3Csvg width='17' height='20' viewBox='0 0 17 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)' fill='%23B9CBE5'%3E%3Cpath d='M10.126 9.997c0 1.777.013 3.554-.004 5.331-.012 1.337-1.212 2.14-2.363 1.592-.687-.328-.956-.92-.955-1.66.002-2.57 0-5.138 0-7.706 0-1.002-.019-2.004.01-3.005.022-.84.573-1.459 1.354-1.601.764-.139 1.497.214 1.788.923.12.288.16.626.162.942.016 1.727.008 3.456.008 5.184ZM14.55 9.997c0 1.793.01 3.586-.003 5.377-.01 1.294-1.228 2.09-2.354 1.548-.67-.323-.94-.894-.94-1.617V9.2c0-1.518-.011-3.035.002-4.554.01-1.076.781-1.81 1.782-1.726.896.074 1.504.741 1.51 1.698.01 1.793.002 3.586.003 5.378ZM2.429 10.016c0-1.79-.006-3.58.002-5.371.005-.984.64-1.691 1.528-1.733.881-.04 1.606.615 1.695 1.582.049.529.032 1.064.033 1.597.003 3.1.006 6.2.001 9.298 0 .752-.409 1.34-1.06 1.582-.67.25-1.43.104-1.83-.477a2.325 2.325 0 0 1-.39-1.2c-.041-1.759-.017-3.518-.017-5.278h.038ZM8.486.001c2.391 0 4.782-.004 7.174.002.922.002 1.47.694 1.196 1.488-.139.403-.43.64-.842.715-.204.037-.418.034-.627.034L4.48 2.243c-1.048 0-2.096 0-3.144-.004-.456-.002-.869-.12-1.14-.519A1.008 1.008 0 0 1 .136.618C.366.195.742.003 1.216.002c1.034-.002 2.068 0 3.102 0h4.169ZM8.46 19.996c-2.326-.001-4.653 0-6.979-.002-.192 0-.39.002-.577-.036a1.121 1.121 0 0 1-.896-1.112c.015-.527.419-.979.958-1.06.142-.021.29-.02.435-.02h14.15c.528 0 1.02.097 1.26.63.36.806-.16 1.58-1.082 1.593-1.244.018-2.488.006-3.732.007H8.46Z'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h16.927v20H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E")
@@ -253,6 +300,8 @@ export default {
   height: 100%
   width: 150px
   background-color: $blue02
+  //&--testing
+  //  background-color: $terrible !important
 
 .training-plan__title-icon
   position: relative
@@ -268,6 +317,8 @@ export default {
     height: 100%
     background-repeat: no-repeat
     background-position: center
+  //&--testing
+  //  background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), $terrible !important;
 
 .training-plan__title
   position: absolute
@@ -288,6 +339,7 @@ export default {
 .training-plan__content
   position: relative
   height: 100%
+  padding-top: 24px
   background-color: #FFFFFF
   border-radius: 28px
   z-index: 2
@@ -296,8 +348,7 @@ export default {
     display: flex
     align-items: center
     justify-content: center
-    height: 56px
-
+    margin-bottom: 25px
 
 .training-plan__content-header-title
     font-weight: 600
@@ -375,6 +426,8 @@ export default {
         z-index: 100
         .training-plan__exercise-content
             display: block
+    &--testing
+      //border-color: $terrible
 
 
 .training-plan__exercise--full
@@ -392,6 +445,8 @@ export default {
     max-height: 160px
     background-size: cover
     background-position: center
+    border-top-left-radius: 0 !important
+    border-top-right-radius: 0 !important
 
 .training-plan__exercise-cover--full
     height: 250px
@@ -404,6 +459,7 @@ export default {
 .training-plan__exercise-content-wrapper--full
     display: flex
     flex-direction: column
+    width: 100%
 
 .training-plan__exercise-title-wrapper
     display: flex
@@ -422,6 +478,10 @@ export default {
     -webkit-line-clamp: 1
     -webkit-box-orient: vertical
     overflow: hidden
+
+.training-plan__exercise-title-icon
+  margin-right: 10px
+  vertical-align: bottom
 
 .training-plan__exercise-time
     margin-left: 15px
@@ -463,4 +523,11 @@ export default {
     font-size: 12px
     line-height: 20px
     color: $blue02
+</style>
+
+<style lang="sass">
+.training-plan__exercises-list-scroll
+  .ps__rail-x
+    top: 230px
+    bottom: auto !important
 </style>

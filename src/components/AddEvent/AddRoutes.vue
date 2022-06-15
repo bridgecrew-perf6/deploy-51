@@ -1,90 +1,79 @@
 <template>
   <div class="add-routes">
     <div class="add-routes__top">
-      <v-text-field class="custom-inp add-routes__top-inp"
-                    v-model="form.lacation"
-                    return-masked-value flat
-                    hide-details>
+      <v-text-field
+        class="custom-inp add-routes__top-inp"
+        v-model="form.lacation"
+        return-masked-value
+        flat
+        hide-details
+      >
         <template slot="prepend">
           <div class="add-routes__top-inp-text">{{ name }}</div>
         </template>
         <template slot="append">
           <div class="custom-inp__icon-inside">
-            <img src="@/assets/images/svg/map.svg" alt="map">
+            <img src="@/assets/images/svg/map.svg" alt="map" />
           </div>
         </template>
       </v-text-field>
     </div>
 
     <div class="add-routes__routes">
-      <route-steps class="add-routes__step" :steps="form.routes.length" :active="active"/>
+      <route-steps class="add-routes__step" :steps="form.routes.length" :active="active" />
       <div class="add-routes__route-wrapper">
-        <div class="add-routes__route"
-             :class="{'add-routes__route_active': index + 1 !== active && index + 1 === form.routes.length}"
-             v-for="(route, index) in form.routes" :key="index">
+        <div
+          class="add-routes__route"
+          :class="{ 'add-routes__route_active': index + 1 !== active && index + 1 === form.routes.length }"
+          v-for="(route, index) in form.routes"
+          :key="index"
+        >
           <div class="add-routes__routes-form" v-if="index + 1 === active">
             <div class="add-routes__routes-group">
-              <v-text-field
-                  class="custom-inp add-routes__min-inp"
-                  return-masked-value
-                  v-mask="'##:##'"
-                  flat
-                  hide-details
-                  placeholder="__ : __"
-                  v-model="route.timeStart"
-              >
-              </v-text-field>
-
+              <wu-input-time v-model="route.timeStart" class="add-routes__min-inp" />
 
               <v-text-field
-                  class="custom-inp add-routes__max-inp"
-                  return-masked-value
-                  flat
-                  hide-details
-                  placeholder="Введите заголовок ..."
-                  v-model="route.title"
+                class="custom-inp add-routes__max-inp"
+                return-masked-value
+                flat
+                hide-details
+                placeholder="Введите заголовок ..."
+                v-model="route.title"
               >
               </v-text-field>
             </div>
             <div class="add-routes__routes-group">
               <div class="custom-inp add-routes__inp-min-text">
                 <p>Длительность</p>
-                <v-text-field
-                    class="custom-inp add-routes__min-inp"
-                    return-masked-value
-                    v-mask="'##:##'"
-                    flat
-                    hide-details
-                    placeholder="__ : __"
-                    v-model="route.duration"
-                >
-                </v-text-field>
+
+                <wu-input-time v-model="route.duration" all-hours class="add-routes__min-inp" />
               </div>
               <v-text-field
-                  class="custom-inp add-routes__max-inp"
-                  return-masked-value
-                  flat
-                  hide-details
-                  placeholder="Введите данные маршрута через запятую ..."
-                  v-model="route.routeData"
+                class="custom-inp add-routes__max-inp"
+                return-masked-value
+                flat
+                hide-details
+                placeholder="Введите данные маршрута через запятую ..."
+                v-model="route.routeData"
               >
               </v-text-field>
             </div>
             <div class="add-routes__routes-group add-routes__routes-group_bottom">
               <v-text-field
-                  class="custom-inp add-routes__max-inp"
-                  return-masked-value
-                  flat
-                  hide-details
-                  placeholder="Введите комментарий"
-                  v-model="route.comments"
+                class="custom-inp add-routes__max-inp"
+                return-masked-value
+                flat
+                hide-details
+                placeholder="Введите комментарий"
+                v-model="route.comments"
               >
               </v-text-field>
               <div class="add-routes__routes-icon" @click="save(index)">
                 <svg width="23" height="16" viewBox="0 0 23 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
-                      d="M21.732 0.278316C21.2417 -0.145415 20.4819 -0.0706388 20.0406 0.402943L7.66195 12.9903L2.1467 7.35712C1.68097 6.88354 0.945599 6.80877 0.455355 7.2325C-0.108427 7.70608 -0.157451 8.57847 0.357306 9.1019L6.755 15.6074C7.26976 16.1309 8.12769 16.1309 8.64244 15.6074L21.83 2.14772C22.3203 1.62429 22.2958 0.776824 21.732 0.278316Z"
-                      fill="#95B0DA"/>
+                    d="M21.732 0.278316C21.2417 -0.145415 20.4819 -0.0706388 20.0406 0.402943L7.66195 12.9903L2.1467 7.35712C1.68097 6.88354 0.945599 6.80877 0.455355 7.2325C-0.108427 7.70608 -0.157451 8.57847 0.357306 9.1019L6.755 15.6074C7.26976 16.1309 8.12769 16.1309 8.64244 15.6074L21.83 2.14772C22.3203 1.62429 22.2958 0.776824 21.732 0.278316Z"
+                    fill="#95B0DA"
+                  />
                 </svg>
               </div>
             </div>
@@ -93,18 +82,18 @@
             <div class="add-routes__routes-info-content">
               <h3 class="add-routes__routes-time">{{ route.timeStart }}</h3>
               <p class="add-routes__routes-descr">
-                {{ route.title }}: <br/>
+                {{ route.title }}: <br />
                 {{ route.routeData }}
               </p>
             </div>
             <button class="add-routes__routes-info-edit" @click="edit(index + 1)">
-              <img src="@/assets/images/svg/edit.svg" alt="edit">
+              <img src="@/assets/images/svg/edit.svg" alt="edit" />
             </button>
           </div>
         </div>
         <button class="add-routes__routes-add" @click="addRoute">
           <div class="add-routes__routes-plus">
-            <img src="@/assets/images/svg/plus.svg" alt="plus">
+            <img src="@/assets/images/svg/plus.svg" alt="plus" />
           </div>
           <p>Добавить пункт маршрута</p>
         </button>
@@ -114,15 +103,16 @@
 </template>
 
 <script>
-import {required} from "vuelidate/lib/validators";
-import RouteSteps from './RouteSteps.vue';
+import { required } from 'vuelidate/lib/validators'
+import RouteSteps from './RouteSteps.vue'
 
 export default {
   props: {
     name: String,
+    route: Object,
   },
   components: {
-    RouteSteps
+    RouteSteps,
   },
   data() {
     return {
@@ -134,11 +124,11 @@ export default {
             title: '',
             duration: '',
             routeData: '',
-            comments: ''
-          }
-        ]
+            comments: '',
+          },
+        ],
       },
-      active: 1
+      active: 1,
     }
   },
   validations: {
@@ -152,20 +142,36 @@ export default {
             required,
           },
           duration: {
-            required,
+            required
           },
           routeData: {
             required,
-          }
+          },
+        },
+      },
+    },
+  },
+  watch: {
+    form: {
+      handler() {
+        this.$emit('changeForm', this.form)
+      },
+      deep: true,
+    },
+    route: {
+      handler() {
+        if (this.route.routes.length) {
+          this.form = this.route
         }
-      }
-    }
+      },
+      deep: true,
+    },
   },
   methods: {
     addRoute() {
       if (this.$v.$invalid) {
-        this.$v.$touch();
-        return;
+        this.$v.$touch()
+        return
       }
 
       this.form.routes.push({
@@ -173,7 +179,7 @@ export default {
         title: '',
         duration: '',
         routeData: '',
-        comments: ''
+        comments: '',
       })
       this.active = this.form.routes.length
     },
@@ -187,18 +193,28 @@ export default {
     },
     save() {
       if (this.$v.$invalid) {
-        this.$v.$touch();
-        return;
+        this.$v.$touch()
+        return
       }
 
       this.active = 0
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style scoped lang="scss">
 .add-routes {
+  .custom-inp {
+    &_err {
+      &::v-deep {
+        input {
+          border: 1px solid #ff4b6b;
+        }
+      }
+    }
+  }
+
   &__top-inp-text {
     color: $blue02;
     font-size: 20px;
@@ -265,7 +281,7 @@ export default {
 
   &__routes-time {
     margin-top: -15px;
-    color: #464EA3;
+    color: #464ea3;
     font-size: 36px;
     font-weight: 400;
   }
@@ -328,6 +344,10 @@ export default {
     &::v-deep .v-input__slot {
       .v-text-field__slot input {
         text-align: center;
+
+        &::placeholder {
+          font-size: 14px;
+        }
       }
     }
   }
@@ -351,7 +371,7 @@ export default {
 
     p {
       margin-left: 19px;
-      color: #464EA3;
+      color: #464ea3;
     }
   }
 
@@ -362,7 +382,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #95B0DA;
+    background-color: #95b0da;
   }
 }
 </style>

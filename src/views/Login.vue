@@ -92,14 +92,14 @@
             :rules="passwordRules"
           ></v-text-field>
 
-          <base-checkbox
+          <wu-checkbox
             :value="keepLogged"
             v-model="keepLogged"
             class="welcome__remember-me"
             label="Оставаться авторизованным"
           />
 
-          <login-button @click="submitForm()" label="Войти в аккаунт" />
+          <wu-button class="welcome__login-btn" @click="submitForm()" label="Войти в аккаунт" />
         </v-form>
 
         <p class="welcome__create-account">
@@ -121,21 +121,11 @@
 
 <script>
 import { mask } from 'vue-the-mask'
-
-import SelectUser from '@/components/elements/UserSelect.vue'
 import { required, email } from 'vuelidate/lib/validators'
-//import axios from 'axios'
-
-import LoginButton from '@/components/library/buttons/LoginButton.vue'
-
 import { mapActions } from 'vuex'
-import BaseRadioButton from '../components/library/BaseRadioButton.vue'
-import BaseCheckbox from '../components/library/BaseCheckbox.vue'
-import api from '../api/api'
 
 export default {
   name: 'Login',
-  components: { SelectUser, LoginButton, BaseRadioButton, BaseCheckbox },
   directives: { mask },
   data() {
     return {
@@ -174,29 +164,11 @@ export default {
     ...mapActions('auth', ['login']),
     async submitForm() {
       this.resetRejects()
-      //this.$v.$touch();
 
       // eslint-disable-next-line
       let phone = this.phone.replace(/([\(\)\-\ ])/g, '')
       if (!this.$v.$invalid) {
-        try {
-          const response = await this.$auth.login({ phone, password: this.password, keepLogged: this.keepLogged })
-
-          const data = {
-            access: response.access,
-            refresh: response.refresh,
-            role: response.userRole,
-            trainerID: response.userRoleId,
-          }
-
-          await this.login(data)
-          await this.$router.push('/schedule')
-        } catch (error) {
-          if (error.response.data.error === 'User was not found')
-            this.rejectTextPhone = 'Введен неверный номер телефона'
-          else if (error.response.data.error === 'Incorrect password')
-            this.rejectTextPassword = 'Введен неверный пароль'
-        }
+        this.login({ phone, password: this.password, keepLogged: this.keepLogged })
       } else {
         if (this.$v.password.$invalid) this.rejectTextPassword = 'Пароль обязателен'
         if (this.$v.phone.$invalid) this.rejectTextPhone = 'Телефон обязателен'
@@ -291,6 +263,8 @@ export default {
       &::after
         border-color: $terrible !important
 
+.welcome__login-btn
+  min-height: 48px
 
 .welcome__input--email,
 .welcome__input--password,
@@ -304,6 +278,13 @@ export default {
       transform: translateY(-50%)
       background-repeat: no-repeat
       background-position: center
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus
+      border: none
+      -webkit-text-fill-color: white
+      -webkit-box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 0) inset
+      transition: background-color 5000s ease-in-out 0s
 
   &.v-input--is-focused
     .v-input__slot
@@ -333,7 +314,6 @@ export default {
       height: 20px
       background-image: url("data:image/svg+xml,%3Csvg width='21' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.135.005c.31 0 .62-.012.93.002 1.212.059 2.039.78 2.217 1.982.137.923.228 1.852.323 2.78.076.742-.179 1.374-.704 1.898-.55.55-1.123 1.077-1.627 1.665-.145.171-.21.582-.107.772 1.55 2.879 3.768 5.107 6.64 6.66.189.103.598.035.769-.113.567-.487 1.079-1.041 1.601-1.58.605-.624 1.325-.855 2.182-.734.766.109 1.538.184 2.307.272 1.413.16 2.171.985 2.2 2.418.013.596.02 1.194-.007 1.789-.065 1.388-.994 2.276-2.376 2.177-5.348-.382-9.756-2.666-13.212-6.759C2.764 10.267 1.344 6.806.981 2.932.785.855 1.607.007 3.669 0h.466v.005Z' fill='%23B9CBE5'/%3E%3C/svg%3E");
 
-
 .welcome__create-account
   font-size: 14px
 
@@ -352,6 +332,10 @@ export default {
   background-position: center
   background-size: cover
   background-repeat: no-repeat
+
+  .v-window__container
+    min-height: 670px
+    max-height: 670px
 
   .v-carousel
     padding-bottom: 45px

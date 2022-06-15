@@ -288,6 +288,16 @@
                   :i="item.i"
                   :key="item.i"
                 >
+                  <span class="constructor__grid-item-remove" @click="removeItem(periods, item.i)">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M1 1L4.88909 4.88909M4.88909 4.88909L8.77817 8.77817M4.88909 4.88909L1 8.77817M4.88909 4.88909L8.77817 1"
+                        stroke="#B9CBE5"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
                   {{ item.title }}
                   <span class="constructor__grid-item-dates">{{ getDates(item.x, item.w) }}</span>
                 </grid-item>
@@ -316,13 +326,23 @@
                   :i="item.i"
                   :key="item.i"
                 >
+                  <span class="constructor__grid-item-remove" @click="removeItem(stages, item.i)">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M1 1L4.88909 4.88909M4.88909 4.88909L8.77817 8.77817M4.88909 4.88909L1 8.77817M4.88909 4.88909L8.77817 1"
+                        stroke="#B9CBE5"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
                   {{ item.title }}
                   <span class="constructor__grid-item-dates">{{ getDates(item.x, item.w) }}</span>
                 </grid-item>
               </grid-layout>
             </div>
 
-            <div class="constructor__row constructor__row--height">
+            <div class="constructor__row constructor__row--height constructor__row--center">
               <grid-layout
                 :layout.sync="mesocycles"
                 :col-num="52"
@@ -345,6 +365,16 @@
                   :i="item.i"
                   :key="item.i"
                 >
+                  <span class="constructor__grid-item-remove" @click="removeItem(mesocycles, item.i)">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M1 1L4.88909 4.88909M4.88909 4.88909L8.77817 8.77817M4.88909 4.88909L1 8.77817M4.88909 4.88909L8.77817 1"
+                        stroke="#B9CBE5"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
                   {{ item.title }}
                   <span class="constructor__grid-item-dates">{{ getDates(item.x, item.w) }}</span>
                 </grid-item>
@@ -373,10 +403,21 @@
                   :i="index"
                   :key="index"
                 >
+                  <span class="constructor__grid-item-remove" @click="removeItem(mesocycles, item.i)">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M1 1L4.88909 4.88909M4.88909 4.88909L8.77817 8.77817M4.88909 4.88909L1 8.77817M4.88909 4.88909L8.77817 1"
+                        stroke="#B9CBE5"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
                   {{ index }}
                 </grid-item>
               </grid-layout>
             </div>
+
             <div class="constructor__row constructor__row--height">
               <grid-layout
                 :layout.sync="microcycles"
@@ -400,6 +441,16 @@
                   :i="item.i"
                   :key="item.i"
                 >
+                  <span class="constructor__grid-item-remove" @click="removeItem(microcycles, item.i)">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M1 1L4.88909 4.88909M4.88909 4.88909L8.77817 8.77817M4.88909 4.88909L1 8.77817M4.88909 4.88909L8.77817 1"
+                        stroke="#B9CBE5"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
                   {{ item.title }}
                   <span class="constructor__grid-item-dates">{{ getDates(item.x, item.w) }}</span>
                 </grid-item>
@@ -427,6 +478,16 @@
                     :i="index"
                     :key="item"
                   >
+                    <span class="constructor__grid-item-remove" @click="removeItem(microcycles, item.i)">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M1 1L4.88909 4.88909M4.88909 4.88909L8.77817 8.77817M4.88909 4.88909L1 8.77817M4.88909 4.88909L8.77817 1"
+                          stroke="#B9CBE5"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </span>
                     {{ index + 1 }}
                   </grid-item>
                 </template>
@@ -631,6 +692,10 @@ export default {
     },
     prevStep() {
       this.$emit('prevStep')
+    },
+    removeItem(arr, val) {
+      const index = arr.map(item => item.i).indexOf(val)
+      arr.splice(index, 1)
     },
   },
   mounted() {
@@ -838,6 +903,12 @@ export default {
     &--height {
       height: 125px;
     }
+
+    &--center {
+      display: flex;
+      align-items: center;
+    }
+
     &::after {
       content: '';
       position: absolute;
@@ -890,7 +961,7 @@ export default {
     line-height: 19px;
     text-align: center;
     color: $blue02;
-    overflow-wrap: anywhere;
+    overflow: hidden;
 
     border-radius: 8px;
     .vue-resizable-handle {
@@ -929,6 +1000,15 @@ export default {
     }
     &:active {
       cursor: grabbing !important;
+    }
+
+    .constructor__grid-item-remove {
+      position: absolute;
+      top: 12px;
+      right: 11px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
     }
 
     .constructor__grid-item-dates {

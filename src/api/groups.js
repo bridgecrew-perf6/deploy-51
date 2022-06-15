@@ -7,6 +7,12 @@ const groups = {
     getGroup(id) {
         return api.get(`/groups/${id}/`);
     },
+    getGroupProgress(id) {
+        return api.get(`/groups/${id}/progress/`);
+    },
+    getGroupGoals(id) {
+        return api.get(`/groups/${id}/goals/`)
+    },
 };
 
 export default groups;

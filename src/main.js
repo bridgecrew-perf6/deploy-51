@@ -4,11 +4,6 @@ import router from './router'
 import store from './store'
 import vuetify from '@/plugins/vuetify'
 import VueDraggable from 'vue-draggable'
-import VueSimpleAccordion from 'vue-simple-accordion'
-import 'vue-simple-accordion/dist/vue-simple-accordion.css'
-import DropdownMenu from 'v-dropdown-menu'
-import VueMuuri from 'vue-muuri'
-import 'vue-muuri/dist/vue-muuri.css'
 import Vuelidate from 'vuelidate'
 import { VueMaskDirective } from 'v-mask'
 import VueDatePicker from '@mathieustan/vue-datepicker'
@@ -17,8 +12,12 @@ import { extend, ValidationProvider, ValidationObserver, setInteractionMode } fr
 import { required, email, alpha, confirmed, min, max } from 'vee-validate/dist/rules'
 import VTooltip from 'v-tooltip'
 import VueEllipseProgress from 'vue-ellipse-progress';
+import LottieVuePlayer from "@lottiefiles/vue-lottie-player";
+import Notification from './components/notification'
 
 Vue.use(VueEllipseProgress);
+Vue.use(LottieVuePlayer);
+Vue.use(Notification)
 
 import ApiPlugin from "./plugins/api";
 
@@ -28,23 +27,11 @@ Vue.use(VueDatePicker, {
 
 Vue.directive('mask', VueMaskDirective)
 
-Vue.use(DropdownMenu, {
-  direction: 'right',
-  overlay: false,
-  overlayBgColor: 'transparent',
-})
-
 Vue.use(VueDraggable)
-
-Vue.use(VueMuuri)
 
 Vue.use(Vuelidate)
 
 Vue.use(ApiPlugin);
-
-Vue.use(VueSimpleAccordion, {
-  tags: {},
-})
 
 function initValidate() {
   extend('required', { ...required, message: 'Заполните это поле' })
@@ -79,48 +66,34 @@ Vue.use(VTooltip)
 
 Vue.config.productionTip = false
 
-Vue.component('base-label', () => import('./components/library/old/BaseLabel.vue'))
-Vue.component('base-link', () => import('./components/library/old/BaseLink.vue'))
-Vue.component('base-select-mini', () => import('./components/library/old/BaseSelectMini.vue'))
-
-Vue.component('base-select', () => import('./components/library/BaseSelect.vue'))
-Vue.component('base-select-simple', () => import('./components/library/BaseSelectSimple.vue'))
-Vue.component('base-select-primary', () => import('./components/library/BaseSelectPrimary.vue'))
-Vue.component('base-input', () => import('./components/library/BaseInput.vue'))
-Vue.component('base-input-password', () => import('./components/library/BaseInputPassword'))
-Vue.component('base-badge', () => import('./components/library/BaseBadge'))
-Vue.component('base-tag', () => import('./components/library/BaseTag'))
-Vue.component('base-checkbox', () => import('./components/library/BaseCheckbox'))
 Vue.component('base-button', () => import('./components/library/BaseButton'))
-Vue.component('base-segment', () => import('./components/library/BaseSegment'))
-Vue.component('base-textarea', () => import('./components/library/BaseTextarea'))
-Vue.component('base-switch', () => import('./components/library/BaseSwitch'))
-Vue.component('base-radio-button', () => import('./components/library/BaseRadioButton'))
+Vue.component('base-checkbox', () => import('./components/library/BaseCheckbox'))
 
 Vue.component('wu-alert', () => import('./components/library/WUAlert'))
 Vue.component('wu-button', () => import('./components/library/WUButton'))
 Vue.component('wu-checkbox', () => import('./components/library/WUCheckbox'))
+Vue.component('wu-chip', () => import('./components/library/WUChip'))
 Vue.component('wu-editor', () => import('./components/library/WUEditor'))
 Vue.component('wu-icon', () => import('./components/library/WUIcon'))
 Vue.component('wu-input', () => import('./components/library/WUInput'))
 Vue.component('wu-number', () => import('./components/library/WUNumber'))
+Vue.component('wu-radio', () => import('./components/library/WURadio'))
 Vue.component('wu-select', () => import('./components/library/WUSelect'))
 Vue.component('wu-slider', () => import('./components/library/WUSlider'))
 Vue.component('wu-select-period', () => import('./components/library/WUSelectPeriod'))
+Vue.component('wu-input-date', () => import('./components/library/WUInputDate'))
+Vue.component('wu-input-time', () => import('./components/library/WUInputTime'))
 
+import moment from 'moment'
+moment.locale('ru')
+Vue.prototype.$moment = moment;
 
 new Vue({
   router,
   store,
   vuetify,
   VueDraggable,
-  VueSimpleAccordion,
-  DropdownMenu,
   VueDatePicker,
   VueMaskDirective,
-
-  // SvgSprite,
-  // moment,
-
   render: h => h(App),
 }).$mount('#app')

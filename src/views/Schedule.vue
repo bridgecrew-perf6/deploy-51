@@ -2,35 +2,34 @@
   <div class="d-flex">
     <left-menu>
       <calendar-nav
-          v-if="!isViewYear"
-          @next="next($event)"
-          @prev="prev($event)"
-          @selectDay="selectDay($event)"
-          :labelNav="todayLabel"
-          :initDay="initDay"
+        v-if="!isViewYear"
+        @next="next($event)"
+        @prev="prev($event)"
+        @selectDay="selectDay($event)"
+        :labelNav="todayLabel"
+        :initDay="initDay"
       />
 
-      <select-group value="all" :items="allGropus"/>
+      <select-group v-model="group" value="all" :items="groups" />
 
-      <expansion label="Все события" :filters="eventTypes"/>
-      <expansion v-if="!isViewYear" label="Все залы" :filters="exercisePlaygrounds"/>
+      <expansion label="Все события" :filters="eventTypes" />
+      <!-- <expansion v-if="!isViewYear" label="Все залы" :filters="exercisePlaygrounds" /> -->
     </left-menu>
 
     <div class="container">
-      <Header/>
-      <schedule-header :initDay="initDay"
-                       title="Календарь"
-                       @next="next($event)"
-                       @prev="prev($event)"/>
-      <calendar :initDay="initDay" :eventsPeriod="eventPeriod "/>
+      <Header />
+      <calendar-header :initDay="initDay" title="Календарь" @next="next($event)" @prev="prev($event)" />
+      <calendar :initDay="initDay" :eventsPeriod="eventPeriod" :groups="groups" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import moment from 'moment-timezone'
 import LeftMenu from '@/components/LeftMenu.vue'
-import ScheduleHeader from '@/components/ScheduleHeader'
+import CalendarHeader from '@/components/Calendar/CalendarHeader'
 import Calendar from '@/components/Calendar/Calendar'
 
 import CalendarNav from '@/components/Calendar/CalendarNav.vue'
@@ -43,99 +42,64 @@ export default {
   name: 'Schedule',
   data: () => ({
     initDay: moment().toDate(),
-    utils: {},
     groups: [],
-    eventPeriod: []
+    group: 'all',
+    eventType: ['match'],
+    eventPeriod: [],
   }),
-  components: {Calendar, ScheduleHeader, LeftMenu, Header, CalendarNav, Expansion, SelectGroup},
+  components: { Calendar, CalendarHeader, LeftMenu, Header, CalendarNav, Expansion, SelectGroup },
   computed: {
+    ...mapGetters('events', { eventTypes: 'getEventTypes' }),
     todayLabel: function () {
       return moment(this.initDay).format('MMMM')
     },
     isViewYear() {
       return this.$route.name === 'CalendarYear'
     },
-    eventTypes() {
-      const eventTypes = []
-
-      if (this.utils.eventTypes) {
-        this.utils.eventTypes.forEach((item) => {
-          if (item.eventTypes.length) {
-            eventTypes.push({
-              label: item.title,
-              color: item.color,
-              id: item.id
-            })
-          }
-        })
-      }
-
-      return eventTypes
-    },
     exercisePlaygrounds() {
       const exercisePlaygrounds = []
 
-      if (this.utils.exercisePlaygrounds) {
-        this.utils.exercisePlaygrounds.forEach((item) => {
-          exercisePlaygrounds.push({label: item.name})
-        })
-      }
-
       return exercisePlaygrounds
     },
-    allGropus() {
-      const groups = [
-        {
-          img: require('@/assets/images/groups/img-group-all.png'),
-          slug: 'all',
-          name: 'Все группы',
-          description: '',
-        },
-      ]
-
-      if (this.groups.length) {
-        this.groups.forEach((item) => {
-          groups.push({
-            img: require('@/assets/images/groups/img-group-all.png'),
-            slug: item.slug,
-            name: item.name,
-            description: ''
-          })
-        })
-      }
-
-      return groups
-    }
   },
   mounted() {
-    this.getUtils()
     this.getGroups()
-    this.getEvents()
+  },
+  watch: {
+    group: function (val) {
+      this.getEvents()
+    },
   },
   methods: {
-    async getUtils() {
-      this.utils = await this.$events.getUtils()
-    },
-    async getGroups() {
-      this.groups = await this.$groups.getGroups()
-    },
-    async getEvents() {
-      const response = await this.$events.getCoaches({
-        date_from: this.startDay(),
-        date_to: this.endDay()
-      })
+    getGroups() {
+      this.$groups.getGroups().then(response => {
+        let allGroup = {
+          logo: require('@/assets/images/groups/img-group-all.png'),
+          id: 'all',
+          shortName: 'Все группы',
+          description: '',
+        }
 
-      this.eventPeriod = []
-      response.map(item => {
-        let diffMin = moment(item.date + ' ' + item.timeTo).diff(moment(item.date + ' ' + item.timeFrom), 'minutes')
-        item.diffMin = diffMin
-        item.start_time = item.date + ' ' + item.timeFrom
-        item.duration = parseFloat((diffMin / 60).toFixed(1))
-
-        this.eventPeriod.push(item)
+        response.splice(0, 0, allGroup)
+        this.groups = response
+        this.getEvents()
       })
     },
-    next: function() {
+    getEvents() {
+      this.$events
+        .getEvents({
+          start_date: this.startDay(),
+          end_date: this.endDay(),
+          group__in: this.group !== 'all' ? this.group : null,
+        })
+        .then(response => {
+          response.forEach(event => {
+            event.group = this.groups.find(group => group.id == event.group)
+          })
+          this.eventPeriod = response
+        })
+    },
+    next: function () {
       if (this.$route.name == 'CalendarYear') {
         this.initDay = moment(this.initDay).add(1, 'year').toDate()
       }
@@ -176,7 +140,7 @@ export default {
     },
     selectDay(day) {
       if (this.$route.name !== 'CalendarDay') {
-        this.$router.push({name: 'CalendarDay'})
+        this.$router.push({ name: 'CalendarDay' })
       }
       this.initDay = moment(day).toDate()
     },
@@ -186,6 +150,6 @@ export default {
     endDay: function () {
       return moment(this.initDay).endOf('month').format('YYYY-MM-DD')
     },
-  }
+  },
 }
 </script>

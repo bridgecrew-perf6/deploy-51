@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar" :class="{ 'sidebar--active': active }" @click="ChangeMenu()">
     <vue-custom-scrollbar class="sidebar__scroll custom-scroll" :settings="scrollSettings">
-      <a href="#" class="sidebar__logo">
+      <a class="sidebar__logo">
         <svg
           v-if="!active"
           width="52"
@@ -121,9 +121,9 @@
           />
         </svg>
       </a>
-      <ul class="sidebar__list">
+      <ul @click.stop class="sidebar__list">
         <li class="sidebar__item">
-          <router-link class="sidebar__link" to="#">
+          <router-link class="sidebar__link" to="/dashboard">
             <svg
               class="sidebar__link-icon"
               width="24"
@@ -142,21 +142,39 @@
           </router-link>
         </li>
         <li class="sidebar__item">
-          <router-link class="sidebar__link" to="#">
+          <router-link class="sidebar__link" :to="{ name: 'Goals' }">
             <svg
               class="sidebar__link-icon"
-              width="26"
-              height="27"
-              viewBox="0 0 26 27"
+              width="21"
+              height="24"
+              viewBox="0 0 21 24"
               fill="none"
-              stroke="currentColor"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M23.888 16.528a11 11 0 1 1-13.263-14.16" stroke-width="2" stroke-linecap="round" />
-              <mask id="a" fill="currentColor"><path d="M25.504 13.232a12 12 0 0 0-12-12v12h12Z" /></mask>
-              <path d="M25.504 13.232a12 12 0 0 0-12-12v12h12Z" stroke-width="4" mask="url(#a)" />
+              <path
+                d="M1 23v-7M1 1v2m0 0h17.483a1 1 0 0 1 .92 1.394l-2.22 5.18a1 1 0 0 0 .024.84l2.07 4.139A1 1 0 0 1 18.381 16H1M1 3v13"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
             </svg>
-            <p class="sidebar__link-text">Статистика</p>
+            <p class="sidebar__link-text">Цели</p>
+          </router-link>
+        </li>
+        <li class="sidebar__item">
+          <router-link class="sidebar__link" :to="{ name: 'ExerciseLibrary' }">
+            <svg class="sidebar__link-icon" width="25" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M19 6.465h-9a4 4 0 0 0-4 4v9m13-13h1a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4v-1m13-13v-1a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v10a4 4 0 0 0 4 4h1"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="m13.032 11.386-1.66.943c-.463.262-.92.211-1.12-.124-.205-.345-.02-.738.47-1.012.632-.355 1.268-.704 1.893-1.069.382-.222.723-.227 1.063.08.75.676 1.61 1.264 2.233 2.039.591.733.964 1.647 1.378 2.507.144.3.299.392.605.38.473-.02.949-.01 1.422-.002.418.007.682.22.684.643.003.435-.278.626-.692.629-.728.006-1.458.035-2.182-.018-.243-.019-.521-.213-.69-.407-.353-.403-.643-.86-.996-1.348l-1.653 1.091c.371.663.723 1.303 1.087 1.937.416.723.168 1.165-.67 1.167-1.15.003-2.3.01-3.452-.004-.613-.008-.956-.526-.62-.96.136-.176.45-.28.692-.298.588-.042 1.18-.014 1.941-.014-.252-.236-.4-.371-.545-.512-.265-.26-.54-.511-.789-.784-.621-.683-.555-1.473.164-2.046.721-.574 1.448-1.143 2.203-1.737-.253-.36-.485-.685-.766-1.08ZM17.556 12.671a1.306 1.306 0 0 1-1.32-1.299c.003-.674.617-1.258 1.318-1.255.751.004 1.312.564 1.303 1.3-.01.715-.564 1.25-1.3 1.254ZM14.053 19.495c-.5.659-.922 1.233-1.367 1.79-.248.31-.584.413-.927.155-.343-.26-.321-.601-.103-.933.164-.25.327-.513.54-.717.15-.143.379-.257.584-.28.38-.047.77-.015 1.273-.015Z"
+                fill="currentColor"
+              />
+            </svg>
+            <p class="sidebar__link-text">Библиотека упражнений</p>
           </router-link>
         </li>
         <li class="sidebar__item">
@@ -199,65 +217,6 @@
             <p class="sidebar__link-text">Домашнее задание</p>
           </router-link>
         </li>
-        <li class="sidebar__item">
-          <router-link class="sidebar__link" :to="{ name: 'Media' }">
-            <svg
-              class="sidebar__link-icon"
-              width="24"
-              height="22"
-              viewBox="0 0 24 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10 13.132V8.869a1 1 0 0 1 1.555-.833l3.197 2.132a1 1 0 0 1 0 1.664l-3.197 2.131A1 1 0 0 1 10 13.133Z"
-                fill="currentColor"
-              />
-              <rect x="1" y="1" width="22" height="20" rx="3" stroke="currentColor" stroke-width="2" />
-            </svg>
-            <p class="sidebar__link-text">Медиа</p>
-          </router-link>
-        </li>
-        <li class="sidebar__item">
-          <router-link class="sidebar__link" to="#">
-            <svg
-              class="sidebar__link-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m13.2 4.6.3.4H20a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3h5a3 3 0 0 1 2.4 1.2l1.8 2.4Z"
-                stroke="currentColor"
-                stroke-width="2"
-              />
-              <path d="M1 14a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4" stroke="currentColor" stroke-width="2" />
-            </svg>
-            <p class="sidebar__link-text">Документы</p>
-          </router-link>
-        </li>
-        <li class="sidebar__item">
-          <router-link class="sidebar__link" :to="{ name: 'Goals' }">
-            <svg
-              class="sidebar__link-icon"
-              width="21"
-              height="24"
-              viewBox="0 0 21 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 23v-7M1 1v2m0 0h17.483a1 1 0 0 1 .92 1.394l-2.22 5.18a1 1 0 0 0 .024.84l2.07 4.139A1 1 0 0 1 18.381 16H1M1 3v13"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-            <p class="sidebar__link-text">Цели</p>
-          </router-link>
-        </li>
       </ul>
     </vue-custom-scrollbar>
   </aside>
@@ -286,10 +245,6 @@ export default {
       this.active = !this.active
       this.$emit('changeState')
     },
-    logout() {
-      this.$store.dispatch('auth/logout')
-      window.location.href = '/'
-    },
   },
 }
 </script>
@@ -304,19 +259,13 @@ export default {
   left: 0;
   top: 0;
   bottom: 0;
-  //height: 100vh;
   z-index: 100;
-
-  //padding-top: 32px;
-  //padding-bottom: 32px;
   overflow-y: auto;
   transition: all 0.2s linear;
 }
 
 .sidebar--active {
-  width: rem(272px) !important;
-  //padding-left: 38px;
-  //padding-right: 38px;
+  width: rem(300px) !important;
   .sidebar__link {
     justify-content: flex-start;
   }
@@ -376,11 +325,13 @@ export default {
 }
 
 .sidebar__link-icon {
+  flex-shrink: 0;
   margin-right: 0;
   color: #fff;
 }
 
 .sidebar__link-text {
+  min-width: 150px;
   display: none;
   margin-bottom: 0;
   font-size: 14px;

@@ -5,7 +5,7 @@
       v-if="items.length"
       :items="items"
       item-text="name"
-      item-value="slug"
+      item-value="id"
       flat
       single-line
       hide-details
@@ -15,25 +15,27 @@
       v-model="inputVal"
     >
       <template v-slot:item="{ item }">
-        <img class="select-group__image" :src="item.img" />
+        <img class="select-group__image" :src="item.logo || require('@/assets/images/groups/img-group-all.png')" />
         <div class="select-group__wrapper">
-          <p class="select-group__name h2" :class="{ 'select-group__name--all': item.slug === 'all' }">
-            {{ item.name }}
+          <p class="select-group__name h2" :class="{ 'select-group__name--all': item.id === 'all' }">
+            {{ item.shortName }}
           </p>
           <p v-if="item.description" class="select-group__desc">{{ item.description }}</p>
         </div>
       </template>
       <template v-slot:selection="{ item }">
-        <img class="select-group__image" :src="item.img" />
+        <img class="select-group__image" :src="item.logo || require('@/assets/images/groups/img-group-all.png')" />
         <div class="select-group__wrapper">
-          <p class="select-group__name h2" :class="{ 'select-group__name--all': item.slug === 'all' }">
-            {{ item.name }}
+          <p class="select-group__name h2" :class="{ 'select-group__name--all': item.id === 'all' }">
+            {{ item.shortName }}
           </p>
           <p v-if="item.description" class="select-group__desc">{{ item.description }}</p>
         </div>
       </template>
     </v-select>
-    <router-link to="#" v-else class="select-group--empty"> Создать группу </router-link>
+    <router-link :to="{ name: 'PersonalTrainerGroups' }" v-else class="select-group--empty">
+      Создать группу
+    </router-link>
   </div>
 </template>
 
@@ -41,37 +43,17 @@
 export default {
   props: {
     value: {
-      type: [String, Array, Object],
+      type: [String, Array, Object, Number],
     },
     label: {
       type: String,
     },
     items: {
-      type: Array
+      type: Array,
     },
   },
   data() {
     return {
-      // items: [
-      //   {
-      //     img: require('@/assets/images/groups/img-group-all.png'),
-      //     slug: 'all',
-      //     name: 'Все группы',
-      //     description: '',
-      //   },
-      //   {
-      //     img: require('@/assets/images/groups/img-group01.png'),
-      //     slug: 'np2',
-      //     name: 'НП-2',
-      //     description: '8-9 лет (2 год подготовки) ',
-      //   },
-      //   {
-      //     img: require('@/assets/images/groups/img-group02.png'),
-      //     slug: 'ss2',
-      //     name: 'CC-1',
-      //     description: '10-11 лет (4 год подготовки) ',
-      //   },
-      // ],
       menuSettings: {
         contentClass: 'select-group__menu',
         nudgeBottom: 62,

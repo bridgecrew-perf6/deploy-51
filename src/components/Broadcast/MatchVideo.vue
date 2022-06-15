@@ -1,8 +1,33 @@
 <template>
-  <div class="match-video">
+  <div class="match-video" :class="{'match-video_full-screen': videoFullScreen}">
     <video class="match-video__video" ref="video" @timeupdate="currentTime">
       <source src="@/assets/test-video-2.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
+
+    <div class="match-video__fullscreen-menu" v-if="videoFullScreen && editor">
+      <div class="match-video__fullscreen-menu-wrapper"
+           :class="{'match-video__fullscreen-menu-wrapper_open': openFullScreenMenu}">
+        <default-left-menu v-show="tabActive === 0" />
+        <comments-left-menu v-show="tabActive === 1" />
+        <game-moments-left-menu v-show="tabActive === 2" />
+        <neural-analysis-left-menu v-show="tabActive === 3" />
+        <pencil-left-menu v-show="tabActive === 4" />
+        <cut-vdeo-left-menu v-show="tabActive === 5" />
+        <music-left-menu v-show="tabActive === 6" />
+      </div>
+      <button class="match-video__fullscreen-menu-btn"
+              :class="{'match-video__fullscreen-menu-btn_active': openFullScreenMenu}"
+              @click="openFullScreenMenu = !openFullScreenMenu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+              d="M0 1.42514C0.052104 1.25013 0.0827533 1.06531 0.15999 0.90226C0.64425 -0.122349 1.99344 -0.314214 2.7471 0.532935C3.73647 1.6452 4.72031 2.76298 5.70692 3.87801C7.11955 5.47453 8.53218 7.07137 9.94542 8.66759C10.6203 9.42984 11.2958 10.1912 11.9726 10.9519C12.493 11.537 12.4866 12.4785 11.9625 13.0676C10.8382 14.3316 9.71708 15.5986 8.5947 16.8645C7.23877 18.3939 5.88254 19.923 4.52691 21.4527C3.93538 22.1199 3.34477 22.7881 2.75446 23.4565C2.49578 23.7492 2.17611 23.9282 1.78778 23.9822C1.77368 23.984 1.7605 23.9938 1.74671 23.9999C1.62411 23.9999 1.50151 23.9999 1.37892 23.9999C1.36206 23.9929 1.34551 23.9822 1.32804 23.9794C0.826001 23.8951 0.440432 23.6355 0.202899 23.1871C0.107273 23.006 0.0658962 22.796 0 22.5993C0 22.492 0 22.385 0 22.2778C0.0643637 21.8628 0.273086 21.5305 0.551076 21.2191C1.97689 19.6238 3.39166 18.0184 4.81073 16.417C6.08513 14.9789 7.35953 13.5408 8.63669 12.1049C8.70688 12.0258 8.70994 11.9777 8.63822 11.8971C7.10238 10.1691 5.5693 8.43864 4.03591 6.70817C2.88595 5.41048 1.73506 4.1134 0.588468 2.81264C0.437673 2.64161 0.287491 2.46201 0.180218 2.26309C0.0882702 2.09299 0.0576208 1.88948 0 1.70068C0 1.60903 0 1.51709 0 1.42514Z"
+              fill="white"/>
+          <path
+              d="M12.5967 23.9997C12.3521 23.9504 12.1155 23.8848 11.9009 23.7481C11.0998 23.2375 10.945 22.1013 11.5767 21.393C12.5195 20.3362 13.457 19.2751 14.3967 18.2156C15.3692 17.119 16.3414 16.0217 17.3136 14.9248C18.1537 13.9765 18.9926 13.0273 19.8352 12.0814C19.8995 12.0091 19.8781 11.9702 19.8257 11.9107C18.4565 10.3675 17.0884 8.82338 15.7208 7.27926C14.363 5.74649 13.0098 4.21003 11.6463 2.68247C11.2043 2.18748 11.0621 1.63487 11.287 1.01544C11.6864 -0.0830311 13.1297 -0.353972 13.9088 0.518004C14.8752 1.59962 15.8336 2.68829 16.7957 3.7742C18.0774 5.22116 19.3586 6.66812 20.6403 8.11477C21.478 9.0603 22.3165 10.0046 23.1523 10.9514C23.3519 11.1776 23.4735 11.443 23.5165 11.743C23.5195 11.7645 23.5309 11.7844 23.5385 11.8053C23.5385 11.9355 23.5385 12.0655 23.5385 12.1957C23.4699 12.5789 23.2906 12.8973 23.0294 13.1897C21.6343 14.751 20.2492 16.3215 18.8611 17.8892C17.2321 19.7291 15.6028 21.5686 13.9759 23.4107C13.7543 23.6614 13.4959 23.8477 13.1726 23.9388C13.0889 23.9624 13.0034 23.9795 12.9185 23.9997C12.8112 23.9997 12.704 23.9997 12.5967 23.9997Z"
+              fill="white"/>
+        </svg>
+      </button>
+    </div>
 
     <div class="match-video__menu" v-if="menu">
       <button
@@ -82,7 +107,7 @@
       </button>
     </div>
 
-    <div class="match-video__control">
+    <div class="match-video__control" :class="{'match-video__control-min': videoFullScreen && openFullScreenMenu}">
       <div class="match-video__progress" @click="rewindVideo">
         <div class="match-video__progress-line" :style="`width: ${progress}%`">
           <div class="match-video__progress-dot"></div>
@@ -99,7 +124,9 @@
             </svg>
 
             <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg" v-else>
-              <path d="M0.496094 11.6403V2.68902C0.496094 1.1525 2.15675 0.189874 3.49007 0.953506L11.3047 5.42914C12.646 6.19738 12.646 8.13193 11.3047 8.90017L3.49007 13.3758C2.15675 14.1394 0.496094 13.1768 0.496094 11.6403Z" fill="#fff"/>
+              <path
+                  d="M0.496094 11.6403V2.68902C0.496094 1.1525 2.15675 0.189874 3.49007 0.953506L11.3047 5.42914C12.646 6.19738 12.646 8.13193 11.3047 8.90017L3.49007 13.3758C2.15675 14.1394 0.496094 13.1768 0.496094 11.6403Z"
+                  fill="#fff"/>
             </svg>
 
           </button>
@@ -171,10 +198,31 @@
 </template>
 
 <script>
+import DefaultLeftMenu from "@/components/Broadcast/DefaultLeftMenu";
+import CommentsLeftMenu from "@/components/Broadcast/CommentsLeftMenu";
+import GameMomentsLeftMenu from "@/components/Broadcast/GameMomentsLeftMenu";
+import NeuralAnalysisLeftMenu from "@/components/Broadcast/NeuralAnalysisLeftMenu";
+import PencilLeftMenu from "@/components/Broadcast/PencilLeftMenu";
+import CutVdeoLeftMenu from "@/components/Broadcast/CutVdeoLeftMenu";
+import MusicLeftMenu from "@/components/Broadcast/MusicLeftMenu";
+
 export default {
   name: 'MatchVideo',
+  components: {
+    DefaultLeftMenu,
+    CommentsLeftMenu,
+    GameMomentsLeftMenu,
+    NeuralAnalysisLeftMenu,
+    PencilLeftMenu,
+    CutVdeoLeftMenu,
+    MusicLeftMenu
+  },
   props: {
     menu: Boolean,
+    editor: {
+      type: Boolean,
+      default: false
+    },
     tabActive: Number
   },
   data() {
@@ -183,6 +231,8 @@ export default {
       volume: 0,
       progress: 0,
       timer: '00:00:00 / 00:00:00',
+      videoFullScreen: false,
+      openFullScreenMenu: false
     }
   },
   mounted() {
@@ -242,7 +292,8 @@ export default {
       this.$refs.video.volume = this.volume / 100
     },
     fullScreen() {
-      this.$refs.video.requestFullscreen();
+      this.videoFullScreen = !this.videoFullScreen
+      // this.$refs.video.requestFullscreen();
     }
   }
 }
@@ -256,11 +307,79 @@ export default {
   background-color: $blue01;
   overflow: hidden;
   user-select: none;
+  transition: .3s;
+
+  &_full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin-top: 0 !important;
+    min-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    border-radius: 0 !important;
+    z-index: 100;
+  }
+
+  &__fullscreen-menu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+  }
+
+  &__fullscreen-menu-wrapper {
+    width: 384px;
+    height: 100%;
+    padding: 48px 32px;
+    margin-left: -384px;
+    background: rgba(255, 255, 255, 0.54);
+    box-shadow: 0px 6px 8px rgba(110, 101, 174, 0.1);
+    backdrop-filter: blur(10px);
+    transition: .3s;
+
+    &_open {
+      margin-left: 0;
+    }
+  }
+
+  &__fullscreen-menu-btn {
+    position: absolute;
+    top: 45%;
+    left: 64px;
+    transform: translateX(-45%);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 6px 8px rgba(110, 101, 174, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    z-index: 9;
+
+    svg {
+      transition: .3s;
+    }
+
+    &_active {
+      left: 425px;
+
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+  }
 
   &__video {
     display: block;
     width: 100%;
     max-height: 780px;
+  }
+
+  &_full-screen &__video {
+    max-height: 100%;
   }
 
   &__menu {
@@ -313,6 +432,12 @@ export default {
     left: 0;
     width: 100%;
     padding: 0 31px 19px 31px;
+    transition: .3s;
+  }
+
+  &__control-min {
+    left: 384px;
+    width: calc(100% - 384px);
   }
 
   &__progress {

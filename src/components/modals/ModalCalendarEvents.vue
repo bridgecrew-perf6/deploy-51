@@ -1,31 +1,34 @@
 <template>
   <v-dialog v-model="show" content-class="modal-show-events" max-width="395">
     <div class="modal-close" @click.stop="show = false"></div>
-    <v-card class="modal-events" :class="{ 'modal-events--dark-footer': compareDate }">
-      <div class="modal-events__inner" :class="{ 'modal-events__inner--dark-footer': compareDate }">
+    <v-card class="modal-events">
+      <div class="modal-events__inner">
         <div class="modal-events__body">
           <p class="modal-events__title">
             {{ date }}
             <span>{{ weekday }}</span>
           </p>
           <ul class="modal-event__list">
-            <li class="modal-event__item" v-for="(event, index) in events" :key="index">
+            <li class="modal-event__item" v-for="(event, index) in prepareData" :key="index">
               <router-link
                 class="modal-event__link"
                 :to="{
-                  name: event.eventType.slug === 'practical-lesson' ? 'Training' : 'MatchEvent',
-                  params: { id: 1 },
+                  name: nameRoute(event),
+                  params: { id: event.id },
                 }"
               >
-                <p class="modal-event__info-time">
-                  {{ replaceSeconds(event.timeFrom) }} - {{ replaceSeconds(event.timeTo) }}
-                </p>
-                <div class="modal-event__info-about">
-                  <calendar-event-icon :event="event" />
-                  <span class="modal-event__group-name">{{ event.group.name }}</span>
-                  <span class="modal-event__title">{{ event.title }}</span>
+                <div class="modal-event__head">
+                  <p class="modal-event__info-time">{{ time(event.recurrences, event.duration) }}</p>
+                  <div class="modal-event__info-about">
+                    <calendar-event-icon
+                      :idEventType="event.eventType"
+                      :shortName="event.group ? event.group.shortName : ''"
+                    />
+                    <span class="modal-event__group-name">{{ event.group ? event.group.shortName : '' }}</span>
+                    <span class="modal-event__title">{{ event.title }}</span>
+                  </div>
                 </div>
-                <div class="modal-event__info-more">
+                <div v-if="event.eventType === 'training'" class="modal-event__info-more">
                   <p>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -33,11 +36,7 @@
                         fill="#464EA3"
                       />
                     </svg>
-                    Лёд-1
-                  </p>
-                  <p>
-                    Интенсивность
-                    <img src="@/assets/images/svg/workload/maximum.svg" />
+                    Лёд
                   </p>
                 </div>
               </router-link>
@@ -45,35 +44,12 @@
           </ul>
         </div>
       </div>
-      <!-- <div class="modal-event__footer" :class="{ 'modal-event__footer--dark': compareDate }">
-        <template>
-          <a class="modal-event__footer-edit" href="">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M0 11.923c.009-.02.02-.041.026-.063l1.02-3.567a.246.246 0 0 1 .059-.1C3.055 6.236 5.006 4.28 6.96 2.325c.142-.143.325-.191.515-.21.43-.04.82.095 1.18.325.513.326.907.767 1.133 1.354.129.333.16.674.033 1.018a.86.86 0 0 1-.203.322c-1.94 1.93-3.88 3.863-5.822 5.794a.251.251 0 0 1-.1.055l-3.58.991c-.023.007-.045.017-.067.026H0v-.077Zm1.823-1.096c.01-.003.022-.004.035-.008.447-.137.895-.274 1.342-.414a.145.145 0 0 0 .067-.05c.134-.167.157-.362.118-.567-.108-.563-.627-1.08-1.172-1.17-.196-.033-.383-.016-.546.116a.239.239 0 0 0-.073.105c-.104.327-.205.657-.307.985l-.108.351c.333.094.507.348.644.652Z"
-              />
-              <path
-                d="M12 2.012c-.021.12-.035.243-.066.363-.095.371-.279.69-.542.956-.284.289-.57.575-.856.862l-.026.022c.028-.093.063-.18.081-.27.072-.345.006-.669-.142-.98a2.595 2.595 0 0 0-.454-.647c-.243-.259-.499-.499-.812-.66-.444-.23-.902-.299-1.382-.139-.005.002-.01.002-.024.002l.411-.413c.17-.17.336-.344.509-.51.363-.35.79-.548 1.285-.588.016-.001.032-.006.048-.01h.208l.047.012c.122.023.247.032.365.069.638.205 1.082.624 1.284 1.301.035.113.046.232.067.349v.28Z"
-              />
-            </svg>
-            редактировать
-          </a>
-          <a class="modal-event__footer-delete" href="">
-            <svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M4.667 2.966h4.018c.578 0 .695.134.62.695l-.954 7.174c-.093.704-.553 1.147-1.256 1.156-1.616.008-3.24.016-4.856 0-.711-.009-1.163-.436-1.255-1.147C.657 8.416.339 5.997.012 3.577c-.058-.444.084-.61.553-.61h4.102ZM8.133 1.76H.967C1.812 1.132 2.557.555 3.336.036c.126-.084.435-.009.603.1.376.226.711.528 1.088.779.117.075.343.125.444.067.778-.477 1.448-.318 2.06.31.141.15.342.267.602.468Z"
-              />
-            </svg>
-            удалить
-          </a>
-        </template>
-      </div> -->
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import moment from 'moment'
+import { mapGetters } from 'vuex'
 import CalendarEventIcon from '@/components/Calendar/CalendarEventIcon.vue'
 
 export default {
@@ -92,18 +68,44 @@ export default {
       type: String,
     },
   },
-  data() {
-    return {}
-  },
   components: {
     CalendarEventIcon,
   },
   methods: {
-    replaceSeconds(time) {
-      return time.replace(/(:\d{2})$/, '')
+    time(date, duration) {
+      let utc = this.$moment(date.match(/(\d{8}T\d{6}Z)/g)[0]),
+        startTime = utc.format('HH:mm'),
+        endTime = utc.add(duration, 'minutes').format('HH:mm')
+
+      return `${startTime} - ${endTime}`
+    },
+    nameRoute(event) {
+      if (event.eventType === 'match') return 'MatchEvent'
+      else if (event.eventType === 'training') return 'TrainingView'
+      else if (event.eventType === 'standard') return 'StandardView'
+      else return ''
     },
   },
   computed: {
+    ...mapGetters('events', ['getLessonTypes', 'getMatchTypes']),
+    lessonTypes() {
+      return this.getLessonTypes
+    },
+    matchTypes() {
+      return this.getMatchTypes
+    },
+    prepareData() {
+      let events = []
+      this.events.forEach(event => {
+        let e = { ...event }
+        if (event.eventType === 'training') e.title = this.lessonTypes.find(type => type.id === event.title).name
+        else if (event.eventType === 'match') e.title = this.matchTypes.find(type => type.id === event.title).name
+        else if (event.eventType === 'standard') e.title = 'Норматив'
+        else if (event.eventType === 'personal_event') e.title = 'Персональное событие'
+        events.push(e)
+      })
+      return events
+    },
     show: {
       get() {
         return this.visible
@@ -113,9 +115,6 @@ export default {
           this.$emit('close')
         }
       },
-    },
-    compareDate: function () {
-      return moment().isBefore(moment(this.events[0].start_time).toDate(), 'hour')
     },
   },
 }
@@ -174,14 +173,17 @@ export default {
   flex-wrap: wrap
   align-items: center
 
+.modal-event__head
+  display: flex
+
 .modal-event__info-time
-    max-width: 100px
+    flex-shrink: 0
+    max-width: 110px
     width: 100%
     margin-right: 7px
     font-weight: 500
     font-size: 16px
     line-height: 40px
-    text-align: right
     color: $blue02
 
 .modal-event__info-about

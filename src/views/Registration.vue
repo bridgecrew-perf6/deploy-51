@@ -81,13 +81,7 @@
                   v-mask="'+7 (###) ### - ## - ##'"
                 ></v-text-field>
 
-                <!-- <p class="text-left">Тип профиля</p>
-                    <v-radio-group v-model="user_type" row class="welcome__radio-group">
-                      <base-radio-button label="Тренер" value="Тренер" />
-                      <base-radio-button label="Методист" value="Методист" />
-                    </v-radio-group> -->
-
-                <login-button @click="e1 = 2" label="Зарегистрироваться" />
+                <wu-button class="welcome__login-btn" @click="e1 = 2" label="Зарегистрироваться"></wu-button>
               </v-form>
 
               <p class="welcome__create-account">
@@ -137,7 +131,7 @@
               <p class="welcome__confirm-phone">{{ phone }}</p>
               <p class="welcome__confirm-phone-desc">На этот номер придёт код проверки</p>
 
-              <login-button @click="e1 = 3" label="Выслать код" />
+              <wu-button class="welcome__login-btn" @click="e1 = 3" label="Выслать код"></wu-button>
 
               <p class="welcome__stepper-back">
                 <a class="welcome__stepper-back-link" @click="e1 = 1"> Вернуться назад </a>
@@ -151,7 +145,7 @@
 
               <v-otp-input plain type="number" class="welcome__otp" length="4"></v-otp-input>
 
-              <login-button label="Подтвердить номер" />
+              <wu-button class="welcome__login-btn" label="Подтвердить номер"></wu-button>
 
               <p class="welcome__stepper-back">
                 <a class="welcome__stepper-back-link" @click="e1 = 2"> Вернуться назад </a>
@@ -176,9 +170,6 @@
 import { required, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
 import { AuthApi } from '@/store/api'
 
-import LoginButton from '@/components/library/buttons/LoginButton.vue'
-import BaseRadioButton from '../components/library/BaseRadioButton.vue'
-
 export default {
   name: 'Registration',
   data() {
@@ -202,7 +193,6 @@ export default {
       ],
     }
   },
-  components: { LoginButton, BaseRadioButton },
   validations: {
     firstName: {
       required,
@@ -379,6 +369,9 @@ export default {
       &::-ms-input-placeholder
         font-weight: 300
         color: #fff
+
+.welcome__login-btn
+  min-height: 48px
 
 .welcome__input--email,
 .welcome__input--password,

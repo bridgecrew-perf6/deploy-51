@@ -1,9 +1,33 @@
 <template>
   <div class="d-flex goals">
     <left-menu>
+      <v-select
+          class="group-list__select"
+          v-model="groupSelected"
+          @input="changeGroup"
+          :items="groupSelectData"
+          item-text="title"
+          item-value="id"
+          single-line
+          hide-details
+          flat
+          :menu-props="{
+                              contentClass: 'group-list__menu',
+                              nudgeBottom: 32,
+                              maxWidth: 180,
+                            }"
+      >
+        <template v-slot:item="{ item }">
+          <p class="group-list__select-title">{{ item.title }}</p>
+        </template>
+        <template v-slot:selection="{ item }">
+          <p class="group-list__select-title">{{ item.title }}</p>
+        </template>
+      </v-select>
+
       <div class="goals__all-team"
            :class="{'goals__all-team_active': selectedPlayerId === 'all'}"
-           @click="selectedPlayerId = 'all'">
+           @click="selectAllGroup">
         <div class="goals__all-team-content">
           <div class="goals__all-team-icon">
             <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +70,7 @@
                playerChoice/>
     </left-menu>
 
-    <div class="container">
+    <div class="goals__wrapper container">
       <Header/>
       <div class="goals__top">
         <div class="goals__top-icon">
@@ -57,8 +81,14 @@
         </div>
         <h2 class="goals__top-title">Цели команды</h2>
       </div>
-      <Progress class="goals__progress"/>
-      <team-goals/>
+      <Progress class="goals__progress"
+                :statistics="statistic"
+                :increasement="increasement"
+                :chartStatistics="chartStatistics"
+                v-if="showProgress"
+                :key="progressKey"/>
+
+      <team-goals :goals="goals"/>
       <Achievements class="goals__achievements"/>
     </div>
   </div>
@@ -94,152 +124,7 @@ export default {
         slug: 'np2',
         name: 'НП-2',
         description: '8-9 лет (2 год подготовки) ',
-        sportsmans: [
-          {
-            id: 1,
-            full_name: 'Ярасимов Юрий',
-            age: 8,
-            position_type: 'defender',
-            avatar: null,
-            team_number: 37,
-          },
-          {
-            id: 2,
-            full_name: 'Двилянский Егор',
-            age: 9,
-            position_type: 'forward',
-            avatar: null,
-            team_number: 9,
-          },
-          {
-            id: 3,
-            full_name: 'Докукин Никита',
-            age: 8,
-            position_type: 'goalie',
-            avatar: null,
-            team_number: 54,
-          },
-          {
-            id: 4,
-            full_name: 'Иванов Кирилл',
-            age: 8,
-            position_type: 'defender',
-            avatar: 'https://source.unsplash.com/120/?avatar',
-            team_number: 18,
-          },
-          {
-            id: 5,
-            full_name: 'Ярасимов Юрий',
-            age: 8,
-            position_type: 'defender',
-            avatar: null,
-            team_number: 37,
-          },
-          {
-            id: 6,
-            full_name: 'Двилянский Егор',
-            age: 9,
-            position_type: 'forward',
-            avatar: null,
-            team_number: 9,
-          },
-          {
-            id: 7,
-            full_name: 'Докукин Никита',
-            age: 8,
-            position_type: 'goalie',
-            avatar: null,
-            team_number: 54,
-          },
-          {
-            id: 8,
-            full_name: 'Иванов Кирилл',
-            age: 8,
-            position_type: 'defender',
-            avatar: 'https://source.unsplash.com/120/?avatar',
-            team_number: 18,
-          },
-          {
-            id: 9,
-            full_name: 'Ярасимов Юрий',
-            age: 8,
-            position_type: 'defender',
-            avatar: null,
-            team_number: 37,
-          },
-          {
-            id: 10,
-            full_name: 'Двилянский Егор',
-            age: 9,
-            position_type: 'forward',
-            avatar: null,
-            team_number: 9,
-          },
-          {
-            id: 11,
-            full_name: 'Докукин Никита',
-            age: 8,
-            position_type: 'goalie',
-            avatar: null,
-            team_number: 54,
-          },
-          {
-            id: 12,
-            full_name: 'Иванов Кирилл',
-            age: 8,
-            position_type: 'defender',
-            avatar: 'https://source.unsplash.com/120/?avatar',
-            team_number: 18,
-          },
-          {
-            id: 13,
-            full_name: 'Докукин Никита',
-            age: 8,
-            position_type: 'goalie',
-            avatar: null,
-            team_number: 54,
-          },
-          {
-            id: 14,
-            full_name: 'Иванов Кирилл',
-            age: 8,
-            position_type: 'defender',
-            avatar: 'https://source.unsplash.com/120/?avatar',
-            team_number: 18,
-          },
-          {
-            id: 15,
-            full_name: 'Ярасимов Юрий',
-            age: 8,
-            position_type: 'defender',
-            avatar: null,
-            team_number: 37,
-          },
-          {
-            id: 16,
-            full_name: 'Двилянский Егор',
-            age: 9,
-            position_type: 'forward',
-            avatar: null,
-            team_number: 9,
-          },
-          {
-            id: 17,
-            full_name: 'Докукин Никита',
-            age: 8,
-            position_type: 'goalie',
-            avatar: null,
-            team_number: 54,
-          },
-          {
-            id: 18,
-            full_name: 'Иванов Кирилл',
-            age: 8,
-            position_type: 'defender',
-            avatar: 'https://source.unsplash.com/120/?avatar',
-            team_number: 18,
-          },
-        ],
+        sportsmans: [],
       },
       sortSportsmans: [
         {
@@ -259,7 +144,17 @@ export default {
         },
       ],
       selectedSortSportsmas: 'all',
-      selectedPlayerId: 'all'
+      selectedPlayerId: 'all',
+      groupSelectData: [],
+      groupSelected: null,
+      groups: [],
+      statistic: {},
+      statisticChart: [],
+      showProgress: false,
+      goals: [],
+      increasement: {},
+      chartStatistics: {},
+      progressKey: 0
     }
   },
   computed: {
@@ -291,6 +186,16 @@ export default {
                     : b.full_name.localeCompare(a.full_name)
             )
     },
+    selectedGropSportmans() {
+      return this.groups.filter(item => {
+        return item.id === this.groupSelected
+      });
+    },
+  },
+  async mounted() {
+    await this.getGroups()
+    await this.getGroupProgress()
+    await this.getGroupGoals()
   },
   methods: {
     sortAlphabet() {
@@ -301,14 +206,104 @@ export default {
     },
     selectPlayer(id) {
       this.selectedPlayerId = id
-      console.log(id)
-    }
+      this.getSportsmenGoals()
+      this.getSportsmenProgress()
+    },
+    createGroupsObject() {
+      this.groups.forEach((item) => {
+        this.groupSelectData.push({
+          id: item.id,
+          title: item.name
+        })
+      })
+      this.groupSelected = this.groupSelectData.length ? this.groupSelectData[0].id : null
+      this.selectGroup()
+    },
+    selectGroup() {
+      this.selectedGropSportmans.forEach((item) => {
+        item.sportsmen.forEach((s) => {
+          this.group.sportsmans.push({
+            id: s.id,
+            full_name: `${s.user.firstName} ${s.user.lastName}`,
+            age: 3,
+            position_type: 'defender',
+            avatar: s.user.avatar,
+            team_number: s.teamNumber
+          })
+        })
+      })
+    },
+    createStatisticChartObject(data) {
+      this.increasement = data.increasement
+      this.chartStatistics = data.chart
+      console.log(data)
+    },
+    changeGroup() {
+      this.group.sportsmans = []
+      this.getGroupProgress()
+      this.selectGroup()
+      this.getGroupGoals()
+    },
+    selectAllGroup() {
+      this.selectedPlayerId = 'all'
+      this.getGroupGoals()
+      this.getGroupProgress()
+    },
+
+    async getGroups() {
+      try {
+        this.groups = await this.$groups.getGroups()
+        this.createGroupsObject()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async getGroupProgress() {
+      const response = await this.$groups.getGroupProgress(this.groupSelected)
+
+      this.statistic = {}
+      for (let key in response.currentProgress) {
+        this.statistic[key] = response.currentProgress[key]
+      }
+      this.showProgress = true
+
+      this.createStatisticChartObject(response.progressPerDay)
+      this.progressKey += 1
+    },
+    async getSportsmenProgress() {
+      const response = await this.$sportsmen.getSportsmenProgress(this.selectedPlayerId)
+
+      this.statistic = {}
+      for (let key in response.currentProgress) {
+        this.statistic[key] = response.currentProgress[key]
+      }
+      this.showProgress = true
+
+      this.createStatisticChartObject(response.progressPerDay)
+      this.progressKey += 1
+    },
+    async getGroupGoals() {
+      this.goals = await this.$groups.getGroupGoals(this.groupSelected)
+      console.log(this.goals)
+    },
+    async getSportsmenGoals() {
+      this.goals = await this.$sportsmen.getSportsmenGoals(this.selectedPlayerId)
+      console.log(this.goals)
+    },
+    async getGroupAchievements() {
+      const response = await this.$achievements.getGroupAchievements(this.groupSelected)
+      console.log(response)
+    },
   }
 }
 </script>
 
 <style scoped lang="scss">
 .goals {
+  .container {
+    padding-bottom: 70px;
+  }
+
   &__top {
     margin-top: 40px;
     display: flex;
@@ -338,6 +333,7 @@ export default {
   &__all-team {
     width: 100%;
     height: 75px;
+    margin-top: 15px;
     border-radius: 12px;
     display: flex;
     align-items: center;

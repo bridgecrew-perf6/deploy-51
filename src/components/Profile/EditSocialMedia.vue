@@ -13,7 +13,7 @@
     <v-card class="social-media-menu__card">
       <img class="social-media-menu__link-icon" src="@/assets/images/svg/profile/link.svg" alt="Ссылка" />
       <wu-input class="social-media-menu__input" v-model="inputVal"></wu-input>
-      <button class="social-media-menu__save-btn">
+      <button @click="handleOnClick($event)" class="social-media-menu__save-btn">
         <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#a)" fill="currentColor">
             <path
@@ -48,6 +48,11 @@ export default {
       set(val) {
         this.$emit('input', val)
       },
+    },
+  },
+  methods: {
+    handleOnClick: function () {
+      this.$emit('click', this.link)
     },
   },
 }

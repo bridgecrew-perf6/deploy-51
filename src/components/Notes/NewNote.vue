@@ -2,11 +2,22 @@
   <div class="create-note" :style="`background-color: ${currentColor}`">
     <div v-if="typeNote === 'media'" class="create-note__media-wrapper">
       <div class="create-note__preview"></div>
-      <vue-dropzone id="create-note__media" class="create-note__media" :options="dropzoneOptions" />
+      <vue-dropzone
+        id="create-note__media"
+        class="create-note__media"
+        :options="dropzoneOptions"
+        @vdropzone-file-added="saveImage"
+      />
     </div>
 
     <div class="create-note__body">
-      <v-text-field class="create-note__title" hide-details single-line label="Название"></v-text-field>
+      <v-text-field
+        class="create-note__title"
+        hide-details
+        single-line
+        label="Название"
+        v-model="form.name"
+      ></v-text-field>
       <v-textarea
         v-if="typeNote !== 'toDo'"
         auto-grow
@@ -15,6 +26,7 @@
         single-line
         rows="1"
         label="Введите текст ..."
+        v-model="form.text"
       ></v-textarea>
 
       <div v-if="typeNote === 'toDo'">
@@ -125,7 +137,9 @@
                   />
                 </g>
                 <defs>
-                  <clipPath id="a"><path fill="#fff" d="M0 0h16.007v16H0z" /></clipPath>
+                  <clipPath id="a">
+                    <path fill="#fff" d="M0 0h16.007v16H0z" />
+                  </clipPath>
                 </defs>
               </svg>
               <v-radio-group v-if="colorPicker" hide-details v-model="currentColor" row class="create-note__colors">
@@ -150,7 +164,7 @@
       <div class="create-note__footer-right">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <button v-bind="attrs" v-on="on" class="create-note__footer-btn">
+            <button v-bind="attrs" v-on="on" class="create-note__footer-btn" @click="saveNote">
               <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M11.655.087c.957-.232 1.628 0 2.211.696.648.774 1.666 1.351 2.03 2.221.355.847.09 1.954.092 2.947.003 2.749.003 5.496 0 8.244-.001 1.274-.531 1.803-1.816 1.804-4.143.003-8.285.004-12.429 0-1.19 0-1.738-.55-1.74-1.75C-.002 10.083 0 5.92.003 1.756.006.564.556.024 1.757.013c.591-.005 1.181 0 1.863 0v1.404c.002.93-.006 1.86.01 2.79.01.496.206.876.777.877 2.156.006 4.312.01 6.468-.003.66-.003.77-.497.777-1.016.013-1.098.004-2.197.004-3.297l-.001-.681Zm-8.73 14.405H13.07c0-1.5.037-2.953-.014-4.404-.028-.809-.58-1.314-1.415-1.322a324.51 324.51 0 0 0-7.286 0c-.839.008-1.38.494-1.414 1.324-.059 1.45-.016 2.902-.016 4.402Z"
@@ -173,7 +187,9 @@
                   />
                 </g>
                 <defs>
-                  <clipPath id="a"><path fill="#fff" transform="translate(0 .8)" d="M0 0h12.438v16H0z" /></clipPath>
+                  <clipPath id="a">
+                    <path fill="#fff" transform="translate(0 .8)" d="M0 0h12.438v16H0z" />
+                  </clipPath>
                 </defs>
               </svg>
             </button>
@@ -186,12 +202,20 @@
 </template>
 
 <script>
+import moment from 'moment'
 import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 
 import draggable from 'vuedraggable'
 
 export default {
+  props: {
+    date: Date,
+  },
+  components: {
+    vueDropzone: vue2Dropzone,
+    draggable,
+  },
   data() {
     return {
       colors: ['#2ABAF326', '#64C04826', '#FFA21726', '#FF4B6B26', '#F0F1FD'],
@@ -208,18 +232,68 @@ export default {
       },
       toDo: [{ text: '', status: false }],
       typeNote: 'simple', //simple, toDo, media
+      form: {
+        name: '',
+        text: '',
+      },
+      image: [],
+      taskId: null,
     }
   },
-  components: {
-    vueDropzone: vue2Dropzone,
-    draggable,
+  watch: {
+    typeNote() {
+      this.taskId = null
+    },
   },
   methods: {
     handleDeleteNewNote() {
-      this.$emit('delete')
+      this.$emit('close')
     },
-    addToDo() {
+    async addToDo() {
       this.toDo.push({ text: '', status: false })
+    },
+    saveImage(file) {
+      this.image.push(file)
+    },
+    async saveNote() {
+      await this.postTask()
+      this.taskId = null
+      this.$emit('close')
+    },
+    async postTask(type) {
+      if (this.taskId !== null) {
+        if (this.typeNote === 'toDo' && type !== 'todo') await this.postTodo()
+        return
+      }
+      const date = moment(this.date.toLocaleDateString(), 'DD.MM.YYYY').format('YYYY-MM-DD')
+
+      const body = {
+        color: this.currentColor,
+        type: this.typeNote,
+      }
+      if (this.typeNote === 'simple') {
+        body.text = this.form.text
+      }
+      if (this.typeNote === 'toDo') {
+        body.todo = this.toDo
+      }
+      if (this.typeNote === 'media') {
+        body.text = this.form.text
+      }
+
+      const response = await this.$notes.postNotes({
+        title: this.form.name,
+        text: JSON.stringify(body),
+      })
+
+      if (this.typeNote === 'media') {
+        this.image.forEach(async item => {
+          await this.imageUpload(response.id, item)
+        })
+      }
+    },
+    async imageUpload(id, image) {
+      const response = await this.$notes.postImage(image, id)
     },
   },
 }
@@ -227,244 +301,274 @@ export default {
 
 <style lang="sass" scoped>
 .create-note
-    width: 100%
-    border-radius: 8px
+  width: 100%
+  border-radius: 8px
 
 .create-note__body
-    padding: 15px 15px 0
+  padding: 15px 15px 0
 
 .create-note__title
-    margin-top: 0px
-    margin-bottom: 20px
-    padding-top: 0px
-    &::v-deep
-        .v-input__slot
-            height: auto
-            &::before,
-            &::after
-                display: none
-        .v-text-field__slot
-            label
-                top: 0px
-                height: auto
-                font-size: 20px
-                line-height: 27px
-                color: #B9CBE5
-            input
-                padding: 0px
-                font-size: 20px
-                line-height: 27px
-                max-height: none
-                color: $blue02
+  margin-top: 0px
+  margin-bottom: 20px
+  padding-top: 0px
+
+  &::v-deep
+    .v-input__slot
+      height: auto
+
+      &::before,
+      &::after
+        display: none
+
+    .v-text-field__slot
+      label
+        top: 0px
+        height: auto
+        font-size: 20px
+        line-height: 27px
+        color: #B9CBE5
+
+      input
+        padding: 0px
+        font-size: 20px
+        line-height: 27px
+        max-height: none
+        color: $blue02
 
 .create-note__text
-    margin-top: 0px
-    padding-top: 0px
-    &::v-deep
-        .v-input__slot
-            &::before,
-            &::after
-                display: none
-        .v-text-field__slot
-            label
-                height: auto
-                font-size: 16px
-                line-height: 22px
-                color: $blue05
-            textarea
-                color: $blue02
+  margin-top: 0px
+  padding-top: 0px
+
+  &::v-deep
+    .v-input__slot
+      &::before,
+      &::after
+        display: none
+
+    .v-text-field__slot
+      label
+        height: auto
+        font-size: 16px
+        line-height: 22px
+        color: $blue05
+
+      textarea
+        color: $blue02
 
 .create-note__footer
-    padding: 20px 15px 15px
-    display: flex
-    justify-content: space-between
-    align-items: center
+  padding: 20px 15px 15px
+  display: flex
+  justify-content: space-between
+  align-items: center
 
-    font-weight: 500
-    font-size: 14px
-    line-height: 19px
+  font-weight: 500
+  font-size: 14px
+  line-height: 19px
 
-    color: $blue05
+  color: $blue05
 
 .create-note__footer-left
-    display: inline-flex
-    flex: 0 0 85%
+  display: inline-flex
+  flex: 0 0 85%
 
 
 .create-note__footer-btn
-    margin-right: 20px
-    color: $blue06
-    &:last-child
-        margin-right: 0px
+  margin-right: 20px
+  color: $blue06
+
+  &:last-child
+    margin-right: 0px
 
 .create-note__footer-btn--active
-    color: $blue02
+  color: $blue02
 
 .create-note__footer-btn--color
-    display: flex
-    align-items: center
-    svg
-        margin-right: 5px
+  display: flex
+  align-items: center
+
+  svg
+    margin-right: 5px
 
 .create-note__colors
-    margin-top: 0px
-    padding-top: 0px
+  margin-top: 0px
+  padding-top: 0px
 
 .create-note__color-radio
-    &::v-deep
-        margin-right: 14px !important
-        &:last-child
-            margin-right: 0px !important
-        .v-input--selection-controls__input
-            margin-right: 0px
-            display: none
-        .create-note__color-radio-label
-            display: inline-block
-            width: 20px
-            height: 20px
+  &::v-deep
+    margin-right: 14px !important
 
-            border: 2px solid #95B0DA
-            border-radius: 4px
-            overflow: hidden
-            .v-icon
-                display: none
-        &.v-item--active
-            .create-note__color-radio-label
-                background-image: url("data:image/svg+xml,%3Csvg width='9' height='7' viewBox='0 0 9 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.75 1.05c-.05.275-.221.48-.393.687L4.598 6.474A1.34 1.34 0 0 1 3.493 7a1.21 1.21 0 0 1-.934-.412c-.762-.8-1.548-1.579-2.31-2.38-.49-.549-.22-1.35.492-1.533.393-.092.737 0 1.007.297.344.367.713.733 1.057 1.099l.516.55c.098.114.172.114.27-.024L6.907.41C7.325-.117 8.111-.14 8.53.364c.098.114.147.251.196.389 0 .023 0 .023.025.045v.252Z' fill='%23464EA3'/%3E%3C/svg%3E")
-                background-position: center
-                background-repeat: no-repeat
-                border-color: $blue03
+    &:last-child
+      margin-right: 0px !important
+
+    .v-input--selection-controls__input
+      margin-right: 0px
+      display: none
+
+    .create-note__color-radio-label
+      display: inline-block
+      width: 20px
+      height: 20px
+
+      border: 2px solid #95B0DA
+      border-radius: 4px
+      overflow: hidden
+
+      .v-icon
+        display: none
+
+    &.v-item--active
+      .create-note__color-radio-label
+        background-image: url("data:image/svg+xml,%3Csvg width='9' height='7' viewBox='0 0 9 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.75 1.05c-.05.275-.221.48-.393.687L4.598 6.474A1.34 1.34 0 0 1 3.493 7a1.21 1.21 0 0 1-.934-.412c-.762-.8-1.548-1.579-2.31-2.38-.49-.549-.22-1.35.492-1.533.393-.092.737 0 1.007.297.344.367.713.733 1.057 1.099l.516.55c.098.114.172.114.27-.024L6.907.41C7.325-.117 8.111-.14 8.53.364c.098.114.147.251.196.389 0 .023 0 .023.025.045v.252Z' fill='%23464EA3'/%3E%3C/svg%3E")
+        background-position: center
+        background-repeat: no-repeat
+        border-color: $blue03
 
 
 .create-note__media-wrapper
-    padding: 12px
-    background-color: #FBFBFE
-    border-radius: 8px
+  padding: 12px
+  background-color: #FBFBFE
+  border-radius: 8px
 
 .create-note__media
-    border: 2px dashed rgba(185, 203, 229, 0.5)
-    border-radius: 12px
-    ::v-deep
-        position: relative
-        .dz-message
-            display: flex
-            flex-wrap: wrap
-            align-items: center
-            justify-content: center
-            span
-                width: 100%
-                font-weight: 500
-                font-size: 17px
-                line-height: 23px
-                color: #B9CBE5
-            &:before
-                content: ''
-                width: 52px
-                height: 41px
-                margin-bottom: 14px
-                background-image: url("data:image/svg+xml,%3Csvg width='52' height='41' viewBox='0 0 52 41' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M25.785.003c6.62 0 13.245-.007 19.866.004 3.728.007 5.776 1.98 5.787 5.7.032 9.726-.033 19.451.032 29.173.025 3.85-2.414 6.166-6.202 6.12-13.005-.151-26.01-.058-39.016-.062-4.326 0-6.241-1.876-6.245-6.151C0 25.305.017 15.819 0 6.334-.004 3.792.559 1.557 3.144.462 3.882.15 4.748.025 5.557.022 12.3-.012 19.043.002 25.785.002Zm-2.617 29.495c-1.748-2.11-3.384-4.06-4.988-6.037-.939-1.157-1.802-1.228-2.736 0-1.77 2.313-3.599 4.58-5.321 6.925-.44.602-.566 1.429-.838 2.152.738.254 1.475.73 2.216.734 9.547.05 19.09.05 28.636 0 .684-.004 1.711-.304 1.948-.78.236-.473-.161-1.461-.566-2.02-2.485-3.42-5.045-6.786-7.595-10.155-1.525-2.013-2.166-2.002-3.738.04-2.285 2.96-4.558 5.933-7.018 9.14ZM20.66 15.26c1.35-.04 2.481-1.193 2.481-2.525-.003-1.257-1.267-2.52-2.52-2.524-1.393 0-2.568 1.242-2.518 2.66.047 1.418 1.135 2.432 2.557 2.389Z' fill='%23DCE5F2'/%3E%3C/svg%3E")
-                background-position: center
-                background-repeat: no-repeat
-                background-size: contain
+  border: 2px dashed rgba(185, 203, 229, 0.5)
+  border-radius: 12px
 
-        .dz-details
-            display: none
+  ::v-deep
+    position: relative
+
+    .dz-message
+      display: flex
+      flex-wrap: wrap
+      align-items: center
+      justify-content: center
+
+      span
+        width: 100%
+        font-weight: 500
+        font-size: 17px
+        line-height: 23px
+        color: #B9CBE5
+
+      &:before
+        content: ''
+        width: 52px
+        height: 41px
+        margin-bottom: 14px
+        background-image: url("data:image/svg+xml,%3Csvg width='52' height='41' viewBox='0 0 52 41' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M25.785.003c6.62 0 13.245-.007 19.866.004 3.728.007 5.776 1.98 5.787 5.7.032 9.726-.033 19.451.032 29.173.025 3.85-2.414 6.166-6.202 6.12-13.005-.151-26.01-.058-39.016-.062-4.326 0-6.241-1.876-6.245-6.151C0 25.305.017 15.819 0 6.334-.004 3.792.559 1.557 3.144.462 3.882.15 4.748.025 5.557.022 12.3-.012 19.043.002 25.785.002Zm-2.617 29.495c-1.748-2.11-3.384-4.06-4.988-6.037-.939-1.157-1.802-1.228-2.736 0-1.77 2.313-3.599 4.58-5.321 6.925-.44.602-.566 1.429-.838 2.152.738.254 1.475.73 2.216.734 9.547.05 19.09.05 28.636 0 .684-.004 1.711-.304 1.948-.78.236-.473-.161-1.461-.566-2.02-2.485-3.42-5.045-6.786-7.595-10.155-1.525-2.013-2.166-2.002-3.738.04-2.285 2.96-4.558 5.933-7.018 9.14ZM20.66 15.26c1.35-.04 2.481-1.193 2.481-2.525-.003-1.257-1.267-2.52-2.52-2.524-1.393 0-2.568 1.242-2.518 2.66.047 1.418 1.135 2.432 2.557 2.389Z' fill='%23DCE5F2'/%3E%3C/svg%3E")
+        background-position: center
+        background-repeat: no-repeat
+        background-size: contain
+
+    .dz-details
+      display: none
 
 .create-note__preview
-    display: flex
-    flex-wrap: wrap
-    ::v-deep
-        .dz-preview
-            position: relative
-            width: calc(50% - 5px)
-            margin-right: 10px
-            margin-bottom: 10px
-            overflow: hidden
+  display: flex
+  flex-wrap: wrap
 
-            &:nth-child(even)
-                margin-right: 0px
-            .dz-image
-                line-height: 0px
-                font-size: 0px
-                border: 1px solid #DCE5F2
-                border-radius: 8px
-                overflow: hidden
-            .dz-details,
-            .dz-success-mark,
-            .dz-error-mark
-                display: none
-            .dz-remove
-                position: absolute
-                top: 12px
-                right: 12px
-                display: inline-block
-                transform: translate(100%, -100%)
-                width: 28px
-                height: 28px
-                background-color: rgba(0, 0, 0, 0.2)
-                border-radius: 8px
-                background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m8.37 7.268 4.948 4.947a.878.878 0 0 1 0 1.24.878.878 0 0 1-1.24 0L7.143 8.521 2.19 13.474a.878.878 0 0 1-1.24 0l-.006-.006a.878.878 0 0 1 0-1.24l4.934-4.935L.925 2.34a.878.878 0 0 1 0-1.24l.006-.006a.878.878 0 0 1 1.24 0l4.934 4.934 4.954-4.953a.878.878 0 0 1 1.24 0l.013.012a.878.878 0 0 1 0 1.24L8.37 7.268Z' fill='%23fff'/%3E%3C/svg%3E")
-                background-repeat: no-repeat
-                background-position: center
-                transition: all 0.5s
-                opacity: 0
-            &:hover
-                .dz-remove
-                    transform: translate(0%, 0%)
-                    opacity: 1
+  ::v-deep
+    .dz-preview
+      position: relative
+      width: calc(50% - 5px)
+      margin-right: 10px
+      margin-bottom: 10px
+      overflow: hidden
+
+      &:nth-child(even)
+        margin-right: 0px
+
+      .dz-image
+        line-height: 0px
+        font-size: 0px
+        border: 1px solid #DCE5F2
+        border-radius: 8px
+        overflow: hidden
+
+      .dz-details,
+      .dz-success-mark,
+      .dz-error-mark
+        display: none
+
+      .dz-remove
+        position: absolute
+        top: 12px
+        right: 12px
+        display: inline-block
+        transform: translate(100%, -100%)
+        width: 28px
+        height: 28px
+        background-color: rgba(0, 0, 0, 0.2)
+        border-radius: 8px
+        background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m8.37 7.268 4.948 4.947a.878.878 0 0 1 0 1.24.878.878 0 0 1-1.24 0L7.143 8.521 2.19 13.474a.878.878 0 0 1-1.24 0l-.006-.006a.878.878 0 0 1 0-1.24l4.934-4.935L.925 2.34a.878.878 0 0 1 0-1.24l.006-.006a.878.878 0 0 1 1.24 0l4.934 4.934 4.954-4.953a.878.878 0 0 1 1.24 0l.013.012a.878.878 0 0 1 0 1.24L8.37 7.268Z' fill='%23fff'/%3E%3C/svg%3E")
+        background-repeat: no-repeat
+        background-position: center
+        transition: all 0.5s
+        opacity: 0
+
+      &:hover
+        .dz-remove
+          transform: translate(0%, 0%)
+          opacity: 1
 
 .create-note__todo-item
-    &::v-deep
-        min-height: auto
-        margin-bottom: 20px
-        padding: 0px
-        .v-list-item__action
-            margin: 0px
-            margin-right: 12px
-            min-width: auto
-        .v-list-item__content
-            flex-wrap: nowrap
-            padding: 0px
+  &::v-deep
+    min-height: auto
+    margin-bottom: 20px
+    padding: 0px
+
+    .v-list-item__action
+      margin: 0px
+      margin-right: 12px
+      min-width: auto
+
+    .v-list-item__content
+      flex-wrap: nowrap
+      padding: 0px
 
 .create-note__todo-checkbox
-    &::v-deep
-        margin-bottom: 0px
-        margin-right: 12px
-        .v-input--selection-controls__input
-            margin-right: 0px
+  &::v-deep
+    margin-bottom: 0px
+    margin-right: 12px
+
+    .v-input--selection-controls__input
+      margin-right: 0px
 
 
 .create-note__todo-input
-    margin-top: 0px
-    padding-top: 0px
-    &::v-deep
-        width: 100%
-        .v-input__slot
-            height: auto
-            &::before,
-            &::after
-                display: none
-        .v-text-field__slot
-            label
-                top: 0px
-                height: auto
-                font-size: 16px
-                line-height: 22px
-                color: $blue05
+  margin-top: 0px
+  padding-top: 0px
 
-            input
-                padding: 0
-                font-size: 16px
-                line-height: 22px
-                max-height: none
-                color: $blue02
+  &::v-deep
+    width: 100%
+
+    .v-input__slot
+      height: auto
+
+      &::before,
+      &::after
+        display: none
+
+    .v-text-field__slot
+      label
+        top: 0px
+        height: auto
+        font-size: 16px
+        line-height: 22px
+        color: $blue05
+
+      input
+        padding: 0
+        font-size: 16px
+        line-height: 22px
+        max-height: none
+        color: $blue02
 
 .create-note__todo-add
-    margin-left: 22px
-    font-size: 16px
-    line-height: 22px
-    color: $blue02
+  margin-left: 22px
+  font-size: 16px
+  line-height: 22px
+  color: $blue02
 
 .create-note__todo-drag
-    line-height: 0px
+  line-height: 0px
 </style>

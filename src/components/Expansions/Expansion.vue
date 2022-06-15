@@ -17,11 +17,14 @@
             v-if="filter.color"
             :style="`background-color: ${filter.color}`"
           ></span>
-          <base-checkbox class="expansion__content-checkbox"
-                         :label="filter.label"
-                         white
-                         textDark
-                         reverse />
+          <wu-checkbox
+            class="expansion__content-checkbox"
+            :value="filter.id"
+            :label="filter.label"
+            white
+            textDark
+            reverse
+          />
         </div>
       </v-expansion-panel-content>
     </v-expansion-panel>
@@ -29,10 +32,9 @@
 </template>
 
 <script>
-import BaseCheckbox from '@/components/library/BaseCheckbox.vue'
-
 export default {
   props: {
+    value: [Array],
     label: {
       type: String,
       required: true,
@@ -42,7 +44,16 @@ export default {
       required: true,
     },
   },
-  components: { BaseCheckbox },
+  computed: {
+    inputVal: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.$emit('input', val)
+      },
+    },
+  },
 }
 </script>
 

@@ -30,7 +30,9 @@
               width="56"
               height="56"
             ></v-img>
-            <span class="persons__sportsman-number" v-if="type === 'sportsman'">{{ person.team_number }}</span>
+            <span class="persons__sportsman-number" v-if="type === 'sportsman' && person.team_number">{{
+              person.team_number
+            }}</span>
           </v-list-item-avatar>
           <v-list-item-content
             class="persons__sportsman-content"
@@ -42,9 +44,11 @@
               {{ person.position }}
             </v-list-item-subtitle>
 
-            <v-list-item-subtitle class="persons__sportsman-subtitle" v-if="type === 'sportsman'"
-              >{{ person.age }} лет,
-              {{ positionTypes.find(x => x.slug === person.position_type).title }}
+            <v-list-item-subtitle class="persons__sportsman-subtitle" v-if="type === 'sportsman'">
+              <p>
+                <template v-if="person.birthDate">{{ age(person.birthDate) }} лет, </template>
+                {{ positionTypes.find(x => x.slug === person.position_type).title }}
+              </p>
             </v-list-item-subtitle>
           </v-list-item-content>
           <div class="persons__arrow" v-if="playerChoice && playerChoice && person.id === selectedPlayerId">
@@ -127,6 +131,9 @@ export default {
     selectPlayer(person) {
       this.$emit('selectPlayer', person.id)
     },
+    age(bday) {
+      return this.$moment().diff(bday, 'years')
+    },
   },
 }
 </script>
@@ -202,6 +209,7 @@ export default {
   color: $blue02
 
 .persons__sportsman-subtitle
+  display: flex
   font-size: 12px
   line-height: 20px
   color: $blue02 !important

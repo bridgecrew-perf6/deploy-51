@@ -1,52 +1,53 @@
 import api from "./api";
 
 const coach = {
-    getCoach(id) {
-        return api.get(`/coach/${id}`)
+    getCoach(idCoach) {
+        return api.get(`/coach/${idCoach}/`)
     },
-    updateCoach(id, data) {
-        return api.put(`/coach/${id}`, data)
-    },
-    updateAvatar(avatar) {
-        let formData = new FormData();
-        formData.append('avatar', avatar)
-
-        return api.put(`/users/me/`, formData, {headers: {
-            'Content-Type': 'multipart/form-data'
-          }})
-    },
-    getCoachEducations(id) {
-        return api.get(`/coach/${id}/educations/`)
-    },
-    getCoachRewards(id) {
-        return api.get(`/coach/${id}/rewards/`)
-    },
-    getCoachWork(id) {
-        return api.get(`/coach/${id}/work_experiencies/`)
+    updateCoach(idCoach, data) {
+        return api.put(`/coach/${idCoach}/`, data)
     },
 
-    //TODO: Remove later
-    //Educations
-    creatEdu(payload) {
-        return api.post(`/educations/`, payload)
+    getCoachEducations(idCoach) {
+        return api.get(`/coach/${idCoach}/educations/`)
     },
-    deleteEdu(id) {
-        return api.delete(`/education/${id}/`)
+    createEducation(idCoach, payload) {
+        return api.post(`/coach/${idCoach}/educations/`, payload)
     },
-
-    createWork(data) {
-        return api.post(`/work_experience/`, data)
+    updateEducation(idCoach, idEducation, payload) {
+        return api.put(`/coach/${idCoach}/educations/${idEducation}/`, payload)
     },
-    deleteWork(id) {
-        return api.delete(`/work_experience/${id}/`)
+    deleteEducation(idEducation) {
+        //return api.delete(`coach/${idCoach}/educations/${idEducation}/`)
+        return api.delete(`/education/${idEducation}/`)
     },
 
-
-    createAward(data) {
-        return api.post(`/reward/`, data) 
+    getCoachWork(idCoach) {
+        return api.get(`/coach/${idCoach}/work_experiencies/`)
     },
-    deleteAward(id) {
-        return api.delete(`/reward/${id}/`)
+    createWork(idCoach, payload) {
+        return api.post(`/coach/${idCoach}/work_experiencies/`, payload)
+    },
+    updateWork(idCoach, idWork, payload) {
+        return api.put(`/coach/${idCoach}/work_experiencies/${idWork}/`, payload)
+    },
+    deleteWork(idWork) {
+        //return api.delete(`coach/${idCoach}/work_experience/${idWork}/`)
+        return api.delete(`/work_experience/${idWork}/`)
+    },
+
+    getCoachAwards(idCoach) {
+        return api.get(`/coach/${idCoach}/rewards/`)
+    },
+    createAward(idCoach, payload) {
+        return api.post(`/coach/${idCoach}/rewards/`, payload)
+    },
+    updateAward(idCoach, idAward, payload) {
+        return api.put(`/coach/${idCoach}/rewards/${idAward}/`, payload)
+    },
+    deleteAward(idAward) {
+        //return api.delete(`coach/${idCoach}/rewards/${idAward}/`)
+        return api.delete(`/reward/${idAward}/`)
     }
 };
 
