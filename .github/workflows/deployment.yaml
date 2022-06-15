@@ -54,11 +54,9 @@ jobs:
       #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && git pull && git reset --hard origin/main"
       # - name: Deploy to development server
       #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "~/way_up_frontend/deploy.sh"
-      - name: Deploy to development server
+      -
+        name: Login to private registry
+        run ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u {{github.actor}} --password-stdin"
+      -
+        name: Deploy to development server
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && docker compose down -v && docker compose pull && docker compose up -d"
-      # - name: Docker-Compose Remote Deployment
-      #   uses: alex-ac/github-action-ssh-docker-compose@master
-      #   with:
-      #     ssh_host: ${{ secrets.SSH_HOST }}
-      #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     ssh_user: ${{ secrets.SSH_USER }}
