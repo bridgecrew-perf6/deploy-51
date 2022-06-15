@@ -4,7 +4,7 @@ import store from "../store";
 import notify from "../components/notification/instance";
 
 const api = axios.create({
-    baseURL: "http://139.59.158.39:8000/api",
+    baseURL: process.env.VUE_APP_URL,
 });
 
 // api.headers = { Authorization: `Bearer ${store.state.auth.access}`, 'Content-Type': 'application/json; charset=utf-8' }
