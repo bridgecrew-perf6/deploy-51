@@ -56,7 +56,7 @@ jobs:
       #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "~/way_up_frontend/deploy.sh"
       -
         name: Login to private registry
-        run ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u {{github.actor}} --password-stdin"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u {{github.actor}} --password-stdin"
       -
         name: Deploy to development server
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && docker compose down -v && docker compose pull && docker compose up -d"
