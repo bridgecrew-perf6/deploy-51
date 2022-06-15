@@ -8,6 +8,8 @@ services:
       - app:/app
     ports:
       - 8080:80
+    environment:
+      - VUE_APP_URL=http://139.59.158.39:8000/api
 
 volumes:
   app:
