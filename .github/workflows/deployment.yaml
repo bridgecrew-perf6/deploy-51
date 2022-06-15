@@ -21,21 +21,23 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Delete image
-        uses: bots-house/ghcr-delete-image-action@v1.0.0
-        with:
-          # NOTE: at now only orgs is supported
-          owner: bots-house
-          name: some-web-service
-          # NOTE: using Personal Access Token
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ghcr.io/multipassport/deploy:latest
+      # -
+      #   name: Delete image
+      #   uses: bots-house/ghcr-delete-image-action@v1.0.0
+      #   with:
+      #     # NOTE: at now only orgs is supported
+      #     owner: bots-house
+      #     name: some-web-service
+      #     # NOTE: using Personal Access Token
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: ghcr.io/multipassport/deploy:latest
       -
         name: Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ghcr.io/multipassport/deploy:latest
 # jobs:
 #   backend:
