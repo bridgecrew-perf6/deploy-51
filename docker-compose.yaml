@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  nginx:
+  way_up_nginx:
     image: ghcr.io/multipassport/deploy:latest
     volumes:
       - app:/app

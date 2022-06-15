@@ -36,8 +36,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
           tags: ghcr.io/multipassport/deploy:latest
 # jobs:
 #   backend:
