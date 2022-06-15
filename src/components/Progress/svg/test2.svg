@@ -1,0 +1,16 @@
+<svg width="152" height="152" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g filter="url(#filter0_d)">
+        <rect x="8" y="2" width="136" height="136" rx="28" fill="#2ABAF3"/>
+    </g>
+    <mask id="mask0" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8" y="2" width="136" height="136">
+        <rect x="8" y="2" width="136" height="136" rx="28" fill="#79C54C"/>
+    </mask>
+    <g mask="url(#mask0)">
+        <path d="M76 2H116C131.464 2 144 14.536 144 30V110C144 125.464 131.464 138 116 138H76H36C20.536 138 8 125.464 8 110V70" stroke="white" stroke-width="16" stroke-linejoin="round"/>
+    </g>
+    <defs>
+        <filter id="filter0_d" x="0" y="0" width="152" height="152" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+        </filter>
+    </defs>
+</svg>

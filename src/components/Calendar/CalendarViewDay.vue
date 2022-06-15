@@ -1,0 +1,465 @@
+<template>
+  <div class="calendar-wrap">
+    <div class="head-calendar">
+      <div class="calendar-title">
+        <svg
+          class="calendar-title__icon"
+          width="22"
+          height="21"
+          viewBox="0 0 22 21"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="2" y="2.833" width="18" height="16.333" rx="3" stroke="#464EA3" stroke-width="2" />
+          <path
+            d="M7.833 1a1 1 0 1 0-2 0h2Zm-2 3.333a1 1 0 1 0 2 0h-2ZM16.167 1a1 1 0 1 0-2 0h2Zm-2 3.333a1 1 0 1 0 2 0h-2ZM1.833 6.667a1 1 0 0 0 0 2v-2Zm18.334 2a1 1 0 1 0 0-2v2ZM5.833 1v3.333h2V1h-2Zm8.334 0v3.333h2V1h-2ZM1.833 8.667h18.334v-2H1.833v2Z"
+            fill="#464EA3"
+          />
+          <circle cx="6.417" cy="13.083" r="1.25" fill="#464EA3" />
+          <circle cx="10.583" cy="13.083" r="1.25" fill="#464EA3" />
+          <circle cx="14.75" cy="13.083" r="1.25" fill="#464EA3" />
+        </svg>
+        <span class="calendar-title__day-of-the-month h2">{{ thisDate }}</span>
+        <span class="calendar-title__day-of-week h3">{{ thisDayOfWeek }}</span>
+      </div>
+    </div>
+
+    <div class="calendar">
+      <div class="hours-wrap">
+        <div class="base-linetime" :style="baseLineStyle">
+          <div class="base-linetime-round"></div>
+        </div>
+        <div class="hours" ref="hours">
+          <div class="hours-time">
+            <div class="hours-time-item" v-for="m in 15" :key="m">{{ 7 + m }}.00</div>
+          </div>
+          <div class="hours-col" :style="timeStyle">
+            <div class="hours-item" v-for="(m, indexHours) in 16" :key="indexHours"></div>
+            <CalendarEvent
+              :event="event"
+              :base="heightHourCeil"
+              v-for="(event, indexDay) in groupSchedule"
+              :key="indexDay"
+            ></CalendarEvent>
+          </div>
+        </div>
+      </div>
+      <div class="notes-wrap notes">
+        <div class="notes__header">
+          <p class="notes__title">Заметки</p>
+
+          <search-input v-model="queryNote" class="notes__search" placeholder="Искать взаметках" />
+        </div>
+
+        <ul class="notes__list">
+          <li class="notes__item">
+            <new-note v-if="createNote" @delete="createNote = false" />
+          </li>
+          <li
+            class="notes__item"
+            v-for="(note, i) in notesSearch"
+            :key="i"
+            :style="`background-color: ${note.color}; color: ${note.color}`"
+          >
+            <div class="notes__inner">
+              <p class="notes__item-title">{{ note.title }}</p>
+              <p class="notes__item-text">{{ note.text }}</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="notes__footer">
+          <span class="notes__footer-add" @click="createNote = true">+ Добавить заметку</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import moment from 'moment'
+import { TRAINER_ROLE } from '@/config/api'
+import SearchInput from '@/components/library/SearchInput.vue'
+import CalendarEvent from '@/components/Calendar/CalendarEvent'
+
+import NewNote from '@/components/Notes/NewNote.vue'
+
+export default {
+  name: 'CalendarViewDay',
+  props: {
+    initDay: {
+      type: Date,
+    },
+    events: {
+      type: [Array, Object],
+    },
+  },
+  components: { SearchInput, NewNote, CalendarEvent },
+  data: function () {
+    return {
+      //weekDays: moment.weekdaysShort(true),
+      heightHourCeil: 64,
+      currentMoment: moment().toDate(),
+      schedule: this.events,
+      offsetMinuteMin: 15, // Минимальное смещение в минутах при drag-and-drop
+      dialogEvent: false,
+      dialogEventSkills: false,
+
+      role: localStorage.getItem('role'),
+      trainerRole: TRAINER_ROLE,
+
+      // Время начала - окончания события для модалки
+      createTimeStart: '',
+      createTimeEnd: '',
+      createDate: null,
+      createNote: false,
+      notes: [
+        {
+          id: 0,
+          title: 'На собрании',
+          text: 'Отметить успехи Петрова. Объявить о проведении соревнований. Собрать разрешение на поездку.',
+          color: '#FFA2171A',
+        },
+        {
+          id: 1,
+          title: '',
+          text: 'Позвонить +7 956 745 88 77',
+          color: '#E8F6E4',
+        },
+      ],
+      queryNote: '',
+    }
+  },
+  computed: {
+    notesSearch() {
+      return this.notes.filter(
+        item =>
+          item.text.toLowerCase().indexOf(this.queryNote.toLowerCase()) >= 0 ||
+          item.title.toLowerCase().indexOf(this.queryNote.toLowerCase()) >= 0
+      )
+    },
+    thisDate: function () {
+      return moment(this.initDay).format('D MMMM')
+    },
+    thisDayOfWeek: function () {
+      return moment(this.initDay).format('dddd')
+    },
+    currentTime: function () {
+      return moment(this.currentMoment).format('H:mm')
+    },
+    isCurrentDay() {
+      let selectedDate = moment(moment(this.initDay).format('DD.MM.YYYY'), 'DD.MM.YYYY'),
+        today = moment(moment().format('DD.MM.YYYY'), 'DD.MM.YYYY')
+
+      return selectedDate.diff(today, 'days') === 0
+    },
+    baseLineStyle: function () {
+      let currentHour = moment(this.currentMoment).hour()
+      let currentMinute = moment(this.currentMoment).minute()
+      let heughtHour = (currentMinute / 60) * 64
+      return {
+        top: `${(currentHour - 7) * this.heightHourCeil + heughtHour}px`,
+        display: !this.isCurrentDay ? 'none' : 'block',
+      }
+    },
+    timeStyle() {
+      if (this.isCurrentDay) {
+        let gradient = ''
+        let grayColor = 'rgba(128, 133, 187, 0.1)'
+        let greenColor = 'rgba(100, 192, 72, 0.1)'
+        let transparent = 'rgb(255, 255, 255, 0)'
+
+        let heightCalendar = this.heightHourCeil * 18
+
+        //Определяем текущее время
+        let currentHour = moment(this.currentMoment).hour()
+        let currentMinute = moment(this.currentMoment).minute()
+        let heightHour = (currentMinute / 60) * this.heightHourCeil
+        let currentTimePosition = (currentHour - 7) * this.heightHourCeil + heightHour
+
+        gradient = `linear-gradient(180deg, ${grayColor} 0px, ${grayColor} ${currentTimePosition}px`
+
+        if (this.groupSchedule.length) {
+          this.groupSchedule.forEach((event, index, array) => {
+            let momentJs = moment(event.start_time)
+            let hour = momentJs.hour()
+            let minute = momentJs.minute()
+
+            let startPosition = (hour - 6 + minute / 60) * this.heightHourCeil
+            let endPosition = startPosition + this.heightHourCeil * event.duration
+
+            if (endPosition < currentTimePosition) {
+              if (index !== array.length - 1) {
+                gradient += `, ${grayColor} ${currentTimePosition}px`
+              } else {
+                gradient += `, ${greenColor} ${currentTimePosition}px, ${greenColor} ${heightCalendar}px)`
+              }
+            } else {
+              gradient += `, ${greenColor} ${currentTimePosition}px`
+
+              gradient += `, ${greenColor} ${startPosition}px, ${transparent} ${startPosition}px, ${transparent} ${endPosition}px`
+
+              if (index === array.length - 1) {
+                gradient += `, ${greenColor} ${endPosition}px, ${greenColor} ${heightCalendar}px)`
+              }
+            }
+          })
+        } else {
+          gradient += `, ${greenColor} ${currentTimePosition}px, ${greenColor} ${heightCalendar}px)`
+        }
+
+        return `background: ${gradient}`
+      } else return ''
+    },
+    groupSchedule() {
+      let groupSchedule = []
+      let selectedDate = moment(moment(this.initDay), 'DD.MM.YYYY')
+
+      this.events.forEach(item => {
+        let today = moment(moment(item.date), 'DD.MM.YYYY')
+
+        if (selectedDate.diff(today, 'days') === 0) {
+          groupSchedule.push(item)
+        }
+      })
+
+      if (groupSchedule.length > 1) {
+        groupSchedule.sort(function (fisrt, second) {
+          let a = moment(fisrt.timeFrom, 'HH:mm:ss'),
+            b = moment(second.timeFrom, 'HH:mm:ss')
+
+          if (b.isAfter(a, 'hours')) return -1
+          else return 1
+        })
+      }
+
+      return groupSchedule
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.calendar {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 16px;
+  background-color: #fff;
+  margin-left: rem(35px);
+  box-shadow: 0px 6px 8px rgba(128, 133, 187, 0.15);
+  margin-bottom: 35px;
+  overflow: hidden;
+}
+.notes-wrap {
+  flex: 0 0 50%;
+}
+
+.head-calendar {
+  margin-bottom: 20px;
+}
+
+.calendar-title {
+}
+
+.calendar-title__icon {
+  margin-right: 10px;
+  vertical-align: text-top;
+}
+
+.calendar-title__day-of-the-month {
+  display: inline-block;
+  margin-right: 8px;
+  color: $blue03;
+}
+
+.calendar-title__day-of-week {
+  font-weight: 500;
+  color: $blue05;
+}
+
+.base-linetime {
+  position: absolute;
+  top: rem(340px);
+  width: calc(100% - 2.188rem);
+  left: 0;
+  display: flex;
+  justify-content: center;
+  transform: translateY(-50%);
+  height: 1px;
+  transition: all 0.4s;
+  z-index: 1;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: $blue02;
+    top: 50%;
+  }
+
+  &-round {
+    position: absolute;
+    top: rem(-3px);
+    width: rem(8px);
+    height: rem(8px);
+    background: $blue02;
+    border-radius: 100%;
+    transform: translateX(-5px);
+  }
+}
+
+.hours {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  position: relative;
+  //overflow: hidden;
+
+  &-wrap {
+    position: relative;
+    flex: 0 0 50%;
+  }
+
+  &-time {
+    position: absolute;
+    width: rem(35px);
+    left: rem(-35px);
+
+    &-item {
+      display: flex;
+      align-items: flex-start;
+      height: 70px;
+
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+      color: $blue02;
+    }
+  }
+
+  &-col {
+    width: calc((100% - 2.188rem));
+    position: relative;
+    border-radius: 16px 16px 0px 0px;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border-top-left-radius: 16px;
+      background-color: rgba(128, 133, 187, 0.1);
+    }
+  }
+
+  &-item {
+    height: 64px;
+    position: relative;
+    cursor: pointer;
+    &:after {
+      content: '';
+      border-bottom: 1px solid #ecf6ff;
+      position: absolute;
+      width: calc(100%);
+      right: 0;
+    }
+    &:first-child {
+      &::after {
+        display: none;
+      }
+    }
+  }
+}
+
+.notes {
+  position: relative;
+  padding: 21px;
+}
+
+.notes__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.notes__title {
+  font-size: 20px;
+  line-height: 27px;
+
+  color: $blue02;
+}
+
+.notes__search {
+  max-width: 332px;
+  width: 100%;
+}
+
+.notes__footer {
+  position: absolute;
+  bottom: 21px;
+  left: 21px;
+  right: 21px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notes__footer-add {
+  font-size: 16px;
+  line-height: 22px;
+
+  color: $blue02;
+  cursor: pointer;
+}
+
+.notes__type-list {
+}
+
+.notes__type-btn {
+  margin-right: 25px;
+  &:last-child {
+    margin-right: 0px;
+  }
+  color: $blue05;
+}
+
+.notes__type-btn--active {
+  color: $blue02;
+}
+
+.notes-wrap {
+  margin-bottom: 18px;
+}
+
+.notes__list {
+}
+
+.notes__item {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  &:last-child {
+    margin-bottom: 0px;
+  }
+}
+
+.notes__inner {
+  padding: 15px;
+}
+
+.notes__item-title {
+  font-size: 20px;
+  line-height: 27px;
+  color: $blue02;
+}
+
+.notes__item-text {
+  font-size: 16px;
+  line-height: 22px;
+  color: $blue02;
+}
+</style>
