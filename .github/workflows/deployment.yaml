@@ -55,7 +55,7 @@ jobs:
       # - name: Deploy to development server
       #   run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "~/way_up_frontend/deploy.sh"
       - name: Deploy to development server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && docker compose down -v && docker compose up --always-recreate-deps -d"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/way_up_frontend/ && docker compose down -v && docker compose pull && docker compose up --always-recreate-deps -d"
       # - name: Docker-Compose Remote Deployment
       #   uses: alex-ac/github-action-ssh-docker-compose@master
       #   with:
