@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: multipassport/deploy:latest
+          tags: ghcr.io/multipassport/deploy:latest
 # jobs:
 #   backend:
 #     runs-on: ubuntu-20.04
